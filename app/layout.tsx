@@ -17,8 +17,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Bobe Florian - Artiste Illustrateur",
-  description: "Portfolio et services d'illustration de Bobe Florian - Commissions, Coaching, Print Shop",
-  generator: "v0.app",
+  description: "Portfolio et services d'illustration de Bobe Florian - Commissions, Coaching, Print Shop"
 }
 
 export default function RootLayout({

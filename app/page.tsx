@@ -87,6 +87,35 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
+  const handleSendRequest = () => {
+    const fullName = (document.getElementById("fullName") as HTMLInputElement)?.value || ""
+    const email = (document.getElementById("email") as HTMLInputElement)?.value || ""
+    const projectType = (document.getElementById("projectType") as HTMLSelectElement)?.value || ""
+    const projectDescription = (document.getElementById("projectDescription") as HTMLTextAreaElement)?.value || ""
+
+    const emailSubject = `Nouvelle demande de devis - ${projectType}`
+    const emailBody = `Bonjour Bobe Florian,
+
+Je souhaiterais obtenir un devis pour le projet suivant :
+
+Informations du client :
+- Nom : ${fullName}
+- Email : ${email}
+
+Détails du projet :
+- Type de projet : ${projectType}
+- Description : ${projectDescription}
+
+Merci de me faire parvenir votre estimation et vos disponibilités.
+
+Cordialement,
+${fullName}`
+
+    const mailtoLink = `mailto:contact@bobeflorian.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+    
+    window.open(mailtoLink, '_blank')
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Spotlight Background */}
@@ -406,6 +435,7 @@ export default function HomePage() {
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Nom complet</label>
                         <input
+                          id="fullName"
                           type="text"
                           className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                           placeholder="Votre nom"
@@ -415,6 +445,7 @@ export default function HomePage() {
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Email</label>
                         <input
+                          id="email"
                           type="email"
                           className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                           placeholder="votre@email.com"
@@ -423,7 +454,7 @@ export default function HomePage() {
 
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Type de projet</label>
-                        <select className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <select id="projectType" className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50">
                           <option>Commission personnalisée</option>
                           <option>Coaching artistique</option>
                           <option>Achat d'œuvres</option>
@@ -434,13 +465,14 @@ export default function HomePage() {
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Description du projet</label>
                         <textarea
+                          id="projectDescription"
                           rows={4}
                           className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                           placeholder="Décrivez votre projet en détail..."
                         />
                       </div>
 
-                      <EnhancedSpotlightButton className="w-full">Envoyer la Demande</EnhancedSpotlightButton>
+                      <EnhancedSpotlightButton className="w-full" onClick={handleSendRequest}>Envoyer la Demande</EnhancedSpotlightButton>
                     </CardContent>
                   </Card>
                 </div>
