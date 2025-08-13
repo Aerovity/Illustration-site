@@ -17,12 +17,14 @@ import {
   ShoppingBag,
   Youtube,
   ExternalLink,
+  User,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { FAQSection } from "@/components/faq-section"
 import { ArtworkGallery } from "@/components/artwork-gallery"
+import { CommissionForm } from "@/components/commission-form"
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -30,6 +32,7 @@ export default function HomePage() {
   const [currentView, setCurrentView] = useState<"about" | "services">("about")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isClient, setIsClient] = useState(false)
+  const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
@@ -141,17 +144,18 @@ ${fullName}`
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                About
+                Produits
               </button>
               <button
                 onClick={() => switchView("services")}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
+                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 flex items-center gap-1 ${
                   currentView === "services"
                     ? "bg-primary text-primary-foreground shadow-lg"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Produits et Services
+                <span className="text-sm">✧</span>
+                Coaching Pro / Services 
               </button>
             </div>
           </div>
@@ -298,7 +302,7 @@ ${fullName}`
                   Bobe Florian
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
-                  Artiste Illustrateur • Créateur d'Illustrations
+                  Artiste Illustrateur • Formation Coaching Pro
                 </p>
                 <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
                   Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
@@ -491,6 +495,20 @@ ${fullName}`
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+                {/* Spotlight effect for banner - reduced intensity */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={
+                    {
+                      background: `radial-gradient(
+                        circle at ${isClient ? `${(mousePosition.x / window.innerWidth) * 100}%` : "50%"} ${isClient ? `${(mousePosition.y / window.innerHeight) * 100}%` : "50%"},
+                        rgba(139, 92, 246, 0.08) 0%,
+                        rgba(139, 92, 246, 0.03) 25%,
+                        transparent 50%
+                      )`
+                    } as React.CSSProperties
+                  }
+                />
               </div>
 
               <div className="relative z-10 text-center max-w-4xl mx-auto">
@@ -500,6 +518,140 @@ ${fullName}`
                 <p className="text-xl text-muted-foreground mb-8">
                   Des solutions créatives adaptées à tous vos besoins artistiques
                 </p>
+              </div>
+            </section>
+
+            {/* Coaching Section */}
+            <section id="coaching" className="py-20 px-4 relative z-10">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent flex items-center justify-center gap-3">
+                    <span className="text-3xl">✧</span>
+                    Coaching Pro
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+                    Développez vos compétences artistiques avec un accompagnement personnalisé. Choisissez votre format de cours.
+                  </p>
+                  <p className="text-xl font-medium text-primary">Choose your membership</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Cours Collectif Card */}
+                  <div className="space-y-6">
+                    <Card className="bg-card/30 backdrop-blur-sm border-border/50 relative">
+                      <div className="absolute top-4 right-4 bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-medium">
+                        10 places restantes
+                      </div>
+                      <CardHeader>
+                        <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
+                          <Users className="h-8 w-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-2xl">Cours Collectif</CardTitle>
+                        <div className="space-y-4">
+                          <div className="border border-border/50 rounded-lg p-4">
+                            <div className="text-sm text-muted-foreground mb-2">Helper</div>
+                            <div className="text-2xl font-bold text-primary mb-2">4€ / mois</div>
+                            <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
+                            <EnhancedSpotlightButton className="w-full mb-4">Join</EnhancedSpotlightButton>
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Un immense merci pour votre soutien ! 🙏 Je ne gagne rien sur les vidéos, tutoriels et autres contenus que je crée.
+                            </p>
+                            <div className="space-y-2 text-sm">
+                              <p>✅ Les vidéos process de mes paintings !</p>
+                              <p>✅ Les fichiers .PSD de mes illustrations !</p>
+                              <p>✅ Les dossiers PURE REF pour mes inspirations !</p>
+                              <p>✅ Un STEP-by-STEP de mon workflow !</p>
+                            </div>
+                          </div>
+                          
+                          <div className="border border-primary/50 rounded-lg p-4 bg-primary/5 relative">
+                            <div className="absolute -top-2 left-4 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
+                              Most popular
+                            </div>
+                            <div className="text-sm text-muted-foreground mb-2">Feedbacker</div>
+                            <div className="text-2xl font-bold text-primary mb-2">19,50€ / mois</div>
+                            <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
+                            <EnhancedSpotlightButton className="w-full mb-4" disabled>
+                              Sold Out
+                            </EnhancedSpotlightButton>
+                            <div className="text-xs text-red-400 mb-4">Limited spaces - SOLD OUT</div>
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Merci du fond du cœur ❤️
+                            </p>
+                            <div className="space-y-2 text-sm mb-4">
+                              <p>✅ Tous les avantages des tiers précédents</p>
+                              <p>✅ Accès VIP à mon serveur Discord</p>
+                              <p>✅ Des sessions de feedback en direct : 4h/semaine !</p>
+                              <p>✅ Votez pour la prochaine idée de vidéo !</p>
+                            </div>
+                            <div className="bg-background/50 p-3 rounded-lg text-sm">
+                              <p className="font-medium mb-2">📅 Horaires des sessions :</p>
+                              <p>🗓 Lundi et jeudi de 18h à 20h (sur Discord)</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  </div>
+
+                  {/* Cours Solo Card */}
+                  <div className="space-y-6">
+                    <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                      <CardHeader>
+                        <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
+                          <User className="h-8 w-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-2xl">Cours Solo</CardTitle>
+                        <CardDescription className="text-lg">
+                          Accompagnement personnalisé pour une progression optimale
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4 mb-8">
+                          <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                            <span className="font-medium">Session 1h</span>
+                            <span className="font-bold text-primary">60€</span>
+                          </div>
+                          <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                            <span className="font-medium">Pack 6 sessions</span>
+                            <span className="font-bold text-primary">450€</span>
+                          </div>
+                          <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                            <span className="font-medium">Mentorat mensuel</span>
+                            <span className="font-bold text-primary">600€/mois</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 mb-8 text-sm">
+                          <p>✅ Record session</p>
+                          <p>✅ Programme personnalisé</p>
+                          <p>✅ Exercices sur-mesure</p>
+                          <p>✅ Orientation clé : point fort/faible</p>
+                          <p>✅ Préparation workspace et mindset</p>
+                          <p>✅ Compte rendu et axe amélioratif</p>
+                        </div>
+
+                        <EnhancedSpotlightButton
+                          className="w-full py-0.5 text-lg"
+                          onClick={() => window.open("https://www.patreon.com/bobe_florian", "_blank")}
+                        >
+                          Réserver une Session
+                          <ExternalLink className="ml-2 h-4 w-4" />
+                        </EnhancedSpotlightButton>
+                      </CardContent>
+                    </Card>
+                    
+                    {/* Image for Cours Solo */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
+                      <Image
+                        src="/images/demon-warrior.jpg"
+                        alt="Cours Solo - Demon Warrior"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -552,10 +704,9 @@ ${fullName}`
 
                       <EnhancedSpotlightButton
                         className="w-full py-0.5 text-lg"
-                        onClick={() => window.open("https://artistree.io/bobeflorian", "_blank")}
+                        onClick={() => setIsCommissionFormOpen(true)}
                       >
                         Commander une Commission
-                        <ExternalLink className="ml-0.5 h-0.5 w-" />
                       </EnhancedSpotlightButton>
                     </div>
                   </div>
@@ -563,70 +714,6 @@ ${fullName}`
               </div>
             </section>
 
-            {/* Coaching Section */}
-            <section id="coaching" className="py-20 px-4 relative z-10">
-              <div className="max-w-7xl mx-auto">
-                <Card className="bg-card/30 backdrop-blur-sm border-border/50 overflow-hidden">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                    <div className="p-8 lg:p-12 flex flex-col justify-center order-2 lg:order-1">
-                      <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
-                        <Users className="h-8 w-8 text-primary" />
-                      </div>
-                      <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                        Coaching
-                      </h2>
-                      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                        Développez vos compétences artistiques avec un accompagnement personnalisé. Apprenez les
-                        techniques professionnelles, perfectionnez votre style et accélérez votre progression grâce à
-                        des conseils d'expert.
-                      </p>
-
-                      <div className="space-y-4 mb-8">
-                        <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                          <span className="font-medium">Session 1h</span>
-                          <span className="font-bold text-primary">80€</span>
-                        </div>
-                        <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                          <span className="font-medium">Pack 5 sessions</span>
-                          <span className="font-bold text-primary">350€</span>
-                        </div>
-                        <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                          <span className="font-medium">Mentorat mensuel</span>
-                          <span className="font-bold text-primary">200€/mois</span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 mb-8 text-sm text-muted-foreground">
-                        <div className="space-y-2">
-                          <p>✓ Techniques avancées</p>
-                          <p>✓ Feedback personnalisé</p>
-                        </div>
-                        <div className="space-y-2">
-                          <p>✓ Ressources exclusives</p>
-                          <p>✓ Support continu</p>
-                        </div>
-                      </div>
-
-                      <EnhancedSpotlightButton
-                        className="w-full py-0.5 text-lg"
-                        onClick={() => window.open("https://www.patreon.com/bobe_florian", "_blank")}
-                      >
-                        Réserver une Session
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </EnhancedSpotlightButton>
-                    </div>
-                    <div className="relative aspect-square lg:aspect-auto order-1 lg:order-2">
-                      <Image
-                        src="/images/demon-warrior.jpg"
-                        alt="Coaching Artwork - Demon Warrior"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </section>
 
             {/* Print Shop Section */}
             <section id="print-shop" className="py-20 px-4 relative z-10">
@@ -717,7 +804,7 @@ ${fullName}`
                 </li>
                 <li>
                   <button onClick={() => switchView("services")} className="hover:text-primary transition-colors">
-                    Services
+                    Coaching Pro
                   </button>
                 </li>
               </ul>
@@ -816,6 +903,12 @@ ${fullName}`
           </div>
         </div>
       </footer>
+
+      {/* Commission Form Modal */}
+      <CommissionForm 
+        isOpen={isCommissionFormOpen} 
+        onClose={() => setIsCommissionFormOpen(false)} 
+      />
     </div>
   )
 }

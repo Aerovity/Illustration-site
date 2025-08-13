@@ -8,7 +8,7 @@ const reviews = [
   {
     name: "revieweur",
     avatar: "/images/profile.jpg",
-    rating: 5,
+    rating: 4,
     comment: "wesh gros !",
   },
   {
