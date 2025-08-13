@@ -269,20 +269,19 @@ export default function HomePage() {
                   Bobe Florian
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
-                  Artiste Illustrateur • Créateur d'Univers Fantastiques
+                  Artiste Illustrateur • Créateur d'Illustrations
                 </p>
                 <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
-                  Donnez vie à vos rêves et vos histoires à travers des illustrations uniques et captivantes. Spécialisé
-                  dans l'art fantastique, les personnages et les univers imaginaires.
+                  Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300">
-                  <EnhancedSpotlightButton onClick={() => switchView("services")} className="px-8 py-3 text-lg">
+                  <EnhancedSpotlightButton onClick={() => switchView("services")} className="px-0.5 py-0.5 text-lg">
                     Voir mes Services
                   </EnhancedSpotlightButton>
                   <EnhancedSpotlightButton
                     variant="outline"
                     onClick={() => scrollToSection("contact")}
-                    className="px-8 py-3 text-lg"
+                    className="px-0.5 py-0.5 text-lg"
                   >
                     Me Contacter
                   </EnhancedSpotlightButton>
@@ -299,12 +298,12 @@ export default function HomePage() {
                     </h2>
                     <p className="text-lg text-muted-foreground leading-relaxed">
                       Passionné par l'art depuis mon plus jeune âge, je me spécialise dans la création d'illustrations
-                      fantastiques qui transportent le spectateur dans des mondes extraordinaires. Mon style unique
-                      mélange techniques traditionnelles et art numérique pour créer des œuvres saisissantes.
+                      Splash art inspirées des univers Manga/Anime/Gaming . Mon style unique
+                      mélange techniques traditionnelles et art numérique.
                     </p>
                     <p className="text-lg text-muted-foreground leading-relaxed">
-                      Avec plus de 5 ans d'expérience, j'ai eu le privilège de travailler avec des clients du monde
-                      entier, créant des personnages mémorables, des couvertures de livres captivantes et des concepts
+                      Avec plus de 15 ans d'expérience, j'ai eu le privilège de travailler avec des clients du monde
+                      entier, créant des personnages mémorables, des illustrations captivantes et des concepts
                       artistiques pour diverses industries.
                     </p>
                     <div className="flex flex-wrap gap-4 pt-4">
@@ -456,7 +455,7 @@ export default function HomePage() {
                   src="/images/services-bg.png"
                   alt="Services Background"
                   fill
-                  className="object-cover opacity-30"
+                  className="object-cover opacity-70"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
@@ -520,11 +519,11 @@ export default function HomePage() {
                       </div>
 
                       <EnhancedSpotlightButton
-                        className="w-full py-4 text-lg"
+                        className="w-full py-0.5 text-lg"
                         onClick={() => window.open("https://artistree.io/bobeflorian", "_blank")}
                       >
                         Commander une Commission
-                        <ExternalLink className="ml-2 h-4 w-4" />
+                        <ExternalLink className="ml-0.5 h-0.5 w-" />
                       </EnhancedSpotlightButton>
                     </div>
                   </div>
@@ -577,7 +576,7 @@ export default function HomePage() {
                       </div>
 
                       <EnhancedSpotlightButton
-                        className="w-full py-4 text-lg"
+                        className="w-full py-0.5 text-lg"
                         onClick={() => window.open("https://www.patreon.com/bobe_florian", "_blank")}
                       >
                         Réserver une Session
@@ -650,7 +649,7 @@ export default function HomePage() {
                       </div>
 
                       <EnhancedSpotlightButton
-                        className="w-full py-4 text-lg"
+                        className="w-full py-0.5 text-lg"
                         onClick={() => window.open("https://www.etsy.com/shop/BobeFlorian", "_blank")}
                       >
                         Visiter la Boutique

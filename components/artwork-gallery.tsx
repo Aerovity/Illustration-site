@@ -5,13 +5,13 @@ import Image from "next/image"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 const artworks = [
-  { src: "/images/artwork-1.jpg", alt: "Illustration fantastique rouge", title: "Énergie Mystique" },
-  { src: "/images/artwork-2.jpg", alt: "Sorcière mystique", title: "Magie Ancienne" },
-  { src: "/images/artwork-3.jpg", alt: "Combat épique", title: "Bataille Céleste" },
-  { src: "/images/artwork-4.jpg", alt: "Créatures sombres", title: "Ombres et Lumière" },
-  { src: "/images/artwork-5.jpg", alt: "Ultra Instinct", title: "Puissance Divine" },
-  { src: "/images/artwork-6.jpg", alt: "Épéiste vert", title: "Lames Spirituelles" },
-  { src: "/images/artwork-7.jpg", alt: "Naruto et créature", title: "Compagnons Légendaires" },
+  { src: "/images/artwork-1.jpg", alt: "Hell Joe - Tower of God", title: "Hell Joe - Tower of God" },
+  { src: "/images/artwork-2.jpg", alt: "Recluse - Nightreign", title: "Recluse - Nightreign" },
+  { src: "/images/artwork-3.jpg", alt: "Luffy V Kaido", title: "Luffy V Kaido " },
+  { src: "/images/artwork-4.jpg", alt: "Necromancer", title: "Necromancer" },
+  { src: "/images/artwork-5.jpg", alt: "Ultra Instinct", title: "Ultra Instinct" },
+  { src: "/images/artwork-6.jpg", alt: "Roronoa Zoro", title: "Roronoa Zoro" },
+  { src: "/images/artwork-7.jpg", alt: "Naruto Sennin", title: "Naruto Sennin" },
 ]
 
 export function ArtworkGallery() {
