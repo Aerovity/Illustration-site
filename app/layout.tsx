@@ -17,7 +17,21 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Bobe Florian - Artiste Illustrateur",
-  description: "Portfolio et services d'illustration de Bobe Florian - Commissions, Coaching, Print Shop"
+  description: "Portfolio et services d'illustration de Bobe Florian - Commissions, Coaching, Print Shop",
+  icons: {
+    icon: '/favicon.ico?v=1',
+  },
+  openGraph: {
+    title: "Bobe Florian - Artiste Illustrateur",
+    description: "Portfolio et services d'illustration de Bobe Florian - Commissions, Coaching, Print Shop",
+    images: ['/bg.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Bobe Florian - Artiste Illustrateur",
+    description: "Portfolio et services d'illustration de Bobe Florian - Commissions, Coaching, Print Shop",
+    images: ['/bg.png'],
+  }
 }
 
 export default function RootLayout({
