@@ -77,7 +77,7 @@ export function ReviewsCarousel() {
                       <h3 className="font-semibold">{review.name}</h3>
                       <div className="flex gap-1">
                         {Array.from({ length: review.rating }).map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <Star key={i} className="h-4 w-4" style={{ fill: '#f4e6d0', color: '#f4e6d0' }} />
                         ))}
                       </div>
                     </div>

@@ -134,11 +134,11 @@ ${fullName}`
 
       <div className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center h-8">
-            <div className="flex bg-card/50 backdrop-blur-sm rounded-full p-0.5 border border-border/50">
+          <div className="flex justify-center items-center h-12">
+            <div className="flex bg-card/50 backdrop-blur-sm rounded-full p-1 border border-border/50">
               <button
                 onClick={() => switchView("about")}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   currentView === "about"
                     ? "bg-primary text-primary-foreground shadow-lg"
                     : "text-muted-foreground hover:text-foreground"
@@ -148,13 +148,13 @@ ${fullName}`
               </button>
               <button
                 onClick={() => switchView("services")}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 flex items-center gap-1 ${
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
                   currentView === "services"
                     ? "bg-primary text-primary-foreground shadow-lg"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <span className="text-sm">✧</span>
+                <span className="text-base">✧</span>
                 Coaching Pro / Services 
               </button>
             </div>
@@ -552,6 +552,17 @@ ${fullName}`
                             <div className="text-sm text-muted-foreground mb-2">Helper</div>
                             <div className="text-2xl font-bold text-primary mb-2">4€ / mois</div>
                             <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
+                            <p className="text-center text-xs text-muted-foreground mb-2">
+                              ou vous pouvez commander ici : {" "}
+                              <a 
+                                href="https://www.patreon.com/bobe_florian" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline"
+                              >
+                                Patreon
+                              </a>
+                            </p>
                             <EnhancedSpotlightButton className="w-full mb-4">Join</EnhancedSpotlightButton>
                             <p className="text-sm text-muted-foreground mb-4">
                               Un immense merci pour votre soutien ! 🙏 Je ne gagne rien sur les vidéos, tutoriels et autres contenus que je crée.
@@ -571,6 +582,17 @@ ${fullName}`
                             <div className="text-sm text-muted-foreground mb-2">Feedbacker</div>
                             <div className="text-2xl font-bold text-primary mb-2">19,50€ / mois</div>
                             <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
+                            <p className="text-center text-xs text-muted-foreground mb-2">
+                              ou vous pouvez commander ici : {" "}
+                              <a 
+                                href="https://www.patreon.com/bobe_florian" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline"
+                              >
+                                Patreon
+                              </a>
+                            </p>
                             <EnhancedSpotlightButton className="w-full mb-4" disabled>
                               Sold Out
                             </EnhancedSpotlightButton>
@@ -630,6 +652,18 @@ ${fullName}`
                           <p>✅ Préparation workspace et mindset</p>
                           <p>✅ Compte rendu et axe amélioratif</p>
                         </div>
+
+                        <p className="text-center text-sm text-muted-foreground mb-4">
+                          ou vous pouvez commander ici : {" "}
+                          <a 
+                            href="https://www.patreon.com/bobe_florian" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                          >
+                            Coaching
+                          </a>
+                        </p>
 
                         <EnhancedSpotlightButton
                           className="w-full py-0.5 text-lg"
@@ -702,6 +736,18 @@ ${fullName}`
                         </div>
                       </div>
 
+                      <p className="text-center text-sm text-muted-foreground mb-4">
+                        ou vous pouvez commander ici : {" "}
+                        <a 
+                          href="https://artistree.io/bobeflorian" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          Commissions
+                        </a>
+                      </p>
+
                       <EnhancedSpotlightButton
                         className="w-full py-0.5 text-lg"
                         onClick={() => setIsCommissionFormOpen(true)}
@@ -766,6 +812,18 @@ ${fullName}`
                           <p>✓ Livraison mondiale</p>
                         </div>
                       </div>
+
+                      <p className="text-center text-sm text-muted-foreground mb-4">
+                        ou vous pouvez commander ici : {" "}
+                        <a 
+                          href="https://www.etsy.com/shop/BobeFlorian" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          Print Shop
+                        </a>
+                      </p>
 
                       <EnhancedSpotlightButton
                         className="w-full py-0.5 text-lg"
