@@ -811,10 +811,9 @@ ${fullName}`
 
                       <EnhancedSpotlightButton
                         className="w-full py-0.5 text-lg"
-                        onClick={() => window.open("https://www.etsy.com/shop/BobeFlorian", "_blank")}
+                        onClick={() => window.location.href = "/shop"}
                       >
                         Visiter la Boutique
-                        <ExternalLink className="ml-2 h-4 w-4" />
                       </EnhancedSpotlightButton>
                     </div>
                   </div>

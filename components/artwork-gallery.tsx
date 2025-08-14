@@ -85,7 +85,7 @@ export function ArtworkGallery() {
                       src={artwork.src || "/placeholder.svg"}
                       alt={artwork.alt}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
                       quality={95}
                       priority={index < 4}
                     />
