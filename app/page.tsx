@@ -548,39 +548,12 @@ ${fullName}`
                         </div>
                         <CardTitle className="text-2xl">Cours Collectif</CardTitle>
                         <div className="space-y-4">
-                          <div className="border border-border/50 rounded-lg p-4">
-                            <div className="text-sm text-muted-foreground mb-2">Helper</div>
-                            <div className="text-2xl font-bold text-primary mb-2">4€ / mois</div>
-                            <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
-                            <p className="text-center text-xs text-muted-foreground mb-2">
-                              ou vous pouvez commander ici : {" "}
-                              <a 
-                                href="https://www.patreon.com/bobe_florian" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-primary hover:underline"
-                              >
-                                Patreon
-                              </a>
-                            </p>
-                            <EnhancedSpotlightButton className="w-full mb-4">Join</EnhancedSpotlightButton>
-                            <p className="text-sm text-muted-foreground mb-4">
-                              Un immense merci pour votre soutien ! 🙏 Je ne gagne rien sur les vidéos, tutoriels et autres contenus que je crée.
-                            </p>
-                            <div className="space-y-2 text-sm">
-                              <p>✅ Les vidéos process de mes paintings !</p>
-                              <p>✅ Les fichiers .PSD de mes illustrations !</p>
-                              <p>✅ Les dossiers PURE REF pour mes inspirations !</p>
-                              <p>✅ Un STEP-by-STEP de mon workflow !</p>
-                            </div>
-                          </div>
-                          
                           <div className="border border-primary/50 rounded-lg p-4 bg-primary/5 relative">
                             <div className="absolute -top-2 left-4 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
                               Most popular
                             </div>
                             <div className="text-sm text-muted-foreground mb-2">Feedbacker</div>
-                            <div className="text-2xl font-bold text-primary mb-2">19,50€ / mois</div>
+                            <div className="text-2xl font-bold text-primary mb-2">48€ / mois</div>
                             <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
                             <p className="text-center text-xs text-muted-foreground mb-2">
                               ou vous pouvez commander ici : {" "}
@@ -614,6 +587,17 @@ ${fullName}`
                         </div>
                       </CardHeader>
                     </Card>
+                    
+                    {/* Image for Feedbacker */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
+                      <Image
+                        src="/images/22_Gojo.jpg"
+                        alt="Feedbacker - Gojo"
+                        fill
+                        className="object-cover"
+                        style={{ objectPosition: "center top" }}
+                      />
+                    </div>
                   </div>
 
                   {/* Cours Solo Card */}
@@ -623,7 +607,7 @@ ${fullName}`
                         <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
                           <User className="h-8 w-8 text-primary" />
                         </div>
-                        <CardTitle className="text-2xl">Cours Solo</CardTitle>
+                        <CardTitle className="text-2xl">Cours Privé</CardTitle>
                         <CardDescription className="text-lg">
                           Accompagnement personnalisé pour une progression optimale
                         </CardDescription>
@@ -675,11 +659,11 @@ ${fullName}`
                       </CardContent>
                     </Card>
                     
-                    {/* Image for Cours Solo */}
+                    {/* Image for Cours Privé */}
                     <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
                       <Image
                         src="/images/demon-warrior.jpg"
-                        alt="Cours Solo - Demon Warrior"
+                        alt="Cours Privé - Demon Warrior"
                         fill
                         className="object-cover"
                       />
