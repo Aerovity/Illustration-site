@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import { ArrowLeft, ShoppingCart, Plus, Minus, X, Instagram, Twitter, Youtube } from "lucide-react"
+import { ArrowLeft, ShoppingCart, Plus, Minus, X, Instagram, Twitter, Youtube, Filter, ChevronDown, Search } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 
@@ -12,6 +12,7 @@ interface PrintItem {
   image: string
   basePrice: number
   orientation?: 'portrait' | 'landscape' | 'square'
+  license?: string
 }
 
 interface CartItem extends PrintItem {
@@ -64,6 +65,9 @@ export default function ShopPage() {
   const [prints, setPrints] = useState<PrintItem[]>([])
   const [filteredPrints, setFilteredPrints] = useState<PrintItem[]>([])
   const [selectedOrientation, setSelectedOrientation] = useState<'all' | 'portrait' | 'landscape' | 'square'>('all')
+  const [selectedLicense, setSelectedLicense] = useState<string>('all')
+  const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [cart, setCart] = useState<CartItem[]>([])
   const [selectedPrint, setSelectedPrint] = useState<PrintItem | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>("A4")
@@ -81,9 +85,22 @@ export default function ShopPage() {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isLicenseDropdownOpen) {
+        const target = e.target as Element
+        if (!target.closest('[data-license-dropdown]')) {
+          setIsLicenseDropdownOpen(false)
+        }
+      }
+    }
+
     window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+    window.addEventListener("click", handleClickOutside)
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("click", handleClickOutside)
+    }
+  }, [isLicenseDropdownOpen])
 
   const getImageOrientation = (imagePath: string): Promise<'portrait' | 'landscape' | 'square'> => {
     return new Promise((resolve) => {
@@ -119,6 +136,21 @@ export default function ShopPage() {
       "22_Cell_Perfect.jpg", "22_Bojji.jpg", "22_All_Might.jpg", "22_Luffy_Wano.jpg", "22_LeBlanc.png"
     ]
 
+    // License array matching the same index as printFiles
+    const printLicenses = [
+      "Haikyū!!", "One Piece", "Dragon Ball", "One Piece",
+      "DanDaDan", "My Hero Academia", "JoJo's Bizarre Adventure", "Seven Deadly Sins",
+      "Kaiju No. 8", "Dungeon Meshi", "Berserk", "One Piece",
+      "Naruto", "Naruto", "Frieren", "Frieren",
+      "Solo Leveling", "One Punch Man", "Bleach", "Spy x Family", "Dragon Ball",
+      "One Piece", "Demon Slayer", "Demon Slayer", "My Hero Academia", "One Piece",
+      "One Piece", "Jujutsu Kaisen", "Jujutsu Kaisen", "One Piece", "Jujutsu Kaisen",
+      "One Piece", "One Piece", "Jujutsu Kaisen", "Dragon Ball", "One Piece",
+      "Naruto", "Chainsaw Man", "One Piece", "One Piece", "JoJo's Bizarre Adventure",
+      "Bleach", "Berserk", "Jujutsu Kaisen", "Fairy Tail", "Attack on Titan",
+      "Dragon Ball", "Ranking of Kings", "My Hero Academia", "One Piece", "League of Legends"
+    ]
+
     const loadPrintsWithOrientation = async () => {
       const printItems: PrintItem[] = []
       
@@ -135,7 +167,8 @@ export default function ShopPage() {
             name: name || file.replace(/\.(jpg|png)$/i, ''),
             image: imagePath,
             basePrice: 10.83, // Base A4 price
-            orientation
+            orientation,
+            license: printLicenses[index]
           })
         } catch (error) {
           printItems.push({
@@ -143,7 +176,8 @@ export default function ShopPage() {
             name: name || file.replace(/\.(jpg|png)$/i, ''),
             image: imagePath,
             basePrice: 10.83,
-            orientation: 'square' // Default fallback
+            orientation: 'square', // Default fallback
+            license: printLicenses[index]
           })
         }
       }
@@ -160,12 +194,44 @@ export default function ShopPage() {
   }, [cart, selectedDelivery])
 
   useEffect(() => {
-    if (selectedOrientation === 'all') {
-      setFilteredPrints(prints)
-    } else {
-      setFilteredPrints(prints.filter(print => print.orientation === selectedOrientation))
+    let filtered = prints
+
+    // Filter by orientation
+    if (selectedOrientation !== 'all') {
+      filtered = filtered.filter(print => print.orientation === selectedOrientation)
     }
-  }, [prints, selectedOrientation])
+
+    // Filter by license
+    if (selectedLicense !== 'all') {
+      filtered = filtered.filter(print => print.license === selectedLicense)
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      filtered = filtered.filter(print => 
+        print.name.toLowerCase().includes(query) || 
+        (print.license && print.license.toLowerCase().includes(query))
+      )
+    }
+
+    setFilteredPrints(filtered)
+  }, [prints, selectedOrientation, selectedLicense, searchQuery])
+
+  // Get unique licenses for dropdown
+  const getUniqueLicenses = () => {
+    const licenses = prints.map(print => print.license).filter(Boolean)
+    return [...new Set(licenses)].sort()
+  }
+
+  // Get filtered prints count by license
+  const getLicenseCount = (license: string) => {
+    let filtered = prints
+    if (selectedOrientation !== 'all') {
+      filtered = filtered.filter(print => print.orientation === selectedOrientation)
+    }
+    return filtered.filter(print => print.license === license).length
+  }
 
   const openPrintModal = (print: PrintItem) => {
     setSelectedPrint(print)
@@ -323,55 +389,134 @@ export default function ShopPage() {
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 px-4">
+      <section className="py-6 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <button
-              onClick={() => setSelectedOrientation('all')}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                selectedOrientation === 'all'
-                  ? 'bg-primary text-primary-foreground shadow-lg'
-                  : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-              }`}
-            >
-              Tous ({prints.length})
-            </button>
-            <button
-              onClick={() => setSelectedOrientation('portrait')}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                selectedOrientation === 'portrait'
-                  ? 'bg-primary text-primary-foreground shadow-lg'
-                  : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-              }`}
-            >
-              Portrait ({prints.filter(p => p.orientation === 'portrait').length})
-            </button>
-            <button
-              onClick={() => setSelectedOrientation('landscape')}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                selectedOrientation === 'landscape'
-                  ? 'bg-primary text-primary-foreground shadow-lg'
-                  : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-              }`}
-            >
-              Paysage ({prints.filter(p => p.orientation === 'landscape').length})
-            </button>
-            <button
-              onClick={() => setSelectedOrientation('square')}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                selectedOrientation === 'square'
-                  ? 'bg-primary text-primary-foreground shadow-lg'
-                  : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-              }`}
-            >
-              Carrée ({prints.filter(p => p.orientation === 'square').length})
-            </button>
+          <div className="flex flex-col items-center gap-4">
+            {/* Search Bar */}
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Rechercher par nom ou licence..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-card/50 backdrop-blur-sm border border-border/50 rounded-full text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+                >
+                  <X className="h-3 w-3 text-muted-foreground" />
+                </button>
+              )}
+            </div>
+
+            {/* Orientation Filters */}
+            <div className="flex flex-wrap justify-center gap-4">
+              <button
+                onClick={() => setSelectedOrientation('all')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedOrientation === 'all'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Tous ({prints.length})
+              </button>
+              <button
+                onClick={() => setSelectedOrientation('portrait')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedOrientation === 'portrait'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Portrait ({prints.filter(p => p.orientation === 'portrait').length})
+              </button>
+              <button
+                onClick={() => setSelectedOrientation('landscape')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedOrientation === 'landscape'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Paysage ({prints.filter(p => p.orientation === 'landscape').length})
+              </button>
+              <button
+                onClick={() => setSelectedOrientation('square')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedOrientation === 'square'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Carrée ({prints.filter(p => p.orientation === 'square').length})
+              </button>
+            </div>
+
+            {/* License Filter Dropdown */}
+            <div className="relative" data-license-dropdown>
+              <button
+                onClick={() => setIsLicenseDropdownOpen(!isLicenseDropdownOpen)}
+                className={`flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-all duration-200 min-w-[200px] justify-center ${
+                  selectedLicense !== 'all'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                <Filter className="h-4 w-4" />
+                <span>
+                  {selectedLicense === 'all' ? 'Toutes les licences' : selectedLicense}
+                </span>
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isLicenseDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isLicenseDropdownOpen && (
+                <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-background border border-border/50 rounded-lg shadow-lg z-50 w-[800px] max-w-[90vw]">
+                  <div className="p-4 grid grid-cols-5 gap-2 max-h-80 overflow-y-auto">
+                    <button
+                      onClick={() => {
+                        setSelectedLicense('all')
+                        setIsLicenseDropdownOpen(false)
+                      }}
+                      className={`px-3 py-2 rounded-lg font-medium transition-colors text-center text-sm ${
+                        selectedLicense === 'all' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-card/50 hover:bg-muted border border-border/30'
+                      }`}
+                    >
+                      <div>Toutes</div>
+                      <div className="text-xs opacity-70">({prints.length})</div>
+                    </button>
+                    {getUniqueLicenses().map((license) => (
+                      <button
+                        key={license}
+                        onClick={() => {
+                          setSelectedLicense(license)
+                          setIsLicenseDropdownOpen(false)
+                        }}
+                        className={`px-3 py-2 rounded-lg font-medium transition-colors text-center text-sm ${
+                          selectedLicense === license 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-card/50 hover:bg-muted border border-border/30'
+                        }`}
+                      >
+                        <div className="leading-tight">{license}</div>
+                        <div className="text-xs opacity-70">({getLicenseCount(license)})</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Prints Gallery */}
-      <section className="py-12 px-4">
+      <section className="py-4 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredPrints.map((print) => (
