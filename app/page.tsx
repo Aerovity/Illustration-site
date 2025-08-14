@@ -49,7 +49,7 @@ export default function HomePage() {
     const handleScroll = () => {
       const sections = currentView === "about" 
         ? ["accueil", "reviews", "faq", "contact"]
-        : ["commissions", "coaching", "print-shop"]
+        : ["coaching", "commissions", "print-shop"]
       
       let current = sections[0]
       
@@ -208,14 +208,6 @@ ${fullName}`
               ) : (
                 <div className="flex space-x-8">
                   <button
-                    onClick={() => scrollToSection("commissions")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "commissions" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Commissions
-                  </button>
-                  <button
                     onClick={() => scrollToSection("coaching")}
                     className={`text-sm font-medium transition-colors hover:text-primary ${
                       activeSection === "coaching" ? "text-primary" : "text-foreground"
@@ -224,7 +216,15 @@ ${fullName}`
                     Coaching
                   </button>
                   <button
-                    onClick={() => scrollToSection("print-shop")}
+                    onClick={() => scrollToSection("commissions")}
+                    className={`text-sm font-medium transition-colors hover:text-primary ${
+                      activeSection === "commissions" ? "text-primary" : "text-foreground"
+                    }`}
+                  >
+                    Commissions
+                  </button>
+                  <button
+                    onClick={() => window.location.href = "/shop"}
                     className={`text-sm font-medium transition-colors hover:text-primary ${
                       activeSection === "print-shop" ? "text-primary" : "text-foreground"
                     }`}
@@ -269,7 +269,7 @@ ${fullName}`
                   <button onClick={() => scrollToSection("coaching")} className="block text-sm hover:text-primary">
                     Coaching
                   </button>
-                  <button onClick={() => scrollToSection("print-shop")} className="block text-sm hover:text-primary">
+                  <button onClick={() => window.location.href = "/shop"} className="block text-sm hover:text-primary">
                     Print Shop
                   </button>
                 </div>
@@ -532,17 +532,17 @@ ${fullName}`
                   <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
                     Développez vos compétences artistiques avec un accompagnement personnalisé. Choisissez votre format de cours.
                   </p>
-                  <p className="text-xl font-medium text-primary">Choose your membership</p>
+                  <p className="text-xl font-medium text-primary">Choisissez votre abonnement</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Cours Collectif Card */}
-                  <div className="space-y-6">
-                    <Card className="bg-card/30 backdrop-blur-sm border-border/50 relative">
+                  <div className="flex flex-col space-y-6">
+                    <Card className="bg-card/30 backdrop-blur-sm border-border/50 relative flex-1 flex flex-col">
                       <div className="absolute top-4 right-4 bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-medium">
                         10 places restantes
                       </div>
-                      <CardHeader>
+                      <CardHeader className="flex-1">
                         <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
                           <Users className="h-8 w-8 text-primary" />
                         </div>
@@ -601,8 +601,8 @@ ${fullName}`
                   </div>
 
                   {/* Cours Solo Card */}
-                  <div className="space-y-6">
-                    <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                  <div className="flex flex-col space-y-6">
+                    <Card className="bg-card/30 backdrop-blur-sm border-border/50 flex-1 flex flex-col">
                       <CardHeader>
                         <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
                           <User className="h-8 w-8 text-primary" />
@@ -612,7 +612,7 @@ ${fullName}`
                           Accompagnement personnalisé pour une progression optimale
                         </CardDescription>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="flex-1 flex flex-col">
                         <div className="space-y-4 mb-8">
                           <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
                             <span className="font-medium">Session 1h</span>
@@ -650,7 +650,7 @@ ${fullName}`
                         </p>
 
                         <EnhancedSpotlightButton
-                          className="w-full py-0.5 text-lg"
+                          className="w-full py-0.5 text-lg mt-auto"
                           onClick={() => window.open("https://www.patreon.com/bobe_florian", "_blank")}
                         >
                           Réserver une Session
