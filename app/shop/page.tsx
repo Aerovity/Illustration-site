@@ -533,22 +533,7 @@ export default function ShopPage() {
       {isLoading ? (
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="mb-8">
-              <div className="relative w-32 h-32 mx-auto mb-6">
-                {/* Animated loading circle */}
-                <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
-                <div 
-                  className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"
-                  style={{ animationDuration: '1s' }}
-                ></div>
-                {/* Progress percentage */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-primary">
-                    {Math.round(loadingProgress)}%
-                  </span>
-                </div>
-              </div>
-              
+            <div className="mb-12">
               <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Chargement des œuvres...
               </h2>
@@ -557,7 +542,7 @@ export default function ShopPage() {
               </p>
               
               {/* Progress bar */}
-              <div className="w-full max-w-md mx-auto mb-8">
+              <div className="w-full max-w-md mx-auto">
                 <div className="h-2 bg-card/50 rounded-full overflow-hidden border border-border/50">
                   <div 
                     className="h-full bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 ease-out"
@@ -571,13 +556,9 @@ export default function ShopPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg overflow-hidden">
-                    <div className="aspect-square bg-muted/50 animate-pulse relative">
+                  <div className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg overflow-hidden aspect-square">
+                    <div className="w-full h-full bg-muted/50 animate-pulse relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10"></div>
-                    </div>
-                    <div className="p-4">
-                      <div className="h-4 bg-muted/50 rounded mb-2 animate-pulse"></div>
-                      <div className="h-3 bg-muted/30 rounded w-2/3 animate-pulse"></div>
                     </div>
                   </div>
                 </div>
