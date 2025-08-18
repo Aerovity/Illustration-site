@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ArrowLeft, ShoppingCart, Plus, Minus, X, Instagram, Twitter, Youtube, Filter, ChevronDown, Search } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination"
 
 interface PrintItem {
   id: string
@@ -68,6 +69,8 @@ export default function ShopPage() {
   const [selectedLicense, setSelectedLicense] = useState<string>('all')
   const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(9)
   const [cart, setCart] = useState<CartItem[]>([])
   const [selectedPrint, setSelectedPrint] = useState<PrintItem | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>("A4")
@@ -201,6 +204,11 @@ export default function ShopPage() {
     loadPrintsWithOrientation()
   }, [])
 
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [selectedOrientation, selectedLicense, searchQuery])
+
   useEffect(() => {
     setCanCheckout(cart.length > 0 && selectedDelivery !== "")
   }, [cart, selectedDelivery])
@@ -243,6 +251,31 @@ export default function ShopPage() {
       filtered = filtered.filter(print => print.orientation === selectedOrientation)
     }
     return filtered.filter(print => print.license === license).length
+  }
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredPrints.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentPrints = filteredPrints.slice(startIndex, endIndex)
+
+  // Handle orientation filter toggle
+  const handleOrientationFilter = (orientation: 'all' | 'portrait' | 'landscape' | 'square') => {
+    if (selectedOrientation === orientation) {
+      setSelectedOrientation('all') // Toggle off if same filter is clicked
+    } else {
+      setSelectedOrientation(orientation)
+    }
+  }
+
+  // Handle license filter toggle
+  const handleLicenseFilter = (license: string) => {
+    if (selectedLicense === license) {
+      setSelectedLicense('all') // Toggle off if same filter is clicked
+    } else {
+      setSelectedLicense(license)
+    }
+    setIsLicenseDropdownOpen(false)
   }
 
   const openPrintModal = (print: PrintItem) => {
@@ -428,7 +461,7 @@ export default function ShopPage() {
             {/* Orientation Filters */}
             <div className="flex flex-wrap justify-center gap-4">
               <button
-                onClick={() => setSelectedOrientation('all')}
+                onClick={() => handleOrientationFilter('all')}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
                   selectedOrientation === 'all'
                     ? 'bg-primary text-primary-foreground shadow-lg'
@@ -438,7 +471,7 @@ export default function ShopPage() {
                 Tous ({prints.length})
               </button>
               <button
-                onClick={() => setSelectedOrientation('portrait')}
+                onClick={() => handleOrientationFilter('portrait')}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
                   selectedOrientation === 'portrait'
                     ? 'bg-primary text-primary-foreground shadow-lg'
@@ -448,7 +481,7 @@ export default function ShopPage() {
                 Portrait ({prints.filter(p => p.orientation === 'portrait').length})
               </button>
               <button
-                onClick={() => setSelectedOrientation('landscape')}
+                onClick={() => handleOrientationFilter('landscape')}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
                   selectedOrientation === 'landscape'
                     ? 'bg-primary text-primary-foreground shadow-lg'
@@ -458,7 +491,7 @@ export default function ShopPage() {
                 Paysage ({prints.filter(p => p.orientation === 'landscape').length})
               </button>
               <button
-                onClick={() => setSelectedOrientation('square')}
+                onClick={() => handleOrientationFilter('square')}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
                   selectedOrientation === 'square'
                     ? 'bg-primary text-primary-foreground shadow-lg'
@@ -490,10 +523,7 @@ export default function ShopPage() {
                 <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-background border border-border/50 rounded-lg shadow-lg z-50 w-[800px] max-w-[90vw]">
                   <div className="p-4 grid grid-cols-5 gap-2 max-h-80 overflow-y-auto">
                     <button
-                      onClick={() => {
-                        setSelectedLicense('all')
-                        setIsLicenseDropdownOpen(false)
-                      }}
+                      onClick={() => handleLicenseFilter('all')}
                       className={`px-3 py-2 rounded-lg font-medium transition-colors text-center text-sm ${
                         selectedLicense === 'all' 
                           ? 'bg-primary text-primary-foreground' 
@@ -506,10 +536,7 @@ export default function ShopPage() {
                     {getUniqueLicenses().map((license) => (
                       <button
                         key={license}
-                        onClick={() => {
-                          setSelectedLicense(license)
-                          setIsLicenseDropdownOpen(false)
-                        }}
+                        onClick={() => handleLicenseFilter(license)}
                         className={`px-3 py-2 rounded-lg font-medium transition-colors text-center text-sm ${
                           selectedLicense === license 
                             ? 'bg-primary text-primary-foreground' 
@@ -570,8 +597,20 @@ export default function ShopPage() {
         /* Prints Gallery */
         <section className="py-4 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredPrints.map((print, index) => (
+            {/* Results Summary */}
+            <div className="text-center mb-6">
+              <p className="text-muted-foreground">
+                {filteredPrints.length > 0 ? (
+                  <>Affichage {startIndex + 1}-{Math.min(endIndex, filteredPrints.length)} sur {filteredPrints.length} résultats</>
+                ) : (
+                  'Aucun résultat trouvé'
+                )}
+              </p>
+            </div>
+            
+            {/* Gallery Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+              {currentPrints.map((print, index) => (
                 <Card 
                   key={print.id} 
                   className="bg-card/50 backdrop-blur-sm border-border/50 cursor-pointer transition-all duration-200 group animate-fade-in-up"
@@ -585,10 +624,12 @@ export default function ShopPage() {
                         alt={print.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-200"
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100">
                         <h3 className="text-white font-semibold mb-2">{print.name}</h3>
+                        <p className="text-white text-xs opacity-75 mb-1">{print.license}</p>
                         <p className="text-white font-bold">À partir de {sizeOptions[0].price}€</p>
                       </div>
                     </div>
@@ -596,6 +637,52 @@ export default function ShopPage() {
                 </Card>
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Pagination className="mb-8">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                  
+                  {/* Page numbers */}
+                  {[...Array(totalPages)].map((_, i) => {
+                    const page = i + 1
+                    if (totalPages <= 7 || page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(page)}
+                            isActive={currentPage === page}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                    } else if (page === currentPage - 2 || page === currentPage + 2) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )
+                    }
+                    return null
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         </section>
       )}

@@ -88,7 +88,7 @@ function HeroContent({ showVideo, switchView, scrollToSection }: {
         </p>
       </div>
       <div className={`flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300 transition-opacity duration-1000 ${
-        showVideo ? 'opacity-50' : 'opacity-100'
+        showVideo ? '!opacity-20' : '!opacity-100'
       }`}>
         <EnhancedSpotlightButton
           onClick={() => scrollToSection("coaching")}
