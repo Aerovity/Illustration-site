@@ -3,12 +3,11 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Home, User, Briefcase, FileText, Palette, Users, ShoppingBag, Mail, BookOpen } from "lucide-react"
+import { Menu, X, Instagram, Twitter, Palette, Users, ShoppingBag, Youtube, User } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { CommissionForm } from "@/components/commission-form"
 import { CoachingForm } from "@/components/coaching-form"
-import { NavBar } from "@/components/ui/tubelight-navbar"
 
 export default function ServicesPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -86,18 +85,6 @@ export default function ServicesPage() {
     }
   }
 
-  const navItems = [
-    { name: "Accueil", url: "/#accueil", icon: Home },
-    { name: "À propos", url: "/#about", icon: User },
-    { name: "Portfolio", url: "/#portfolio", icon: Briefcase },
-    { name: "Galerie", url: "/#gallery", icon: FileText },
-    { name: "Coaching", url: "#coaching", icon: Users },
-    { name: "Commissions", url: "#commissions", icon: Palette },
-    { name: "E-books", url: "#ebooks", icon: BookOpen },
-    { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "Contact", url: "/#contact", icon: Mail },
-  ]
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Spotlight Background */}
@@ -111,7 +98,134 @@ export default function ServicesPage() {
         }
       />
 
-      <NavBar items={navItems} activeSection={activeSection} />
+      <header className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={200} height={60} className="h-16 w-auto" />
+            </div>
+
+            <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
+              <div className="flex items-center space-x-6">
+                <button
+                  onClick={() => scrollToSection("about")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  À propos
+                </button>
+                <button
+                  onClick={() => scrollToSection("portfolio")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Portfolio
+                </button>
+                <button
+                  onClick={() => scrollToSection("gallery")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Galerie
+                </button>
+                <button
+                  onClick={() => scrollToSection("coaching")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "coaching" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Coaching
+                </button>
+                <button
+                  onClick={() => scrollToSection("commissions")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "commissions" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Commissions
+                </button>
+                <button
+                  onClick={() => scrollToSection("print-shop")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "print-shop" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Print Shop
+                </button>
+                <button
+                  onClick={() => scrollToSection("ebooks")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "ebooks" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  E-books
+                </button>
+                <button
+                  onClick={() => scrollToSection("contact")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Contact
+                </button>
+              </div>
+            </nav>
+
+            {/* Mobile menu button */}
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-background/95 backdrop-blur-md border-t border-border/50">
+            <div className="px-4 py-4 space-y-2">
+              <button onClick={() => scrollToSection("about")} className="block text-sm font-medium hover:text-primary">
+                À propos
+              </button>
+              <button
+                onClick={() => scrollToSection("portfolio")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Portfolio
+              </button>
+              <button
+                onClick={() => scrollToSection("gallery")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Galerie
+              </button>
+              <button
+                onClick={() => scrollToSection("coaching")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Coaching
+              </button>
+              <button
+                onClick={() => scrollToSection("commissions")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Commissions
+              </button>
+              <button
+                onClick={() => scrollToSection("print-shop")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Print Shop
+              </button>
+              <button
+                onClick={() => scrollToSection("ebooks")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                E-books
+              </button>
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Contact
+              </button>
+            </div>
+          </div>
+        )}
+      </header>
 
       {/* Content */}
       <div className="pt-16">
@@ -385,7 +499,7 @@ export default function ServicesPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13M0 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                       />
                     </svg>
                   </div>
@@ -584,10 +698,7 @@ export default function ServicesPage() {
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors flex items-center gap-2"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M10.02 2.248a11.775 11.775 0 0 0-9.053 16.697c1.003.904 2.278 1.559 3.695 1.905a7.451 7.451 0 0 1-3.197 1.739c.112.422.415.775.777.95a11.443 11.443 0 0 0 6.57 2.031c2.427.972 4.777 1.435 7.14 1.482a7.531 7.531 0 0 1 5.53-.23c.556-.189 1.05-.864 1.05-1.653V6.59A11.443 11.443 0 0 0 19.024 3.104a7.531 7.531 0 0 1-.23-5.53A11.775 11.775 0 0 0 10.02 2.248z" />
-                      <path d="M15.378 18.461A3.37 3.37 0 0 1 12 19.308a3.37 3.37 0 0 1-3.378-1.447m9.053 0A9.05 9.05 0 0 0 18 9.45a9.05 9.05 0 0 0-1.447-3.378m0 0A9.05 9.05 0 0 0 9.45 18a9.05 9.05 0 0 0 3.378-1.447m0 0A9.05 9.05 0 0 0 18 9.45m0 0A9.05 9.05 0 0 0 9.45 18z" />
-                    </svg>
+                    <Instagram className="h-4 w-4" />
                     Instagram
                   </a>
                 </li>
@@ -598,11 +709,7 @@ export default function ServicesPage() {
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors flex items-center gap-2"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M10.02 2.248a11.775 11.775 0 0 0-9.053 16.697c1.003.904 2.278 1.559 3.695 1.905a7.451 7.451 0 0 1-3.197 1.739c.112.422.415.775.777.95a11.443 11.443 0 0 0 6.57 2.031c2.427.972 4.777 1.435 7.14 1.482a7.531 7.531 0 0 1 5.53-.23c.556-.189 1.05-.864 1.05-1.653V6.59A11.443 11.443 0 0 0 19.024 3.104a7.531 7.531 0 0 1-.23-5.53A11.775 11.775 0 0 0 10.02 2.248z" />
-                      <path d="M15.378 18.461A3.37 3.37 0 0 1 12 19.308a3.37 3.37 0 0 1-3.378-1.447m9.053 0A9.05 9.05 0 0 0 18 9.45a9.05 9.05 0 0 0-1.447-3.378m0 0A9.05 9.05 0 0 0 9.45 18a9.05 9.05 0 0 0 3.378-1.447m0 0A9.05 9.05 0 0 0 18 9.45m0 0A9.05 9.05 0 0 0 9.45 18z" />
-                    </svg>
-                    X (Twitter)
+                    <Twitter className="h-4 w-4" />X (Twitter)
                   </a>
                 </li>
                 <li>
@@ -613,8 +720,7 @@ export default function ServicesPage() {
                     className="hover:text-primary transition-colors flex items-center gap-2"
                   >
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M10.02 2.248a11.775 11.775 0 0 0-9.053 16.697c1.003.904 2.278 1.559 3.695 1.905a7.451 7.451 0 0 1-3.197 1.739c.112.422.415.775.777.95a11.443 11.443 0 0 0 6.57 2.031c2.427.972 4.777 1.435 7.14 1.482a7.531 7.531 0 0 1 5.53-.23c.556-.189 1.05-.864 1.05-1.653V6.59A11.443 11.443 0 0 0 19.024 3.104a7.531 7.531 0 0 1-.23-5.53A11.775 11.775 0 0 0 10.02 2.248z" />
-                      <path d="M15.378 18.461A3.37 3.37 0 0 1 12 19.308a3.37 3.37 0 0 1-3.378-1.447m9.053 0A9.05 9.05 0 0 0 18 9.45a9.05 9.05 0 0 0-1.447-3.378m0 0A9.05 9.05 0 0 0 9.45 18a9.05 9.05 0 0 0 3.378-1.447m0 0A9.05 9.05 0 0 0 18 9.45m0 0A9.05 9.05 0 0 0 9.45 18z" />
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                     </svg>
                     TikTok
                   </a>
@@ -626,10 +732,7 @@ export default function ServicesPage() {
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors flex items-center gap-2"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M10.02 2.248a11.775 11.775 0 0 0-9.053 16.697c1.003.904 2.278 1.559 3.695 1.905a7.451 7.451 0 0 1-3.197 1.739c.112.422.415.775.777.95a11.443 11.443 0 0 0 6.57 2.031c2.427.972 4.777 1.435 7.14 1.482a7.531 7.531 0 0 1 5.53-.23c.556-.189 1.05-.864 1.05-1.653V6.59A11.443 11.443 0 0 0 19.024 3.104a7.531 7.531 0 0 1-.23-5.53A11.775 11.775 0 0 0 10.02 2.248z" />
-                      <path d="M15.378 18.461A3.37 3.37 0 0 1 12 19.308a3.37 3.37 0 0 1-3.378-1.447m9.053 0A9.05 9.05 0 0 0 18 9.45a9.05 9.05 0 0 0-1.447-3.378m0 0A9.05 9.05 0 0 0 9.45 18a9.05 9.05 0 0 0 3.378-1.447m0 0A9.05 9.05 0 0 0 18 9.45m0 0A9.05 9.05 0 0 0 9.45 18z" />
-                    </svg>
+                    <Youtube className="h-4 w-4" />
                     YouTube
                   </a>
                 </li>

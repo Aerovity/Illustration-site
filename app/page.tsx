@@ -3,26 +3,10 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Instagram,
-  Twitter,
-  Youtube,
-  Home,
-  User,
-  Briefcase,
-  FileText,
-  Palette,
-  Users,
-  ShoppingBag,
-  BookOpen,
-} from "lucide-react"
+import { Menu, X, Mail, Phone, MapPin, Instagram, Twitter, Youtube } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { ArtworkGallery } from "@/components/artwork-gallery"
-import { NavBar } from "@/components/ui/tubelight-navbar"
 
 // Hero Background Component with auto-switching between image and video
 function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideoEnd: () => void }) {
@@ -108,41 +92,59 @@ function HeroContent({
     <div className="relative z-30 text-center px-4 max-w-4xl mx-auto">
       {!showVideo ? (
         // Slide 1: Original Bobe Florian content (no golden button)
-        <div>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-fade-in-up">
-            Bobe Florian
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
-            Artiste Illustrateur • Formation Coaching Pro
-          </p>
-          <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
-            Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
-          </p>
-        </div>
+        <>
+          <div>
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-fade-in-up">
+              Bobe Florian
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
+              Artiste Illustrateur • Formation Coaching Pro
+            </p>
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
+              Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300">
+            <EnhancedSpotlightButton
+              onClick={() => (window.location.href = "/services")}
+              className="px-0.5 py-0.5 text-lg"
+            >
+              Voir mes Services
+            </EnhancedSpotlightButton>
+            <EnhancedSpotlightButton
+              variant="outline"
+              onClick={() => scrollToSection("contact")}
+              className="px-0.5 py-0.5 text-lg"
+            >
+              Me Contacter
+            </EnhancedSpotlightButton>
+          </div>
+        </>
       ) : (
         // Slide 2: Coaching Pro content during video (no transparency)
-        <div className="transition-all duration-1000 ease-out transform translate-y-0 opacity-100">
-          <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent animate-fade-in-up">
-            ✧ Coaching Pro
-          </h1>
-          <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
-            vous souhaitez passer au niveau supérieur et devenir illustrateur pro, concept artist ou simplement devenir
-            meilleur en digital painting !
-          </p>
-        </div>
+        <>
+          <div className="transition-all duration-1000 ease-out transform translate-y-0 opacity-100">
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent animate-fade-in-up">
+              ✧ Coaching Pro
+            </h1>
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
+              vous souhaitez passer au niveau supérieur et devenir illustrateur pro, concept artist ou simplement
+              devenir meilleur en digital painting !
+            </p>
+          </div>
+          <div className="flex justify-center animate-fade-in-up animate-delay-300">
+            <EnhancedSpotlightButton
+              onClick={() => (window.location.href = "/services")}
+              focusRingColor="golden"
+              gradientColor="golden"
+              sparkles={true}
+              className="px-0.5 py-0.5 text-lg bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 text-black hover:shadow-lg hover:shadow-yellow-500/25 transition-all duration-1000 ease-out transform translate-y-0 opacity-100"
+            >
+              Coaching Pro ✧
+            </EnhancedSpotlightButton>
+          </div>
+        </>
       )}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300">
-        <EnhancedSpotlightButton onClick={() => (window.location.href = "/services")} className="px-0.5 py-0.5 text-lg">
-          Voir mes Services
-        </EnhancedSpotlightButton>
-        <EnhancedSpotlightButton
-          variant="outline"
-          onClick={() => scrollToSection("contact")}
-          className="px-0.5 py-0.5 text-lg"
-        >
-          Me Contacter
-        </EnhancedSpotlightButton>
-      </div>
     </div>
   )
 }
@@ -301,18 +303,6 @@ ${fullName}`
     window.open(mailtoLink, "_blank")
   }
 
-  const navItems = [
-    { name: "Accueil", url: "#accueil", icon: Home },
-    { name: "À propos", url: "#about", icon: User },
-    { name: "Portfolio", url: "#portfolio", icon: Briefcase },
-    { name: "Galerie", url: "#gallery", icon: FileText },
-    { name: "Coaching", url: "/services#coaching", icon: Users },
-    { name: "Commissions", url: "/services#commissions", icon: Palette },
-    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
-    { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "Contact", url: "#contact", icon: Mail },
-  ]
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Spotlight Background */}
@@ -326,7 +316,134 @@ ${fullName}`
         }
       />
 
-      <NavBar items={navItems} activeSection={activeSection} />
+      <header className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50 animate-slide-down-fade-in">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={200} height={60} className="h-16 w-auto" />
+            </div>
+
+            <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
+              <div className="flex items-center space-x-6">
+                <button
+                  onClick={() => scrollToSection("about")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "about" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  À propos
+                </button>
+                <button
+                  onClick={() => scrollToSection("portfolio")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "portfolio" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Portfolio
+                </button>
+                <button
+                  onClick={() => scrollToSection("gallery")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "gallery" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Galerie
+                </button>
+                <button
+                  onClick={() => scrollToSection("coaching")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Coaching
+                </button>
+                <button
+                  onClick={() => scrollToSection("commissions")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Commissions
+                </button>
+                <button
+                  onClick={() => scrollToSection("print-shop")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Print Shop
+                </button>
+                <button
+                  onClick={() => scrollToSection("ebooks")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  E-books
+                </button>
+                <button
+                  onClick={() => scrollToSection("contact")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "contact" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Contact
+                </button>
+              </div>
+            </nav>
+
+            {/* Mobile menu button */}
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-background/95 backdrop-blur-md border-t border-border/50">
+            <div className="px-4 py-4 space-y-2">
+              <button onClick={() => scrollToSection("about")} className="block text-sm font-medium hover:text-primary">
+                À propos
+              </button>
+              <button
+                onClick={() => scrollToSection("portfolio")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Portfolio
+              </button>
+              <button
+                onClick={() => scrollToSection("gallery")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Galerie
+              </button>
+              <button
+                onClick={() => scrollToSection("coaching")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Coaching
+              </button>
+              <button
+                onClick={() => scrollToSection("commissions")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Commissions
+              </button>
+              <button
+                onClick={() => scrollToSection("print-shop")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Print Shop
+              </button>
+              <button
+                onClick={() => scrollToSection("ebooks")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                E-books
+              </button>
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Contact
+              </button>
+            </div>
+          </div>
+        )}
+      </header>
 
       {/* Content */}
       <div className="pt-16">
