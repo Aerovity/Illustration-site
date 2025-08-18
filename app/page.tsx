@@ -3,10 +3,11 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Menu, X, Mail, Phone, MapPin, Instagram, Twitter, Youtube } from "lucide-react"
+import { Home, User, Briefcase, ImageIcon, Mail, Phone, MapPin, Instagram, Twitter, Youtube, Users, Palette, ShoppingBag, BookOpen } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { ArtworkGallery } from "@/components/artwork-gallery"
+import { NavBar } from "@/components/ui/tubelight-navbar"
 
 // Hero Background Component with auto-switching between image and video
 function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideoEnd: () => void }) {
@@ -196,6 +197,18 @@ export default function HomePage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isClient, setIsClient] = useState(false)
 
+  const navItems = [
+    { name: "Accueil", url: "#accueil", icon: Home },
+    { name: "À propos", url: "#about", icon: User },
+    { name: "Portfolio", url: "#portfolio", icon: Briefcase },
+    { name: "Galerie", url: "#gallery", icon: ImageIcon },
+    { name: "Coaching", url: "/services#coaching", icon: Users },
+    { name: "Commissions", url: "/services#commissions", icon: Palette },
+    { name: "Print Shop", url: "/services#print-shop", icon: ShoppingBag },
+    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
+    { name: "Contact", url: "#contact", icon: Mail },
+  ]
+
   useEffect(() => {
     setIsClient(true)
 
@@ -316,134 +329,7 @@ ${fullName}`
         }
       />
 
-      <header className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50 animate-slide-down-fade-in">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={200} height={60} className="h-16 w-auto" />
-            </div>
-
-            <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
-              <div className="flex items-center space-x-6">
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className={`text-sm font-medium transition-colors ${
-                    activeSection === "about" ? "text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  À propos
-                </button>
-                <button
-                  onClick={() => scrollToSection("portfolio")}
-                  className={`text-sm font-medium transition-colors ${
-                    activeSection === "portfolio" ? "text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  Portfolio
-                </button>
-                <button
-                  onClick={() => scrollToSection("gallery")}
-                  className={`text-sm font-medium transition-colors ${
-                    activeSection === "gallery" ? "text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  Galerie
-                </button>
-                <button
-                  onClick={() => scrollToSection("coaching")}
-                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
-                >
-                  Coaching
-                </button>
-                <button
-                  onClick={() => scrollToSection("commissions")}
-                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
-                >
-                  Commissions
-                </button>
-                <button
-                  onClick={() => scrollToSection("print-shop")}
-                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
-                >
-                  Print Shop
-                </button>
-                <button
-                  onClick={() => scrollToSection("ebooks")}
-                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
-                >
-                  E-books
-                </button>
-                <button
-                  onClick={() => scrollToSection("contact")}
-                  className={`text-sm font-medium transition-colors ${
-                    activeSection === "contact" ? "text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  Contact
-                </button>
-              </div>
-            </nav>
-
-            {/* Mobile menu button */}
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-background/95 backdrop-blur-md border-t border-border/50">
-            <div className="px-4 py-4 space-y-2">
-              <button onClick={() => scrollToSection("about")} className="block text-sm font-medium hover:text-primary">
-                À propos
-              </button>
-              <button
-                onClick={() => scrollToSection("portfolio")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                Portfolio
-              </button>
-              <button
-                onClick={() => scrollToSection("gallery")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                Galerie
-              </button>
-              <button
-                onClick={() => scrollToSection("coaching")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                Coaching
-              </button>
-              <button
-                onClick={() => scrollToSection("commissions")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                Commissions
-              </button>
-              <button
-                onClick={() => scrollToSection("print-shop")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                Print Shop
-              </button>
-              <button
-                onClick={() => scrollToSection("ebooks")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                E-books
-              </button>
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="block text-sm font-medium hover:text-primary"
-              >
-                Contact
-              </button>
-            </div>
-          </div>
-        )}
-      </header>
+      <NavBar items={navItems} activeSection={activeSection} />
 
       {/* Content */}
       <div className="pt-16">

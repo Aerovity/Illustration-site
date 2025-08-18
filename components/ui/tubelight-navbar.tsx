@@ -68,7 +68,7 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
   return (
     <div
       className={cn(
-        "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-in-out",
+        "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-in-out pointer-events-none",
         isScrolled
           ? "bottom-0 sm:top-4 mb-6 sm:mb-0" // Compact navbar when scrolled
           : "top-0 w-full max-w-none", // Full header when at top
@@ -77,7 +77,7 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
     >
       <div
         className={cn(
-          "flex items-center backdrop-blur-lg shadow-lg transition-all duration-500 ease-in-out",
+          "flex items-center backdrop-blur-lg shadow-lg transition-all duration-500 ease-in-out pointer-events-auto",
           isScrolled
             ? "gap-1 py-1 px-3 rounded-full bg-background/90 border border-border/80 scale-95" // Compact style
             : "gap-6 py-6 px-8 rounded-none bg-background/5 border-b border-border w-full justify-between", // Full header style
