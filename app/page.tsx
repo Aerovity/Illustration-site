@@ -26,10 +26,138 @@ import { FAQSection } from "@/components/faq-section"
 import { ArtworkGallery } from "@/components/artwork-gallery"
 import { CommissionForm } from "@/components/commission-form"
 
+// Hero Background Component with auto-switching between image and video
+function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideoEnd: () => void }) {
+  return (
+    <div className="absolute inset-0 z-0">
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${showVideo ? 'opacity-0' : 'opacity-100'}`}>
+        <Image
+          src="/images/hero-bg.jpg"
+          alt="Hero Background"
+          fill
+          className="object-cover object-top opacity-40"
+          style={{ objectPosition: "center 20%" }}
+          priority
+        />
+      </div>
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${showVideo ? 'opacity-100' : 'opacity-0'}`}>
+        <video
+          autoPlay
+          muted
+          className="w-full h-full object-cover object-top opacity-60"
+          style={{ objectPosition: "center 20%" }}
+          onEnded={onVideoEnd}
+        >
+          <source src="/video_promo.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  )
+}
+
+// Hero Overlay Component that adjusts transparency based on video state
+function HeroOverlay({ showVideo }: { showVideo: boolean }) {
+  return (
+    <div className={`absolute inset-0 z-20 transition-all duration-1000 ${
+      showVideo 
+        ? 'bg-gradient-to-b from-background/30 via-background/20 to-background/80' 
+        : 'bg-gradient-to-b from-background/60 via-background/40 to-background'
+    }`} />
+  )
+}
+
+// Hero Content Component with dynamic transparency
+function HeroContent({ showVideo, switchView, scrollToSection }: { 
+  showVideo: boolean; 
+  switchView: (view: "accueil" | "services") => void;
+  scrollToSection: (section: string) => void;
+}) {
+  return (
+    <div className="relative z-30 text-center px-4 max-w-4xl mx-auto">
+      <div className={`transition-opacity duration-1000 ${
+        showVideo ? 'opacity-30' : 'opacity-100'
+      }`}>
+        <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-fade-in-up">
+          Bobe Florian
+        </h1>
+        <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
+          Artiste Illustrateur • Formation Coaching Pro
+        </p>
+        <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
+          Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
+        </p>
+      </div>
+      <div className={`flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300 transition-opacity duration-1000 ${
+        showVideo ? 'opacity-50' : 'opacity-100'
+      }`}>
+        <EnhancedSpotlightButton
+          onClick={() => scrollToSection("coaching")}
+          focusRingColor="golden"
+          gradientColor="golden"
+          sparkles={true}
+          className="px-0.5 py-0.5 text-lg bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 text-black hover:shadow-lg hover:shadow-yellow-500/25"
+        >
+          Coaching Pro ✧
+        </EnhancedSpotlightButton>
+        <EnhancedSpotlightButton onClick={() => switchView("services")} className="px-0.5 py-0.5 text-lg">
+          Voir mes Services
+        </EnhancedSpotlightButton>
+        <EnhancedSpotlightButton
+          variant="outline"
+          onClick={() => scrollToSection("contact")}
+          className="px-0.5 py-0.5 text-lg"
+        >
+          Me Contacter
+        </EnhancedSpotlightButton>
+      </div>
+    </div>
+  )
+}
+
+// Combined Hero Section Component
+function HeroSection({ switchView, scrollToSection }: {
+  switchView: (view: "accueil" | "services") => void;
+  scrollToSection: (section: string) => void;
+}) {
+  const [showVideo, setShowVideo] = useState(false)
+
+  useEffect(() => {
+    // Start with image for 3 seconds, then switch to video
+    const startCycle = () => {
+      // Show image for 3 seconds
+      setShowVideo(false)
+      setTimeout(() => {
+        // Then show video (it will play to completion)
+        setShowVideo(true)
+      }, 3000)
+    }
+
+    // Start the initial cycle
+    startCycle()
+  }, [])
+
+  const handleVideoEnd = () => {
+    // When video ends, show image for 3 seconds, then restart cycle
+    setShowVideo(false)
+    setTimeout(() => {
+      setShowVideo(true)
+    }, 3000)
+  }
+
+  return (
+    <>
+      <HeroBackground showVideo={showVideo} onVideoEnd={handleVideoEnd} />
+      <HeroOverlay showVideo={showVideo} />
+      <HeroContent showVideo={showVideo} switchView={switchView} scrollToSection={scrollToSection} />
+    </>
+  )
+}
+
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("accueil")
-  const [currentView, setCurrentView] = useState<"about" | "services">("about")
+  const [currentView, setCurrentView] = useState<"accueil" | "services">("accueil")
+  const [showSubsections, setShowSubsections] = useState(true)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isClient, setIsClient] = useState(false)
   const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false)
@@ -47,22 +175,32 @@ export default function HomePage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = currentView === "about" 
-        ? ["accueil", "reviews", "faq", "contact"]
-        : ["coaching", "commissions", "print-shop"]
+      const sections = currentView === "accueil" 
+        ? ["accueil", "about", "portfolio", "gallery", "contact"]
+        : ["coaching", "commissions", "print-shop", "ebooks"]
       
       let current = sections[0]
+      let closestSection = ""
+      let closestDistance = Infinity
       
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
         if (element) {
           const rect = element.getBoundingClientRect()
-          // Consider a section active if it's at least 50% visible
-          if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-            current = sectionId
-            break
+          const distanceFromTop = Math.abs(rect.top)
+          
+          // If section is in viewport, check which one is closest to top
+          if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+            if (distanceFromTop < closestDistance) {
+              closestDistance = distanceFromTop
+              closestSection = sectionId
+            }
           }
         }
+      }
+      
+      if (closestSection) {
+        current = closestSection
       }
       
       setActiveSection(current)
@@ -83,9 +221,22 @@ export default function HomePage() {
     }
   }
 
-  const switchView = (view: "about" | "services") => {
+  const switchView = (view: "accueil" | "services") => {
+    if (currentView === view) {
+      // If same view is clicked, just scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      return
+    }
+    
     setCurrentView(view)
-    setActiveSection(view === "about" ? "accueil" : "commissions")
+    setActiveSection(view === "accueil" ? "accueil" : "coaching")
+    setShowSubsections(false)
+    
+    // Animate subsection appearance after view change
+    setTimeout(() => {
+      setShowSubsections(true)
+    }, 150)
+    
     // Scroll to top when switching views
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
@@ -132,107 +283,116 @@ ${fullName}`
         }
       />
 
-      <div className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center h-12">
-            <div className="flex bg-card/50 backdrop-blur-sm rounded-full p-1 border border-border/50">
-              <button
-                onClick={() => switchView("about")}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  currentView === "about"
-                    ? "bg-primary text-primary-foreground shadow-lg"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Produits
-              </button>
-              <button
-                onClick={() => switchView("services")}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
-                  currentView === "services"
-                    ? "bg-primary text-primary-foreground shadow-lg"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <span className="text-base">✧</span>
-                Coaching Pro / Services 
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <header className="fixed top-8 w-full bg-background/80 backdrop-blur-md border-b border-border/50 z-40">
+      <header className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={160} height={50} className="h-12 w-auto" />
+              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={200} height={60} className="h-16 w-auto" />
             </div>
 
             <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
-              {currentView === "about" ? (
-                <div className="flex space-x-8">
-                  <button
-                    onClick={() => scrollToSection("accueil")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "accueil" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Accueil
-                  </button>
-                  <button
-                    onClick={() => scrollToSection("reviews")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "reviews" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Reviews
-                  </button>
-                  <button
-                    onClick={() => scrollToSection("faq")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "faq" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    FAQ
-                  </button>
-                  <button
-                    onClick={() => scrollToSection("contact")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "contact" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Contact
-                  </button>
-                </div>
-              ) : (
-                <div className="flex space-x-8">
-                  <button
-                    onClick={() => scrollToSection("coaching")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "coaching" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Coaching
-                  </button>
-                  <button
-                    onClick={() => scrollToSection("commissions")}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "commissions" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Commissions
-                  </button>
-                  <button
-                    onClick={() => window.location.href = "/shop"}
-                    className={`text-sm font-medium transition-colors hover:text-primary ${
-                      activeSection === "print-shop" ? "text-primary" : "text-foreground"
-                    }`}
-                  >
-                    Print Shop
-                  </button>
-                </div>
-              )}
+              <div className="flex items-center space-x-6">
+                <button
+                  onClick={() => switchView("accueil")}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${
+                    currentView === "accueil" ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  Accueil
+                </button>
+                
+                {/* Accueil Subsections - appear between Accueil and Services */}
+                {currentView === "accueil" && (
+                  <div className={`flex items-center space-x-4 transition-all duration-300 ${
+                    showSubsections ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+                  }`}>
+                    <div className="w-px h-4 bg-border/50"></div>
+                    <button
+                      onClick={() => scrollToSection("about")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "about" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      À propos
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("portfolio")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "portfolio" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      Portfolio
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("gallery")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "gallery" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      Galerie
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("contact")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "contact" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      Contact
+                    </button>
+                    <div className="w-px h-4 bg-border/50"></div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => switchView("services")}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${
+                    currentView === "services" ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  Services
+                </button>
+                
+                {/* Services Subsections - appear after Services */}
+                {currentView === "services" && (
+                  <div className={`flex items-center space-x-4 transition-all duration-300 ${
+                    showSubsections ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+                  }`}>
+                    <div className="w-px h-4 bg-border/50"></div>
+                    <button
+                      onClick={() => scrollToSection("coaching")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "coaching" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      Coaching Pro
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("commissions")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "commissions" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      Commissions
+                    </button>
+                    <button
+                      onClick={() => window.location.href = "/shop"}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "print-shop" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      Print Shop
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("ebooks")}
+                      className={`text-xs font-medium transition-colors ${
+                        activeSection === "ebooks" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      E-books
+                    </button>
+                  </div>
+                )}
+              </div>
             </nav>
 
             {/* Mobile menu button */}
@@ -246,83 +406,68 @@ ${fullName}`
         {isMenuOpen && (
           <div className="md:hidden bg-background/95 backdrop-blur-md border-t border-border/50">
             <div className="px-4 py-4 space-y-4">
-              {currentView === "about" ? (
-                <div className="space-y-2">
-                  <button onClick={() => scrollToSection("accueil")} className="block text-sm hover:text-primary">
-                    Accueil
-                  </button>
-                  <button onClick={() => scrollToSection("reviews")} className="block text-sm hover:text-primary">
-                    Reviews
-                  </button>
-                  <button onClick={() => scrollToSection("faq")} className="block text-sm hover:text-primary">
-                    FAQ
-                  </button>
-                  <button onClick={() => scrollToSection("contact")} className="block text-sm hover:text-primary">
-                    Contact
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <button onClick={() => scrollToSection("commissions")} className="block text-sm hover:text-primary">
-                    Commissions
-                  </button>
-                  <button onClick={() => scrollToSection("coaching")} className="block text-sm hover:text-primary">
-                    Coaching
-                  </button>
-                  <button onClick={() => window.location.href = "/shop"} className="block text-sm hover:text-primary">
-                    Print Shop
-                  </button>
-                </div>
-              )}
+              <div className="space-y-2">
+                <button 
+                  onClick={() => switchView("accueil")} 
+                  className={`block text-sm font-medium ${currentView === "accueil" ? "text-primary" : "hover:text-primary"}`}
+                >
+                  Accueil
+                </button>
+                {currentView === "accueil" && (
+                  <div className="pl-4 space-y-1">
+                    <button onClick={() => scrollToSection("about")} className="block text-sm hover:text-primary">
+                      À propos
+                    </button>
+                    <button onClick={() => scrollToSection("portfolio")} className="block text-sm hover:text-primary">
+                      Portfolio / Ressources
+                    </button>
+                    <button onClick={() => scrollToSection("gallery")} className="block text-sm hover:text-primary">
+                      Galerie
+                    </button>
+                    <button onClick={() => scrollToSection("contact")} className="block text-sm hover:text-primary">
+                      Contact
+                    </button>
+                  </div>
+                )}
+                
+                <button 
+                  onClick={() => switchView("services")} 
+                  className={`block text-sm font-medium ${currentView === "services" ? "text-primary" : "hover:text-primary"}`}
+                >
+                  Services
+                </button>
+                {currentView === "services" && (
+                  <div className="pl-4 space-y-1">
+                    <button onClick={() => scrollToSection("coaching")} className="block text-sm hover:text-primary">
+                      Coaching Pro
+                    </button>
+                    <button onClick={() => scrollToSection("commissions")} className="block text-sm hover:text-primary">
+                      Commissions
+                    </button>
+                    <button onClick={() => window.location.href = "/shop"} className="block text-sm hover:text-primary">
+                      Print Shop
+                    </button>
+                    <button onClick={() => scrollToSection("ebooks")} className="block text-sm hover:text-primary">
+                      E-books & Tutos
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
       </header>
 
       {/* Content based on current view */}
-      <div className="pt-24">
-        {currentView === "about" ? (
+      <div className="pt-16">
+        {currentView === "accueil" ? (
           <>
             {/* Hero Section */}
             <section id="accueil" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 z-0">
-                <Image
-                  src="/images/hero-bg.jpg"
-                  alt="Hero Background"
-                  fill
-                  className="object-cover object-top opacity-40"
-                  style={{ objectPosition: "center 20%" }}
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
-              </div>
-
-              <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-                <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-fade-in-up">
-                  Bobe Florian
-                </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
-                  Artiste Illustrateur • Formation Coaching Pro
-                </p>
-                <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
-                  Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300">
-                  <EnhancedSpotlightButton onClick={() => switchView("services")} className="px-0.5 py-0.5 text-lg">
-                    Voir mes Services
-                  </EnhancedSpotlightButton>
-                  <EnhancedSpotlightButton
-                    variant="outline"
-                    onClick={() => scrollToSection("contact")}
-                    className="px-0.5 py-0.5 text-lg"
-                  >
-                    Me Contacter
-                  </EnhancedSpotlightButton>
-                </div>
-              </div>
+              <HeroSection switchView={switchView} scrollToSection={scrollToSection} />
             </section>
 
-            <section className="py-20 px-4 relative z-10">
+            <section id="about" className="py-20 px-4 relative z-10">
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                   <div className="space-y-6">
@@ -367,17 +512,67 @@ ${fullName}`
               </div>
             </section>
 
+            {/* Portfolio / Ressources Section */}
+            <section id="portfolio" className="py-20 px-4 relative z-10">
+              <div className="max-w-6xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                    Portfolio / Ressources
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+                    Découvrez mon processus créatif et mes techniques à travers cette vidéo exclusive. Contenu gratuit, articles, et études de cas pour développer votre crédibilité artistique.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
+                    <iframe
+                      src="https://www.youtube.com/embed/xMXUyqvFTQk?start=342"
+                      title="Portfolio Ressources Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full rounded-2xl"
+                    />
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <h3 className="text-2xl font-semibold">Ressources Gratuites</h3>
+                    <div className="space-y-4">
+                      <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                        <CardContent className="p-4">
+                          <h4 className="font-medium mb-2">Articles & Tutoriels</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Techniques avancées, conseils professionnels et études de cas détaillées
+                          </p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                        <CardContent className="p-4">
+                          <h4 className="font-medium mb-2">Processus Créatifs</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Découvrez les étapes de création de mes illustrations les plus populaires
+                          </p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                        <CardContent className="p-4">
+                          <h4 className="font-medium mb-2">Études de Cas</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Analyses détaillées de projets clients et retours d'expérience
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             {/* Artwork Gallery */}
-            <ArtworkGallery />
-
-            {/* Reviews Section */}
-            <div id="reviews">
-              <ReviewsCarousel />
-            </div>
-
-            {/* FAQ Section */}
-            <div id="faq">
-              <FAQSection />
+            <div id="gallery">
+              <ArtworkGallery />
             </div>
 
             {/* Contact Section */}
@@ -745,6 +940,66 @@ ${fullName}`
             </section>
 
 
+
+            {/* E-books & Tutos Section */}
+            <section id="ebooks" className="py-20 px-4 relative z-10">
+              <div className="max-w-7xl mx-auto">
+                <Card className="bg-card/30 backdrop-blur-sm border-border/50 overflow-hidden">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                    <div className="p-8 lg:p-12 flex flex-col justify-center">
+                      <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
+                        <svg className="h-8 w-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                      </div>
+                      <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                        E-books & Tutos
+                      </h2>
+                      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                        Ressources numériques complètes : PDF détaillés, vidéos de formation et cours premium pour approfondir vos connaissances artistiques. Bientôt disponible !
+                      </p>
+
+                      <div className="space-y-4 mb-8">
+                        <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                          <span className="font-medium">Guides PDF</span>
+                          <span className="font-bold text-primary">15€ - 25€</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                          <span className="font-medium">Vidéos Formation</span>
+                          <span className="font-bold text-primary">30€ - 50€</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                          <span className="font-medium">Cours Premium</span>
+                          <span className="font-bold text-primary">80€ - 120€</span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-8 text-sm text-muted-foreground">
+                        <div className="space-y-2">
+                          <p>✓ Techniques avancées</p>
+                          <p>✓ Processus détaillés</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p>✓ Ressources exclusives</p>
+                          <p>✓ Support inclus</p>
+                        </div>
+                      </div>
+
+                      <EnhancedSpotlightButton
+                        className="w-full py-0.5 text-lg"
+                        disabled
+                      >
+                        Bientôt Disponible
+                      </EnhancedSpotlightButton>
+                    </div>
+                    <div className="relative aspect-square lg:aspect-auto">
+                      <Image src="/prints/22_All_Might.jpg" alt="E-books & Tutos - All Might" fill className="object-cover" />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </section>
+
             {/* Print Shop Section */}
             <section id="print-shop" className="py-20 px-4 relative z-10">
               <div className="max-w-7xl mx-auto">
@@ -839,13 +1094,13 @@ ${fullName}`
               <h4 className="font-semibold mb-4">Navigation</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <button onClick={() => switchView("about")} className="hover:text-primary transition-colors">
-                    About
+                  <button onClick={() => switchView("accueil")} className="hover:text-primary transition-colors">
+                    Accueil
                   </button>
                 </li>
                 <li>
                   <button onClick={() => switchView("services")} className="hover:text-primary transition-colors">
-                    Coaching Pro
+                    Services
                   </button>
                 </li>
               </ul>
