@@ -1,361 +1,296 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
-import { ArrowLeft, ShoppingCart, Plus, Minus, X, Instagram, Twitter, Youtube, Filter, ChevronDown, Search } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Menu, X, Mail, Phone, MapPin, Instagram, Twitter, Youtube } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination"
+import { ArtworkGallery } from "@/components/artwork-gallery"
 
-interface PrintItem {
-  id: string
-  name: string
-  image: string
-  basePrice: number
-  orientation?: 'portrait' | 'landscape' | 'square'
-  license?: string
+// Hero Background Component with auto-switching between image and video
+function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideoEnd: () => void }) {
+  const videoRef = React.useRef<HTMLVideoElement>(null)
+
+  React.useEffect(() => {
+    if (showVideo && videoRef.current) {
+      // Reset and play video when transitioning to video slide
+      videoRef.current.currentTime = 0
+      videoRef.current.play().catch(console.error)
+    }
+  }, [showVideo])
+
+  return (
+    <div className="absolute inset-0 z-0">
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${showVideo ? "opacity-0" : "opacity-100"}`}>
+        <Image
+          src="/images/hero-bg.jpg"
+          alt="Hero Background"
+          fill
+          className="object-cover object-top opacity-40"
+          style={{ objectPosition: "center 20%" }}
+          priority
+        />
+      </div>
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${showVideo ? "opacity-100" : "opacity-0"}`}>
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          className="w-full h-full object-cover object-top opacity-60"
+          style={{ objectPosition: "center 20%" }}
+          onEnded={onVideoEnd}
+        >
+          <source src="/video_promo.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  )
 }
 
-interface CartItem extends PrintItem {
-  size: string
-  price: number
-  quantity: number
-  preview?: boolean
+// Hero Overlay Component that adjusts transparency based on video state
+function HeroOverlay({ showVideo }: { showVideo: boolean }) {
+  return (
+    <div
+      className={`absolute inset-0 z-20 transition-all duration-1000 ${
+        showVideo
+          ? "bg-gradient-to-b from-background/20 via-background/10 to-background/60"
+          : "bg-gradient-to-b from-background/60 via-background/40 to-background"
+      }`}
+    />
+  )
 }
 
-interface SizeOption {
-  name: string
-  price: number
+function SlideIndicators({ showVideo }: { showVideo: boolean }) {
+  return (
+    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+      <div
+        className={`w-3 h-3 rounded-full transition-all duration-500 ${
+          !showVideo ? "bg-white shadow-lg scale-110" : "bg-white/40 hover:bg-white/60"
+        }`}
+      />
+      <div
+        className={`w-3 h-3 rounded-full transition-all duration-500 ${
+          showVideo
+            ? "bg-gradient-to-r from-yellow-400 to-orange-400 shadow-lg shadow-yellow-500/25 scale-110"
+            : "bg-white/40 hover:bg-white/60"
+        }`}
+      />
+    </div>
+  )
 }
 
-const sizeOptions: SizeOption[] = [
-  { name: "A6", price: 5.41 },
-  { name: "A5", price: 8.86 },
-  { name: "A4", price: 10.83 },
-  { name: "A3", price: 16.24 }
-]
+// Hero Content Component with different content for each slide
+function HeroContent({
+  showVideo,
+  scrollToSection,
+}: {
+  showVideo: boolean
+  scrollToSection: (section: string) => void
+}) {
+  return (
+    <div className="relative z-30 text-center px-4 max-w-4xl mx-auto">
+      {!showVideo ? (
+        // Slide 1: Original Bobe Florian content (no golden button)
+        <>
+          <div>
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-fade-in-up">
+              Bobe Florian
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in-up animate-delay-100">
+              Artiste Illustrateur • Formation Coaching Pro
+            </p>
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
+              Donnez vie à vos rêves et vos histoires à travers des illustrations uniques . Croissant Illustrator
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-300">
+            <EnhancedSpotlightButton
+              onClick={() => (window.location.href = "/services")}
+              className="px-0.5 py-0.5 text-lg"
+            >
+              Voir mes Services
+            </EnhancedSpotlightButton>
+            <EnhancedSpotlightButton
+              variant="outline"
+              onClick={() => scrollToSection("contact")}
+              className="px-0.5 py-0.5 text-lg"
+            >
+              Me Contacter
+            </EnhancedSpotlightButton>
+          </div>
+        </>
+      ) : (
+        // Slide 2: Coaching Pro content during video (no transparency)
+        <>
+          <div className="transition-all duration-1000 ease-out transform translate-y-0 opacity-100">
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent animate-fade-in-up">
+              ✧ Coaching Pro
+            </h1>
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animate-delay-200">
+              vous souhaitez passer au niveau supérieur et devenir illustrateur pro, concept artist ou simplement
+              devenir meilleur en digital painting !
+            </p>
+          </div>
+          <div className="flex justify-center animate-fade-in-up animate-delay-300">
+            <EnhancedSpotlightButton
+              onClick={() => (window.location.href = "/services")}
+              focusRingColor="golden"
+              gradientColor="golden"
+              sparkles={true}
+              className="px-0.5 py-0.5 text-lg bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 text-black hover:shadow-lg hover:shadow-yellow-500/25 transition-all duration-1000 ease-out transform translate-y-0 opacity-100"
+            >
+              Coaching Pro ✧
+            </EnhancedSpotlightButton>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
 
-const deliveryOptions = [
-  {
-    region: "France",
-    service: "La Poste – Lettre verte (2-3j ouvrés)",
-    basePrice: 2.50,
-    additionalPrice: 0.20
-  },
-  {
-    region: "Union européenne",
-    service: "La Poste – International UE (délais variables)",
-    basePrice: 4.10,
-    additionalPrice: 0.50
-  },
-  {
-    region: "Europe hors UE",
-    service: "La Poste – International reste du monde (délais variables)",
-    basePrice: 5.00,
-    additionalPrice: 0.50
-  },
-  {
-    region: "Autres pays",
-    service: "La Poste – International reste du monde (délais variables)",
-    basePrice: 5.00,
-    additionalPrice: 0.50
+// Combined Hero Section Component
+function HeroSection({
+  scrollToSection,
+}: {
+  scrollToSection: (section: string) => void
+}) {
+  const [showVideo, setShowVideo] = useState(false)
+
+  useEffect(() => {
+    // Start with image for 3 seconds, then switch to video
+    const startCycle = () => {
+      // Show image for 3 seconds
+      setShowVideo(false)
+      setTimeout(() => {
+        // Then show video (it will play to completion)
+        setShowVideo(true)
+      }, 3000)
+    }
+
+    // Start the initial cycle
+    startCycle()
+  }, [])
+
+  const handleVideoEnd = () => {
+    // When video ends, show image for 3 seconds, then restart cycle
+    setShowVideo(false)
+    setTimeout(() => {
+      setShowVideo(true)
+    }, 3000)
   }
-]
 
-export default function ShopPage() {
-  const [prints, setPrints] = useState<PrintItem[]>([])
-  const [filteredPrints, setFilteredPrints] = useState<PrintItem[]>([])
-  const [selectedOrientation, setSelectedOrientation] = useState<'all' | 'portrait' | 'landscape' | 'square'>('all')
-  const [selectedLicense, setSelectedLicense] = useState<string>('all')
-  const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(9)
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [selectedPrint, setSelectedPrint] = useState<PrintItem | null>(null)
-  const [selectedSize, setSelectedSize] = useState<string>("A4")
-  const [isCartOpen, setIsCartOpen] = useState(false)
-  const [selectedDelivery, setSelectedDelivery] = useState<string>("")
-  const [canCheckout, setCanCheckout] = useState(false)
+  return (
+    <>
+      <HeroBackground showVideo={showVideo} onVideoEnd={handleVideoEnd} />
+      <HeroOverlay showVideo={showVideo} />
+      <HeroContent showVideo={showVideo} scrollToSection={scrollToSection} />
+      <SlideIndicators showVideo={showVideo} />
+    </>
+  )
+}
+
+export default function HomePage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("accueil")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isClient, setIsClient] = useState(false)
-  const [isImageExpanded, setIsImageExpanded] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [loadingProgress, setLoadingProgress] = useState(0)
 
   useEffect(() => {
     setIsClient(true)
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
-    const handleClickOutside = (e: MouseEvent) => {
-      if (isLicenseDropdownOpen) {
-        const target = e.target as Element
-        if (!target.closest('[data-license-dropdown]')) {
-          setIsLicenseDropdownOpen(false)
-        }
-      }
-    }
-
     window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("click", handleClickOutside)
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("click", handleClickOutside)
-    }
-  }, [isLicenseDropdownOpen])
-
-  const getImageOrientation = (imagePath: string): Promise<'portrait' | 'landscape' | 'square'> => {
-    return new Promise((resolve) => {
-      const img = new window.Image()
-      img.onload = () => {
-        const ratio = img.width / img.height
-        if (ratio > 1.1) {
-          resolve('landscape')
-        } else if (ratio < 0.9) {
-          resolve('portrait')
-        } else {
-          resolve('square')
-        }
-      }
-      img.onerror = () => resolve('square') // Default fallback
-      img.src = imagePath
-    })
-  }
-
-  useEffect(() => {
-    // Load prints from /public/prints folder - reversed order to show newest first
-    const printFiles = [
-      "25_05_20_Haikyū!!.png", "25_05_10_Zoro.png", "25_04_03_Goku_Daima.png", "25_01_Shanks.jpg", 
-      "24_16_DanDadan.jpg", "24_13_Mirko.png", "24_12_Jotaro_redraw.jpg", "24_11_Escanor.jpg",
-      "24_10_Kaiju_n8.jpg", "24_09_Dungeon_Meshi.jpg", "24_08_Griffith.jpg", "24_07_Luffy_V_Kaido.jpg",
-      "24_06_Naruto_Sennin.jpg", "24_05_Sasuke_22_redraw.jpg", "24_04_Fern.jpg", "24_03_Frieren.jpg", 
-      "24_02_Sung_Jinwoo.jpg", "24_01_King.jpg", "23_Yoruichi.jpg", "23_Yor.jpg", "23_Vegeta_Ego.jpg",
-      "23_Nico_Robin.jpg", "23_Mitsuri_Kanroji.jpg", "23_Kyojuro_Rengoku.jpg", "23_Deku.jpg", "23_A_Zoro.jpg",
-      "23_A_Usopp.jpg", "23_A_Toji.jpg", "23_A_Sukuna.jpg", "23_A_Sanji.jpg", "23_A_Nanami.jpg",
-      "23_A_Nami.jpg", "23_A_Luffy.jpg", "23_A_Gojo.jpg", "22_Son_Goku_UI.jpg", "22_Shanks.jpg",
-      "22_Sasuke.jpg", "22_Power.jpg", "22_Nami.jpg", "22_Luffy_G4.jpg", "22_Jotaro_Kujoh.jpg",
-      "22_Ichigo.jpg", "22_Guts_redraw.jpg", "22_Gojo.jpg", "22_Erza_Scarlett.jpg", "22_Eren_Yaeger.jpg",
-      "22_Cell_Perfect.jpg", "22_Bojji.jpg", "22_All_Might.jpg", "22_Luffy_Wano.jpg", "22_LeBlanc.png"
-    ]
-
-    // License array matching the same index as printFiles
-    const printLicenses = [
-      "Haikyū!!", "One Piece", "Dragon Ball", "One Piece",
-      "DanDaDan", "My Hero Academia", "JoJo's Bizarre Adventure", "Seven Deadly Sins",
-      "Kaiju No. 8", "Dungeon Meshi", "Berserk", "One Piece",
-      "Naruto", "Naruto", "Frieren", "Frieren",
-      "Solo Leveling", "One Punch Man", "Bleach", "Spy x Family", "Dragon Ball",
-      "One Piece", "Demon Slayer", "Demon Slayer", "My Hero Academia", "One Piece",
-      "One Piece", "Jujutsu Kaisen", "Jujutsu Kaisen", "One Piece", "Jujutsu Kaisen",
-      "One Piece", "One Piece", "Jujutsu Kaisen", "Dragon Ball", "One Piece",
-      "Naruto", "Chainsaw Man", "One Piece", "One Piece", "JoJo's Bizarre Adventure",
-      "Bleach", "Berserk", "Jujutsu Kaisen", "Fairy Tail", "Attack on Titan",
-      "Dragon Ball", "Ranking of Kings", "My Hero Academia", "One Piece", "League of Legends"
-    ]
-
-    const loadPrintsWithOrientation = async () => {
-      setIsLoading(true)
-      setLoadingProgress(0)
-      const printItems: PrintItem[] = []
-      
-      for (let index = 0; index < printFiles.length; index++) {
-        const file = printFiles[index]
-        // Extract name from filename (remove extension and numbers/prefixes)
-        const name = file.replace(/\.(jpg|png)$/i, '').replace(/^[\d#_]+/, '').replace(/_/g, ' ')
-        const imagePath = `/prints/${file}`
-        
-        try {
-          const orientation = await getImageOrientation(imagePath)
-          printItems.push({
-            id: `print-${index}`,
-            name: name || file.replace(/\.(jpg|png)$/i, ''),
-            image: imagePath,
-            basePrice: 10.83, // Base A4 price
-            orientation,
-            license: printLicenses[index]
-          })
-        } catch (error) {
-          printItems.push({
-            id: `print-${index}`,
-            name: name || file.replace(/\.(jpg|png)$/i, ''),
-            image: imagePath,
-            basePrice: 10.83,
-            orientation: 'square', // Default fallback
-            license: printLicenses[index]
-          })
-        }
-        
-        // Update loading progress
-        setLoadingProgress(((index + 1) / printFiles.length) * 100)
-      }
-      
-      setPrints(printItems)
-      setFilteredPrints(printItems)
-      
-      // Add a small delay to show the completion, then hide loading
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 500)
-    }
-
-    loadPrintsWithOrientation()
+    return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
-  // Reset to first page when filters change
   useEffect(() => {
-    setCurrentPage(1)
-  }, [selectedOrientation, selectedLicense, searchQuery])
+    const handleScroll = () => {
+      const sections = ["accueil", "about", "portfolio", "gallery", "contact"]
 
-  useEffect(() => {
-    setCanCheckout(cart.length > 0 && selectedDelivery !== "")
-  }, [cart, selectedDelivery])
+      let current = sections[0]
+      let closestSection = ""
+      let closestDistance = Number.POSITIVE_INFINITY
 
-  useEffect(() => {
-    let filtered = prints
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          const distanceFromTop = Math.abs(rect.top)
 
-    // Filter by orientation
-    if (selectedOrientation !== 'all') {
-      filtered = filtered.filter(print => print.orientation === selectedOrientation)
-    }
-
-    // Filter by license
-    if (selectedLicense !== 'all') {
-      filtered = filtered.filter(print => print.license === selectedLicense)
-    }
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim()
-      filtered = filtered.filter(print => 
-        print.name.toLowerCase().includes(query) || 
-        (print.license && print.license.toLowerCase().includes(query))
-      )
-    }
-
-    setFilteredPrints(filtered)
-  }, [prints, selectedOrientation, selectedLicense, searchQuery])
-
-  // Get unique licenses for dropdown
-  const getUniqueLicenses = () => {
-    const licenses = prints.map(print => print.license).filter(Boolean)
-    return [...new Set(licenses)].sort()
-  }
-
-  // Get filtered prints count by license
-  const getLicenseCount = (license: string) => {
-    let filtered = prints
-    if (selectedOrientation !== 'all') {
-      filtered = filtered.filter(print => print.orientation === selectedOrientation)
-    }
-    return filtered.filter(print => print.license === license).length
-  }
-
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredPrints.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentPrints = filteredPrints.slice(startIndex, endIndex)
-
-  // Handle orientation filter toggle
-  const handleOrientationFilter = (orientation: 'all' | 'portrait' | 'landscape' | 'square') => {
-    if (selectedOrientation === orientation) {
-      setSelectedOrientation('all') // Toggle off if same filter is clicked
-    } else {
-      setSelectedOrientation(orientation)
-    }
-  }
-
-  // Handle license filter toggle
-  const handleLicenseFilter = (license: string) => {
-    if (selectedLicense === license) {
-      setSelectedLicense('all') // Toggle off if same filter is clicked
-    } else {
-      setSelectedLicense(license)
-    }
-    setIsLicenseDropdownOpen(false)
-  }
-
-  const openPrintModal = (print: PrintItem) => {
-    setSelectedPrint(print)
-    setSelectedSize("A4")
-  }
-
-  const closePrintModal = () => {
-    setSelectedPrint(null)
-    setIsImageExpanded(false)
-  }
-
-  const addToCart = () => {
-    if (!selectedPrint) return
-
-    const sizePrice = sizeOptions.find(s => s.name === selectedSize)?.price || 10.83
-    const totalPrice = sizePrice
-
-    const cartItem: CartItem = {
-      ...selectedPrint,
-      size: selectedSize,
-      price: totalPrice,
-      quantity: 1,
-    }
-
-    setCart(prev => {
-      const existing = prev.find(item => 
-        item.id === cartItem.id && 
-        item.size === cartItem.size
-      )
-      
-      if (existing) {
-        return prev.map(item => 
-          item === existing 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+          // If section is in viewport, check which one is closest to top
+          if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+            if (distanceFromTop < closestDistance) {
+              closestDistance = distanceFromTop
+              closestSection = sectionId
+            }
+          }
+        }
       }
-      
-      return [...prev, cartItem]
-    })
 
-    closePrintModal()
-  }
+      if (closestSection) {
+        current = closestSection
+      }
 
-  const removeFromCart = (itemToRemove: CartItem) => {
-    setCart(prev => prev.filter(item => item !== itemToRemove))
-  }
+      setActiveSection(current)
+    }
 
-  const updateQuantity = (item: CartItem, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeFromCart(item)
+    window.addEventListener("scroll", handleScroll)
+    handleScroll() // Call once on mount
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    if (
+      sectionId === "coaching" ||
+      sectionId === "commissions" ||
+      sectionId === "print-shop" ||
+      sectionId === "ebooks"
+    ) {
+      // Navigate to services page for these sections
+      window.location.href = `/services#${sectionId}`
       return
     }
-    
-    setCart(prev => prev.map(cartItem => 
-      cartItem === item 
-        ? { ...cartItem, quantity: newQuantity }
-        : cartItem
-    ))
+
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+      setActiveSection(sectionId)
+      setIsMenuOpen(false)
+    }
   }
 
-  const getCartTotal = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0)
-  }
+  const handleSendRequest = () => {
+    const fullName = (document.getElementById("fullName") as HTMLInputElement)?.value || ""
+    const email = (document.getElementById("email") as HTMLInputElement)?.value || ""
+    const projectType = (document.getElementById("projectType") as HTMLSelectElement)?.value || ""
+    const projectDescription = (document.getElementById("projectDescription") as HTMLTextAreaElement)?.value || ""
 
-  const getDeliveryPrice = () => {
-    if (!selectedDelivery) return 0
-    
-    const delivery = deliveryOptions.find(d => d.region === selectedDelivery)
-    if (!delivery) return 0
-    
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
-    if (totalItems === 0) return 0
-    
-    return delivery.basePrice + (delivery.additionalPrice * Math.max(0, totalItems - 1))
-  }
+    const emailSubject = `Nouvelle demande de devis - ${projectType}`
+    const emailBody = `Bonjour Bobe Florian,
 
-  const getFinalTotal = () => {
-    return getCartTotal() + getDeliveryPrice()
+Je souhaiterais obtenir un devis pour le projet suivant :
+
+Informations du client :
+- Nom : ${fullName}
+- Email : ${email}
+
+Détails du projet :
+- Type de projet : ${projectType}
+- Description : ${projectDescription}
+
+Merci de me faire parvenir votre estimation et vos disponibilités.
+
+Cordialement,
+${fullName}`
+
+    const mailtoLink = `mailto:contact@bobeflorian.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+
+    window.open(mailtoLink, "_blank")
   }
 
   return (
@@ -370,579 +305,323 @@ export default function ShopPage() {
           } as React.CSSProperties
         }
       />
-      {/* Header with Cart */}
-      <header className="sticky top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/50 z-50">
+
+      <header className="fixed top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/30 z-50 animate-slide-down-fade-in">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                Retour
-              </button>
-              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={120} height={40} className="h-8 w-auto" />
+            <div className="flex items-center">
+              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={200} height={60} className="h-16 w-auto" />
             </div>
 
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 px-4 py-2 rounded-full transition-colors"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="font-medium">{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
+            <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
+              <div className="flex items-center space-x-6">
+                <button
+                  onClick={() => scrollToSection("about")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "about" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  À propos
+                </button>
+                <button
+                  onClick={() => scrollToSection("portfolio")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "portfolio" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Portfolio
+                </button>
+                <button
+                  onClick={() => scrollToSection("gallery")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "gallery" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Galerie
+                </button>
+                <button
+                  onClick={() => (window.location.href = "/services")}
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
+                >
+                  Services
+                </button>
+                <button
+                  onClick={() => scrollToSection("contact")}
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === "contact" ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Contact
+                </button>
+              </div>
+            </nav>
+
+            {/* Mobile menu button */}
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-background/95 backdrop-blur-md border-t border-border/50">
+            <div className="px-4 py-4 space-y-2">
+              <button onClick={() => scrollToSection("about")} className="block text-sm font-medium hover:text-primary">
+                À propos
+              </button>
+              <button
+                onClick={() => scrollToSection("portfolio")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Portfolio
+              </button>
+              <button
+                onClick={() => scrollToSection("gallery")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Galerie
+              </button>
+              <button
+                onClick={() => (window.location.href = "/services")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Services
+              </button>
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="block text-sm font-medium hover:text-primary"
+              >
+                Contact
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/artwork-4.jpg"
-            alt="Print Shop Background"
-            fill
-            className="object-cover opacity-30"
-            style={{ objectPosition: "center 30%" }}
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/70" />
-          {/* Reduced spotlight effect for hero background */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={
-              {
-                background: `radial-gradient(
-                  circle at ${isClient ? `${(mousePosition.x / window.innerWidth) * 100}%` : "50%"} ${isClient ? `${(mousePosition.y / window.innerHeight) * 100}%` : "50%"},
-                  rgba(139, 92, 246, 0.06) 0%,
-                  rgba(139, 92, 246, 0.02) 25%,
-                  transparent 50%
-                )`
-              } as React.CSSProperties
-            }
-          />
-        </div>
-        <div className="relative z-10">
-          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Print Shop
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Découvrez ma collection d'œuvres d'art imprimées en haute qualité
-          </p>
-        </div>
-      </section>
+      {/* Content */}
+      <div className="pt-16">
+        {/* Hero Section */}
+        <section id="accueil" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          <HeroSection scrollToSection={scrollToSection} />
+        </section>
 
-      {/* Filter Section */}
-      {!isLoading && (
-        <section className="py-6 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col items-center gap-4">
-            {/* Search Bar */}
-            <div className="relative w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Rechercher par nom ou licence..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-card/50 backdrop-blur-sm border border-border/50 rounded-full text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
-                >
-                  <X className="h-3 w-3 text-muted-foreground" />
-                </button>
-              )}
-            </div>
-
-            {/* Orientation Filters */}
-            <div className="flex flex-wrap justify-center gap-4">
-              <button
-                onClick={() => handleOrientationFilter('all')}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                  selectedOrientation === 'all'
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-                }`}
-              >
-                Tous ({prints.length})
-              </button>
-              <button
-                onClick={() => handleOrientationFilter('portrait')}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                  selectedOrientation === 'portrait'
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-                }`}
-              >
-                Portrait ({prints.filter(p => p.orientation === 'portrait').length})
-              </button>
-              <button
-                onClick={() => handleOrientationFilter('landscape')}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                  selectedOrientation === 'landscape'
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-                }`}
-              >
-                Paysage ({prints.filter(p => p.orientation === 'landscape').length})
-              </button>
-              <button
-                onClick={() => handleOrientationFilter('square')}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                  selectedOrientation === 'square'
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-                }`}
-              >
-                Carrée ({prints.filter(p => p.orientation === 'square').length})
-              </button>
-            </div>
-
-            {/* License Filter Dropdown */}
-            <div className="relative" data-license-dropdown>
-              <button
-                onClick={() => setIsLicenseDropdownOpen(!isLicenseDropdownOpen)}
-                className={`flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-all duration-200 min-w-[200px] justify-center ${
-                  selectedLicense !== 'all'
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
-                }`}
-              >
-                <Filter className="h-4 w-4" />
-                <span>
-                  {selectedLicense === 'all' ? 'Toutes les licences' : selectedLicense}
-                </span>
-                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isLicenseDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {isLicenseDropdownOpen && (
-                <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-background border border-border/50 rounded-lg shadow-lg z-50 w-[800px] max-w-[90vw]">
-                  <div className="p-4 grid grid-cols-5 gap-2 max-h-80 overflow-y-auto">
-                    <button
-                      onClick={() => handleLicenseFilter('all')}
-                      className={`px-3 py-2 rounded-lg font-medium transition-colors text-center text-sm ${
-                        selectedLicense === 'all' 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-card/50 hover:bg-muted border border-border/30'
-                      }`}
-                    >
-                      <div>Toutes</div>
-                      <div className="text-xs opacity-70">({prints.length})</div>
-                    </button>
-                    {getUniqueLicenses().map((license) => (
-                      <button
-                        key={license}
-                        onClick={() => handleLicenseFilter(license)}
-                        className={`px-3 py-2 rounded-lg font-medium transition-colors text-center text-sm ${
-                          selectedLicense === license 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'bg-card/50 hover:bg-muted border border-border/30'
-                        }`}
-                      >
-                        <div className="leading-tight">{license}</div>
-                        <div className="text-xs opacity-70">({getLicenseCount(license)})</div>
-                      </button>
-                    ))}
-                  </div>
+        {/* About Section */}
+        <section id="about" className="py-20 px-4 relative z-10">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <h2 className="text-4xl font-serif font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  À Propos de Moi
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Passionné par l'art depuis mon plus jeune âge, je me spécialise dans la création d'illustrations
+                  Splash art inspirées des univers Manga/Anime/Gaming . Mon style unique mélange techniques
+                  traditionnelles et art numérique.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Avec plus de 15 ans d'expérience, j'ai eu le privilège de travailler avec des clients du monde entier,
+                  créant des personnages mémorables, des illustrations captivantes et des concepts artistiques pour
+                  diverses industries.
+                </p>
+                <div className="flex flex-wrap gap-4 pt-4">
+                  <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">
+                    Illustration Digitale
+                  </span>
+                  <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">Art Fantastique</span>
+                  <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">Character Design</span>
+                  <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">Concept Art</span>
                 </div>
-              )}
+              </div>
+
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
+                <Image
+                  src="/images/profile.jpg"
+                  alt="Bobe Florian Portrait - Sasuke Artwork"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-6">
+                  <h3 className="text-xl font-semibold mb-2 text-white">Bobe Florian</h3>
+                  <p className="text-gray-300">Illustrateur Professionnel</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-      )}
+        </section>
 
-      {/* Loading Screen */}
-      {isLoading ? (
-        <section className="py-20 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                Chargement des œuvres...
+        {/* Portfolio / Ressources Section */}
+        <section id="portfolio" className="py-20 px-4 relative z-10">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                Portfolio / Ressources
               </h2>
-              <p className="text-muted-foreground mb-8">
-                Nous préparons votre galerie d'art personnalisée
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+                Découvrez mon processus créatif et mes techniques à travers cette vidéo exclusive. Contenu gratuit,
+                articles, et études de cas pour développer votre crédibilité artistique.
               </p>
-              
-              {/* Progress bar */}
-              <div className="w-full max-w-md mx-auto">
-                <div className="h-2 bg-card/50 rounded-full overflow-hidden border border-border/50">
-                  <div 
-                    className="h-full bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 ease-out"
-                    style={{ width: `${loadingProgress}%` }}
-                  ></div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
+                <iframe
+                  src="https://www.youtube.com/embed/xMXUyqvFTQk?start=342"
+                  title="Portfolio Ressources Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="text-2xl font-semibold">Ressources Gratuites</h3>
+                <div className="space-y-4">
+                  <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                    <CardContent className="p-4">
+                      <h4 className="font-medium mb-2">Articles & Tutoriels</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Techniques avancées, conseils professionnels et études de cas détaillées
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                    <CardContent className="p-4">
+                      <h4 className="font-medium mb-2">Processus Créatifs</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Découvrez les étapes de création de mes illustrations les plus populaires
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-card/30 backdrop-blur-sm border-border/50">
+                    <CardContent className="p-4">
+                      <h4 className="font-medium mb-2">Études de Cas</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Analyses détaillées de projets clients et retours d'expérience
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
-            </div>
-            
-            {/* Loading skeleton cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg overflow-hidden aspect-square">
-                    <div className="w-full h-full bg-muted/50 animate-pulse relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10"></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </section>
-      ) : (
-        /* Prints Gallery */
-        <section className="py-4 px-4">
-          <div className="max-w-7xl mx-auto">
-            {/* Results Summary */}
-            <div className="text-center mb-6">
-              <p className="text-muted-foreground">
-                {filteredPrints.length > 0 ? (
-                  <>Affichage {startIndex + 1}-{Math.min(endIndex, filteredPrints.length)} sur {filteredPrints.length} résultats</>
-                ) : (
-                  'Aucun résultat trouvé'
-                )}
-              </p>
-            </div>
-            
-            {/* Gallery Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-              {currentPrints.map((print, index) => (
-                <Card 
-                  key={print.id} 
-                  className="bg-card/50 backdrop-blur-sm border-border/50 cursor-pointer transition-all duration-200 group animate-fade-in-up"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => openPrintModal(print)}
-                >
-                  <CardContent className="p-0">
-                    <div className="relative aspect-square overflow-hidden rounded-lg">
-                      <Image
-                        src={print.image}
-                        alt={print.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-200"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100">
-                        <h3 className="text-white font-semibold mb-2">{print.name}</h3>
-                        <p className="text-white text-xs opacity-75 mb-1">{print.license}</p>
-                        <p className="text-white font-bold">À partir de {sizeOptions[0].price}€</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <Pagination className="mb-8">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+        {/* Artwork Gallery */}
+        <div id="gallery">
+          <ArtworkGallery />
+        </div>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-20 px-4 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl font-serif font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              Contactez-Moi
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-2xl font-semibold mb-6">Parlons de Votre Projet</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Que vous ayez besoin d'une illustration personnalisée, de coaching artistique ou d'œuvres d'art pour
+                    votre collection, je suis là pour donner vie à vos idées.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                      <Mail className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Email</p>
+                      <p className="text-muted-foreground">contact@bobeflorian.com</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                      <Phone className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Téléphone</p>
+                      <p className="text-muted-foreground">+33 6 12 34 56 78</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                      <MapPin className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Localisation</p>
+                      <p className="text-muted-foreground">Paris, France</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+                <CardHeader>
+                  <CardTitle>Demande de Devis</CardTitle>
+                  <CardDescription>Décrivez votre projet et recevez une estimation personnalisée</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Nom complet</label>
+                    <input
+                      id="fullName"
+                      type="text"
+                      className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      placeholder="Votre nom"
                     />
-                  </PaginationItem>
-                  
-                  {/* Page numbers */}
-                  {[...Array(totalPages)].map((_, i) => {
-                    const page = i + 1
-                    if (totalPages <= 7 || page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
-                      return (
-                        <PaginationItem key={page}>
-                          <PaginationLink
-                            onClick={() => setCurrentPage(page)}
-                            isActive={currentPage === page}
-                            className="cursor-pointer"
-                          >
-                            {page}
-                          </PaginationLink>
-                        </PaginationItem>
-                      )
-                    } else if (page === currentPage - 2 || page === currentPage + 2) {
-                      return (
-                        <PaginationItem key={page}>
-                          <PaginationEllipsis />
-                        </PaginationItem>
-                      )
-                    }
-                    return null
-                  })}
-                  
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Email</label>
+                    <input
+                      id="email"
+                      type="email"
+                      className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      placeholder="votre@email.com"
                     />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Type de projet</label>
+                    <select
+                      id="projectType"
+                      className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                      <option>Commission personnalisée</option>
+                      <option>Coaching artistique</option>
+                      <option>Achat d'œuvres</option>
+                      <option>Autre</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Description du projet</label>
+                    <textarea
+                      id="projectDescription"
+                      rows={4}
+                      className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                      placeholder="Décrivez votre projet en détail..."
+                    />
+                  </div>
+
+                  <EnhancedSpotlightButton className="w-full" onClick={handleSendRequest}>
+                    Envoyer la Demande
+                  </EnhancedSpotlightButton>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
-      )}
-
-      {/* Print Selection Modal */}
-      {selectedPrint && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-background border border-border rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl font-bold">{selectedPrint.name}</h2>
-                <button
-                  onClick={closePrintModal}
-                  className="p-2 hover:bg-muted rounded-full"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div 
-                  className="relative aspect-square overflow-hidden rounded-lg cursor-pointer hover:scale-105 transition-transform duration-200"
-                  onClick={() => setIsImageExpanded(true)}
-                >
-                  <Image
-                    src={selectedPrint.image}
-                    alt={selectedPrint.name}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity duration-200">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="font-semibold mb-3">Choisir la taille</h3>
-                    <div className="space-y-2">
-                      {sizeOptions.map((option) => (
-                        <button
-                          key={option.name}
-                          onClick={() => setSelectedSize(option.name)}
-                          className={`w-full p-3 text-left border rounded-lg transition-colors ${
-                            selectedSize === option.name
-                              ? 'border-primary bg-primary/20'
-                              : 'border-border hover:bg-muted'
-                          }`}
-                        >
-                          <div className="flex justify-between">
-                            <span>{option.name}</span>
-                            <span className="font-bold">{option.price}€</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-
-                  <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
-                    <p><strong>Made by BobeFlorian</strong></p>
-                    <p>Materials: Paper</p>
-                    <p>Width: 210 millimetres</p>
-                    <p>Height: 297 millimetres</p>
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-lg font-semibold">Total:</span>
-                      <span className="text-xl font-bold text-primary">
-                        {(sizeOptions.find(s => s.name === selectedSize)?.price || 0).toFixed(2)}€
-                      </span>
-                    </div>
-                    <EnhancedSpotlightButton 
-                      onClick={addToCart}
-                      className="w-full"
-                    >
-                      Ajouter au panier
-                    </EnhancedSpotlightButton>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cart Modal */}
-      {isCartOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-background border border-border rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl font-bold text-purple-400">Votre Panier</h2>
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="p-2 hover:bg-muted rounded-full"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {cart.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">Votre panier est vide</p>
-              ) : (
-                <div className="space-y-6">
-                  {/* Cart Items */}
-                  <div className="space-y-4">
-                    {cart.map((item, index) => (
-                      <div key={index} className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
-                        <div className="relative w-16 h-16 overflow-hidden rounded">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold">{item.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Taille: {item.size}
-                          </p>
-                          <p className="font-bold text-primary mt-1">{item.price.toFixed(2)}€</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => updateQuantity(item, item.quantity - 1)}
-                            className="p-1 hover:bg-background rounded"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          <span className="w-8 text-center">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item, item.quantity + 1)}
-                            className="p-1 hover:bg-background rounded"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </button>
-                        </div>
-                        <button
-                          onClick={() => removeFromCart(item)}
-                          className="p-2 hover:bg-background rounded text-red-500"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Delivery Selection */}
-                  <div className="border-t pt-6">
-                    <h3 className="font-semibold mb-4 text-purple-400">Options de livraison</h3>
-                    <div className="space-y-2">
-                      {deliveryOptions.map((option) => (
-                        <button
-                          key={option.region}
-                          onClick={() => setSelectedDelivery(option.region)}
-                          className={`w-full p-4 text-left border rounded-lg transition-colors ${
-                            selectedDelivery === option.region
-                              ? 'border-primary bg-primary/20'
-                              : 'border-border hover:bg-muted'
-                          }`}
-                        >
-                          <div className="font-medium">{option.region}</div>
-                          <div className="text-sm text-muted-foreground">{option.service}</div>
-                          <div className="text-sm">
-                            Un article: {option.basePrice.toFixed(2)}€, Article supplémentaire: {option.additionalPrice.toFixed(2)}€
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Shipping Info */}
-                  <div className="border-t pt-6">
-                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h1.586a1 1 0 01.707.293L10 7.586A1 1 0 0010.414 8H12m0 0v8a2 2 0 01-2 2H7a2 2 0 01-2-2V8m0 0V6a2 2 0 012-2h2.586a1 1 0 01.707.293L12 7.586A1 1 0 0012.414 8H14m0 0v8a2 2 0 01-2 2h-3a2 2 0 01-2-2V8" />
-                        </svg>
-                        <span className="font-medium text-green-700 dark:text-green-300">Arrivée bientôt ! Recevez-le entre le 18-28 août</span>
-                      </div>
-                      <p className="text-sm text-green-600 dark:text-green-400">si vous commandez aujourd'hui</p>
-                    </div>
-                    
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
-                      <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Retours et échanges acceptés</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Total */}
-                  <div className="border-t pt-6">
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between">
-                        <span>Sous-total:</span>
-                        <span>{getCartTotal().toFixed(2)}€</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Livraison:</span>
-                        <span>{getDeliveryPrice().toFixed(2)}€</span>
-                      </div>
-                      <div className="flex justify-between text-lg font-bold border-t pt-2">
-                        <span>Total:</span>
-                        <span className="text-primary">{getFinalTotal().toFixed(2)}€</span>
-                      </div>
-                    </div>
-                    <EnhancedSpotlightButton 
-                      className="w-full"
-                      disabled={!canCheckout}
-                      onClick={() => {
-                        if (canCheckout) {
-                          alert('Fonctionnalité de paiement à venir!')
-                        }
-                      }}
-                    >
-                      {!selectedDelivery ? 'Choisir une option de livraison' : 'Procéder au paiement'}
-                    </EnhancedSpotlightButton>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Expanded Image Modal */}
-      {isImageExpanded && selectedPrint && (
-        <div 
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4"
-          onClick={() => setIsImageExpanded(false)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
-            <button
-              onClick={() => setIsImageExpanded(false)}
-              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-            >
-              <X className="h-6 w-6" />
-            </button>
-            <div className="relative w-full h-full">
-              <Image
-                src={selectedPrint.image}
-                alt={selectedPrint.name}
-                fill
-                className="object-contain"
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
 
       {/* Footer */}
       <footer className="bg-card/30 backdrop-blur-sm border-t border-border/50 py-12 px-4 relative z-10">
@@ -959,13 +638,31 @@ export default function ShopPage() {
               <h4 className="font-semibold mb-4">Navigation</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <button onClick={() => window.location.href = '/'} className="hover:text-primary transition-colors">
-                    About
+                  <button onClick={() => scrollToSection("about")} className="hover:text-primary transition-colors">
+                    À propos
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => window.location.href = '/'} className="hover:text-primary transition-colors">
-                    Coaching Pro
+                  <button onClick={() => scrollToSection("portfolio")} className="hover:text-primary transition-colors">
+                    Portfolio
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection("gallery")} className="hover:text-primary transition-colors">
+                    Galerie
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => (window.location.href = "/services")}
+                    className="hover:text-primary transition-colors"
+                  >
+                    Services
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection("contact")} className="hover:text-primary transition-colors">
+                    Contact
                   </button>
                 </li>
               </ul>
