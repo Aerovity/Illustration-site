@@ -130,34 +130,58 @@ export default function ShopPage() {
   }
 
   useEffect(() => {
-    // Load prints from /public/prints folder - reversed order to show newest first
-    const printFiles = [
-      "25_05_20_Haikyū!!.png", "25_05_10_Zoro.png", "25_04_03_Goku_Daima.png", "25_01_Shanks.jpg", 
-      "24_16_DanDadan.jpg", "24_13_Mirko.png", "24_12_Jotaro_redraw.jpg", "24_11_Escanor.jpg",
-      "24_10_Kaiju_n8.jpg", "24_09_Dungeon_Meshi.jpg", "24_08_Griffith.jpg", "24_07_Luffy_V_Kaido.jpg",
-      "24_06_Naruto_Sennin.jpg", "24_05_Sasuke_22_redraw.jpg", "24_04_Fern.jpg", "24_03_Frieren.jpg", 
-      "24_02_Sung_Jinwoo.jpg", "24_01_King.jpg", "23_Yoruichi.jpg", "23_Yor.jpg", "23_Vegeta_Ego.jpg",
-      "23_Nico_Robin.jpg", "23_Mitsuri_Kanroji.jpg", "23_Kyojuro_Rengoku.jpg", "23_Deku.jpg", "23_A_Zoro.jpg",
-      "23_A_Usopp.jpg", "23_A_Toji.jpg", "23_A_Sukuna.jpg", "23_A_Sanji.jpg", "23_A_Nanami.jpg",
-      "23_A_Nami.jpg", "23_A_Luffy.jpg", "23_A_Gojo.jpg", "22_Son_Goku_UI.jpg", "22_Shanks.jpg",
-      "22_Sasuke.jpg", "22_Power.jpg", "22_Nami.jpg", "22_Luffy_G4.jpg", "22_Jotaro_Kujoh.jpg",
-      "22_Ichigo.jpg", "22_Guts_redraw.jpg", "22_Gojo.jpg", "22_Erza_Scarlett.jpg", "22_Eren_Yaeger.jpg",
-      "22_Cell_Perfect.jpg", "22_Bojji.jpg", "22_All_Might.jpg", "22_Luffy_Wano.jpg", "22_LeBlanc.png"
-    ]
-
-    // License array matching the same index as printFiles
-    const printLicenses = [
-      "Haikyū!!", "One Piece", "Dragon Ball", "One Piece",
-      "DanDaDan", "My Hero Academia", "JoJo's Bizarre Adventure", "Seven Deadly Sins",
-      "Kaiju No. 8", "Dungeon Meshi", "Berserk", "One Piece",
-      "Naruto", "Naruto", "Frieren", "Frieren",
-      "Solo Leveling", "One Punch Man", "Bleach", "Spy x Family", "Dragon Ball",
-      "One Piece", "Demon Slayer", "Demon Slayer", "My Hero Academia", "One Piece",
-      "One Piece", "Jujutsu Kaisen", "Jujutsu Kaisen", "One Piece", "Jujutsu Kaisen",
-      "One Piece", "One Piece", "Jujutsu Kaisen", "Dragon Ball", "One Piece",
-      "Naruto", "Chainsaw Man", "One Piece", "One Piece", "JoJo's Bizarre Adventure",
-      "Bleach", "Berserk", "Jujutsu Kaisen", "Fairy Tail", "Attack on Titan",
-      "Dragon Ball", "Ranking of Kings", "My Hero Academia", "One Piece", "League of Legends"
+    // Load prints from prints.txt with URL - Name format
+    const printData = [
+      { url: "https://cdnb.artstation.com/p/assets/images/images/088/075/811/large/florian-bobe-33.jpg?1747378290", name: "Haikyu!!", license: "Haikyū!!" },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/086/487/343/small/florian-bobe-zoro3-copy.jpg?1743329346", name: "Roronoa Zoro", license: "One Piece" },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/085/631/309/small/florian-bobe-no-wm.jpg?1741258954", name: "Goku SSJ4 Daima", license: "Dragon Ball" },
+      { url: "https://i.postimg.cc/Qd3drZCG/25-01-Shanks.jpg", name: "Akagami no Shanks", license: "One Piece" },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/082/404/301/small/florian-bobe-24-16-dandadan.jpg?1732884477", name: "DanDaDan", license: "DanDaDan" },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/082/231/903/small/florian-bobe-24-14-mirko.jpg?1732442755", name: "Mirko", license: "My Hero Academia" },
+      { url: "https://i.postimg.cc/d3sKJn0x/22-Jotaro-Kujoh.jpg", name: "Jotaro Kujoh", license: "JoJo's Bizarre Adventure" },
+      { url: "https://i.postimg.cc/ZnKXGR7k/24-11-Escanor.jpg", name: "Escanor", license: "Seven Deadly Sins" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/081/290/790/small/florian-bobe-24-10-kaiju-n8.jpg?1729855869", name: "Kaiju n8", license: "Kaiju No. 8" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/080/251/844/small/florian-bobe-24-09-dungeon-meshi.jpg?1727104540", name: "Dungeon Meshi", license: "Dungeon Meshi" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/076/628/730/small/florian-bobe-groupe-1-copie-2.jpg?1717427697", name: "Griffith", license: "Berserk" },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/076/294/325/small/florian-bobe-calque-1.jpg?1716648035", name: "Luffy v Kaido", license: "One Piece" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/076/101/418/small/florian-bobe-arriere-plan.jpg?1716200242", name: "Naruto Seinin", license: "Naruto" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/077/548/948/small/florian-bobe-24-05-sasuke-22-redraw.jpg?1719752691", name: "Sasuke Uchiha", license: "Naruto" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/075/925/280/small/florian-bobe-calque-77-copie-3.jpg?1715761266", name: "Fern", license: "Frieren" },
+      { url: "https://i.postimg.cc/ydbNqJgv/24-03-Frieren.jpg", name: "Frieren", license: "Frieren" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/075/440/642/small/florian-bobe-20.jpg?1714573674", name: "Sung Jin Woo", license: "Solo Leveling" },
+      { url: "https://cdna.artstation.com/p/assets/images/images/073/686/698/small/florian-bobe-16.jpg?1710251124", name: "King", license: "One Punch Man" },
+      { url: "https://i.postimg.cc/W11b46GX/23-Yoruichi.jpg", name: "Yoruichi", license: "Bleach" },
+      { url: "https://i.postimg.cc/Kjbmhnc7/23-Yor.jpg", name: "Yor", license: "Spy x Family" },
+      { url: "https://i.postimg.cc/50qZvD1v/23-Vegeta-Ego.jpg", name: "Vegeta ego", license: "Dragon Ball" },
+      { url: "https://i.postimg.cc/pL3btDq9/23-Nico-Robin.jpg", name: "Nico Robin", license: "One Piece" },
+      { url: "https://i.postimg.cc/8zJ9w7NT/23-Mitsuri-Kanroji.jpg", name: "Mitsuri Kanroji", license: "Demon Slayer" },
+      { url: "https://i.postimg.cc/Px4RNZzQ/23-Kyojuro-Rengoku.jpg", name: "Kyojuro Rengoku", license: "Demon Slayer" },
+      { url: "https://i.postimg.cc/DZjPtcPH/23-Deku.jpg", name: "Deku", license: "My Hero Academia" },
+      { url: "https://i.postimg.cc/G25vMmc1/23-A-Zoro.jpg", name: "Zoro", license: "One Piece" },
+      { url: "https://i.postimg.cc/yx3c2Cd3/23-A-Usopp.jpg", name: "Usopp", license: "One Piece" },
+      { url: "https://i.postimg.cc/pVmSP95z/23-A-Toji.jpg", name: "Toji", license: "Jujutsu Kaisen" },
+      { url: "https://i.postimg.cc/3JHFzWXK/23-A-Sukuna.jpg", name: "Sukuna", license: "Jujutsu Kaisen" },
+      { url: "https://i.postimg.cc/C1qbQVdB/23-A-Sanji.jpg", name: "Sanji", license: "One Piece" },
+      { url: "https://i.postimg.cc/PfbwpyDj/23-A-Nanami.jpg", name: "Nanami", license: "Jujutsu Kaisen" },
+      { url: "https://i.postimg.cc/yYQWcbYw/23-A-Nami.jpg", name: "Nami", license: "One Piece" },
+      { url: "https://i.postimg.cc/1z6txRcQ/23-A-Luffy.jpg", name: "Luffy", license: "One Piece" },
+      { url: "https://i.postimg.cc/fLfRLHrq/23-A-Gojo.jpg", name: "Gojo", license: "Jujutsu Kaisen" },
+      { url: "https://i.postimg.cc/X7JYjkcx/22-Son-Goku-UI.jpg", name: "Goku UI", license: "Dragon Ball" },
+      { url: "https://i.postimg.cc/g0vYSSmc/22-Shanks.jpg", name: "Shanks", license: "One Piece" },
+      { url: "https://i.postimg.cc/76wqp3Z3/22-Sasuke.jpg", name: "Sasuke", license: "Naruto" },
+      { url: "https://i.postimg.cc/50sW-TDGJ/22-Power.jpg", name: "Power", license: "Chainsaw Man" },
+      { url: "https://i.postimg.cc/hPPfJBgL/22-Nami.jpg", name: "Nami", license: "One Piece" },
+      { url: "https://i.postimg.cc/RFs2XK6V/22-Luffy-Wano.jpg", name: "Luffy Wano", license: "One Piece" },
+      { url: "https://i.postimg.cc/mDKWT7bp/22-Luffy-G4.jpg", name: "Luffy G4", license: "One Piece" },
+      { url: "https://i.postimg.cc/DzDMGFt8/22-Le-Blanc.png", name: "LeBlanc", license: "League of Legends" },
+      { url: "https://i.postimg.cc/1X17WBRS/22-Ichigo.jpg", name: "Ichigo", license: "Bleach" },
+      { url: "https://i.postimg.cc/26h2BWQK/22-Guts-redraw.jpg", name: "Guts", license: "Berserk" },
+      { url: "https://i.postimg.cc/Y96zSHkc/22-Gojo.jpg", name: "Gojo", license: "Jujutsu Kaisen" },
+      { url: "https://i.postimg.cc/y6kn4w3N/22-Erza-Scarlett.jpg", name: "Erza", license: "Fairy Tail" },
+      { url: "https://i.postimg.cc/28cFyTp5/22-Eren-Yaeger.jpg", name: "Eren Yaeger", license: "Attack on Titan" },
+      { url: "https://i.postimg.cc/63XCgmZM/22-Cell-Perfect.jpg", name: "Cell Perfect", license: "Dragon Ball" },
+      { url: "https://i.postimg.cc/brYkNS3b/22-Bojji.jpg", name: "Bojji", license: "Ranking of Kings" },
+      { url: "https://i.postimg.cc/zXcK8BWb/22-All-Might.jpg", name: "All Might", license: "My Hero Academia" }
     ]
 
     const loadPrintsWithOrientation = async () => {
@@ -165,35 +189,32 @@ export default function ShopPage() {
       setLoadingProgress(0)
       const printItems: PrintItem[] = []
       
-      for (let index = 0; index < printFiles.length; index++) {
-        const file = printFiles[index]
-        // Extract name from filename (remove extension and numbers/prefixes)
-        const name = file.replace(/\.(jpg|png)$/i, '').replace(/^[\d#_]+/, '').replace(/_/g, ' ')
-        const imagePath = `/prints/${file}`
+      for (let index = 0; index < printData.length; index++) {
+        const { url, name, license } = printData[index]
         
         try {
-          const orientation = await getImageOrientation(imagePath)
+          const orientation = await getImageOrientation(url)
           printItems.push({
             id: `print-${index}`,
-            name: name || file.replace(/\.(jpg|png)$/i, ''),
-            image: imagePath,
+            name: name,
+            image: url,
             basePrice: 10.83, // Base A4 price
             orientation,
-            license: printLicenses[index]
+            license: license
           })
         } catch (error) {
           printItems.push({
             id: `print-${index}`,
-            name: name || file.replace(/\.(jpg|png)$/i, ''),
-            image: imagePath,
+            name: name,
+            image: url,
             basePrice: 10.83,
             orientation: 'square', // Default fallback
-            license: printLicenses[index]
+            license: license
           })
         }
         
         // Update loading progress
-        setLoadingProgress(((index + 1) / printFiles.length) * 100)
+        setLoadingProgress(((index + 1) / printData.length) * 100)
       }
       
       setPrints(printItems)

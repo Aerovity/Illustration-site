@@ -38,9 +38,13 @@ function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideo
           ref={videoRef}
           autoPlay
           muted
+          playsInline
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
           className="w-full h-full object-cover object-top opacity-60"
           style={{ objectPosition: "center 20%" }}
           onEnded={onVideoEnd}
+          webkit-playsinline="true"
         >
           <source src="/video_promo.mp4" type="video/mp4" />
         </video>
@@ -62,20 +66,24 @@ function HeroOverlay({ showVideo }: { showVideo: boolean }) {
   )
 }
 
-function SlideIndicators({ showVideo }: { showVideo: boolean }) {
+function SlideIndicators({ showVideo, onSlideChange }: { showVideo: boolean; onSlideChange: (slideIndex: number) => void }) {
   return (
     <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
-      <div
-        className={`w-3 h-3 rounded-full transition-all duration-500 ${
+      <button
+        onClick={() => onSlideChange(0)}
+        className={`w-3 h-3 rounded-full transition-all duration-500 cursor-pointer ${
           !showVideo ? "bg-white shadow-lg scale-110" : "bg-white/40 hover:bg-white/60"
         }`}
+        aria-label="Go to slide 1"
       />
-      <div
-        className={`w-3 h-3 rounded-full transition-all duration-500 ${
+      <button
+        onClick={() => onSlideChange(1)}
+        className={`w-3 h-3 rounded-full transition-all duration-500 cursor-pointer ${
           showVideo
             ? "bg-gradient-to-r from-yellow-400 to-orange-400 shadow-lg shadow-yellow-500/25 scale-110"
             : "bg-white/40 hover:bg-white/60"
         }`}
+        aria-label="Go to slide 2"
       />
     </div>
   )
@@ -157,28 +165,42 @@ function HeroSection({
   scrollToSection: (section: string) => void
 }) {
   const [showVideo, setShowVideo] = useState(false)
+  const [autoSlideTimeout, setAutoSlideTimeout] = useState<NodeJS.Timeout | null>(null)
+
+  const clearAutoSlideTimeout = () => {
+    if (autoSlideTimeout) {
+      clearTimeout(autoSlideTimeout)
+      setAutoSlideTimeout(null)
+    }
+  }
+
+  const startAutoSlide = (fromVideo = false) => {
+    clearAutoSlideTimeout()
+    const timeout = setTimeout(() => {
+      setShowVideo(!fromVideo)
+    }, 3000)
+    setAutoSlideTimeout(timeout)
+  }
 
   useEffect(() => {
     // Start with image for 3 seconds, then switch to video
-    const startCycle = () => {
-      // Show image for 3 seconds
-      setShowVideo(false)
-      setTimeout(() => {
-        // Then show video (it will play to completion)
-        setShowVideo(true)
-      }, 3000)
-    }
-
-    // Start the initial cycle
-    startCycle()
+    setShowVideo(false)
+    startAutoSlide(false)
+    
+    return () => clearAutoSlideTimeout()
   }, [])
 
   const handleVideoEnd = () => {
     // When video ends, show image for 3 seconds, then restart cycle
     setShowVideo(false)
-    setTimeout(() => {
-      setShowVideo(true)
-    }, 3000)
+    startAutoSlide(false)
+  }
+
+  const handleSlideChange = (slideIndex: number) => {
+    clearAutoSlideTimeout()
+    const targetShowVideo = slideIndex === 1
+    setShowVideo(targetShowVideo)
+    startAutoSlide(targetShowVideo)
   }
 
   return (
@@ -186,7 +208,7 @@ function HeroSection({
       <HeroBackground showVideo={showVideo} onVideoEnd={handleVideoEnd} />
       <HeroOverlay showVideo={showVideo} />
       <HeroContent showVideo={showVideo} scrollToSection={scrollToSection} />
-      <SlideIndicators showVideo={showVideo} />
+      <SlideIndicators showVideo={showVideo} onSlideChange={handleSlideChange} />
     </>
   )
 }

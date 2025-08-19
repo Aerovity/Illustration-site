@@ -80,7 +80,9 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
           "flex items-center backdrop-blur-lg shadow-lg transition-all duration-500 ease-in-out pointer-events-auto",
           isScrolled
             ? "gap-1 py-1 px-3 rounded-full bg-background/90 border border-border/80 scale-95" // Compact style
-            : "gap-6 py-6 px-8 rounded-none bg-background/5 border-b border-border w-full justify-between", // Full header style
+            : isMobile
+            ? "gap-1 py-3 px-4 rounded-none bg-background/5 border-b border-border w-full justify-between" // Mobile full header style
+            : "gap-6 py-6 px-8 rounded-none bg-background/5 border-b border-border w-full justify-between", // Desktop full header style
         )}
       >
         <div className={cn("flex items-center transition-all duration-500", isScrolled ? "hidden" : "flex")}>
@@ -88,19 +90,19 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
             <Image
               src="/images/logo.png"
               alt="Bobe Florian Logo"
-              width={isScrolled ? 40 : 60}
-              height={isScrolled ? 40 : 60}
+              width={isScrolled ? 40 : isMobile ? 50 : 60}
+              height={isScrolled ? 40 : isMobile ? 50 : 60}
               className={cn(
                 "object-contain hover:scale-105 transition-all duration-300",
-                isScrolled ? "w-10 h-10" : "w-15 h-15",
+                isScrolled ? "w-10 h-10" : isMobile ? "w-12 h-12" : "w-15 h-15",
               )}
               priority
             />
           </Link>
         </div>
 
-        <div className={cn("flex items-center transition-all duration-500", isScrolled ? "gap-1" : "gap-4")}>
-          {items.map((item) => {
+        <div className={cn("flex items-center transition-all duration-500", isScrolled ? "gap-1" : isMobile ? "gap-1" : "gap-4")}>
+          {items.slice(0, isMobile && !isScrolled ? 5 : items.length).map((item) => {
             const Icon = item.icon
             const isActive = activeTab === item.name
 
@@ -112,13 +114,13 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
                 className={cn(
                   "relative cursor-pointer text-sm font-semibold rounded-full transition-all duration-300",
                   "text-foreground/80 hover:text-primary",
-                  isScrolled ? "px-4 py-2" : "px-6 py-3", // Different padding for each state
+                  isScrolled ? "px-3 py-1.5" : isMobile ? "px-2 py-1.5" : "px-6 py-3", // Different padding for each state
                   isActive && "bg-muted text-primary",
                 )}
               >
                 <span className="hidden md:inline">{item.name}</span>
                 <span className="md:hidden">
-                  <Icon size={18} strokeWidth={2.5} />
+                  <Icon size={isMobile && !isScrolled ? 16 : 18} strokeWidth={2.5} />
                 </span>
                 {isActive && (
                   <motion.div
@@ -135,28 +137,28 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
                     <div
                       className={cn(
                         "absolute left-1/2 -translate-x-1/2 rounded-t-full transition-all duration-300",
-                        isScrolled ? "-top-2 w-8 h-1" : "-top-3 w-10 h-2",
+                        isScrolled ? "-top-2 w-8 h-1" : isMobile ? "-top-2 w-6 h-1" : "-top-3 w-10 h-2",
                       )}
                       style={{ backgroundColor: "#c3b383" }}
                     >
                       <div
                         className={cn(
                           "absolute rounded-full blur-md -left-2 transition-all duration-300",
-                          isScrolled ? "w-12 h-6 -top-2" : "w-14 h-8 -top-3",
+                          isScrolled ? "w-12 h-6 -top-2" : isMobile ? "w-10 h-4 -top-2" : "w-14 h-8 -top-3",
                         )}
                         style={{ backgroundColor: "#c3b383" + "33" }}
                       />
                       <div
                         className={cn(
                           "absolute rounded-full blur-md transition-all duration-300",
-                          isScrolled ? "w-8 h-6 -top-1" : "w-10 h-8 -top-2",
+                          isScrolled ? "w-8 h-6 -top-1" : isMobile ? "w-6 h-4 -top-1" : "w-10 h-8 -top-2",
                         )}
                         style={{ backgroundColor: "#c3b383" + "33" }}
                       />
                       <div
                         className={cn(
                           "absolute rounded-full blur-sm transition-all duration-300",
-                          isScrolled ? "w-4 h-4 top-0 left-2" : "w-6 h-6 top-0 left-2",
+                          isScrolled ? "w-4 h-4 top-0 left-2" : isMobile ? "w-3 h-3 top-0 left-1.5" : "w-6 h-6 top-0 left-2",
                         )}
                         style={{ backgroundColor: "#c3b383" + "33" }}
                       />
