@@ -7,10 +7,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const reviews = [
   {
+    name: "📢 Annonce Spéciale",
+    avatar: "/images/logo.png",
+    rating: 5,
+    comment: "🎌 Je serai à la Japan Touch 2025 ! Venez me rencontrer lors de cet événement incontournable de la culture japonaise. Une occasion unique de découvrir mes œuvres en personne et d'échanger autour de l'art manga et anime. Restez connectés pour plus d'informations sur mon stand ! 🎨✨",
+    type: "announcement",
+    artworkImage: "/images/artwork-1.jpg"
+  },
+  {
     name: "BAM",
     avatar: "/bam.png",
     rating: 5,
-    comment: "Les cours de Florian, c’est l’assurance de progresser dans une ambiance à la fois chaleureuse et motivant ! Proche de ses élèves, il explique avec clarté et donne des conseils personnalisés sur nos créations, toujours pertinents et utiles pour avancer. Chaque séance est un vrai moment d’échange, avec des retours constructifs qui boostent notre motivation. L’excellente entente entre les élèves crée une dynamique de groupe où l’on s’encourage et se pousse mutuellement à progresser ! après ca... vous ne pouvez que nous rejoindre ! PS : Végéta est Algérien",
+    comment: "Les cours de Florian, c'est l'assurance de progresser dans une ambiance à la fois chaleureuse et motivant ! Proche de ses élèves, il explique avec clarté et donne des conseils personnalisés sur nos créations, toujours pertinents et utiles pour avancer. Chaque séance est un vrai moment d'échange, avec des retours constructifs qui boostent notre motivation. L'excellente entente entre les élèves crée une dynamique de groupe où l'on s'encourage et se pousse mutuellement à progresser ! après ca... vous ne pouvez que nous rejoindre ! PS : Végéta est Algérien",
     type: "coaching",
     artworkImage: "/images/shanks.jpg"
   },
@@ -69,7 +77,7 @@ export function ReviewsCarousel() {
     <section className="py-20 px-4 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-serif font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-          Retours Clients
+          Avis Clients
         </h2>
 
         <div className="relative min-h-[400px] overflow-hidden">
@@ -112,8 +120,11 @@ export function ReviewsCarousel() {
                                 <Star key={i} className="h-4 w-4" style={{ fill: i < review.rating ? '#f4e6d0' : 'transparent', color: '#f4e6d0' }} />
                               ))}
                             </div>
-                            <span className="text-xs px-2 py-1 rounded-full" style={{ color: '#c3b383', backgroundColor: 'rgba(195, 179, 131, 0.2)' }}>
-                              Commission
+                            <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                              color: review.type === 'announcement' ? '#ff6b6b' : '#c3b383', 
+                              backgroundColor: review.type === 'announcement' ? 'rgba(255, 107, 107, 0.2)' : 'rgba(195, 179, 131, 0.2)' 
+                            }}>
+                              {review.type === 'announcement' ? '🎌 Annonce' : 'Commission'}
                             </span>
                           </div>
                         </div>
@@ -143,13 +154,17 @@ export function ReviewsCarousel() {
                           <span className="text-xs px-2 py-1 rounded-full" style={{
                             color: review.type === 'coaching' ? '#fbbf24' : 
                                    review.type === 'print' ? '#8b5cf6' : 
+                                   review.type === 'announcement' ? '#ff6b6b' :
                                    '#c3b383',
                             backgroundColor: review.type === 'coaching' ? 'rgba(251, 191, 36, 0.2)' : 
                                            review.type === 'print' ? 'rgba(139, 92, 246, 0.2)' : 
+                                           review.type === 'announcement' ? 'rgba(255, 107, 107, 0.2)' :
                                            'rgba(195, 179, 131, 0.2)'
                           }}>
                             {review.type === 'coaching' ? '✧ Coaching' : 
-                             review.type === 'print' ? 'Print Shop' : 'Service'}
+                             review.type === 'print' ? 'Print Shop' : 
+                             review.type === 'announcement' ? '🎌 Annonce' :
+                             'Service'}
                           </span>
                         </div>
                       </div>
@@ -162,14 +177,43 @@ export function ReviewsCarousel() {
           </div>
         </div>
 
-        <div className="flex justify-center gap-2 mt-8">
-          {reviews.map((_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex ? "bg-primary" : "bg-muted"}`}
-              onClick={() => setCurrentIndex(index)}
-            />
-          ))}
+        {/* Navigation Controls */}
+        <div className="flex items-center justify-center gap-4 mt-8">
+          {/* Previous Button */}
+          <button
+            onClick={() => setCurrentIndex(prev => prev === 0 ? reviews.length - 1 : prev - 1)}
+            className="p-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-full hover:bg-card hover:border-primary/50 transition-all duration-200 flex items-center justify-center"
+            aria-label="Previous review"
+          >
+            <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          {/* Dots Indicator */}
+          <div className="flex gap-2">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                  index === currentIndex ? "bg-primary scale-110" : "bg-muted hover:bg-muted-foreground/50"
+                }`}
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to review ${index + 1}`}
+              />
+            ))}
+          </div>
+          
+          {/* Next Button */}
+          <button
+            onClick={() => setCurrentIndex(prev => (prev + 1) % reviews.length)}
+            className="p-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-full hover:bg-card hover:border-primary/50 transition-all duration-200 flex items-center justify-center"
+            aria-label="Next review"
+          >
+            <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>

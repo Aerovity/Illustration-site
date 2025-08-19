@@ -15,6 +15,8 @@ interface PrintItem {
   basePrice: number
   orientation?: 'portrait' | 'landscape' | 'square'
   license?: string
+  createdAt: Date
+  isBestseller?: boolean
 }
 
 interface CartItem extends PrintItem {
@@ -33,10 +35,10 @@ interface SizeOption {
 }
 
 const sizeOptions: SizeOption[] = [
-  { name: "A6", displayName: "S", price: 5.50, format: "A6", dimensions: "105 × 148 mm" },
-  { name: "A5", displayName: "M", price: 8.80, format: "A5", dimensions: "148 × 210 mm" },
-  { name: "A4", displayName: "L", price: 10.80, format: "A4", dimensions: "210 × 297 mm" },
-  { name: "A3", displayName: "XL", price: 16.50, format: "A3", dimensions: "297 × 420 mm" }
+  { name: "A6", displayName: "S", price: 2.50, format: "A6", dimensions: "105 × 148 mm" },
+  { name: "A5", displayName: "M", price: 5.80, format: "A5", dimensions: "148 × 210 mm" },
+  { name: "A4", displayName: "L", price: 7.80, format: "A4", dimensions: "210 × 297 mm" },
+  { name: "A3", displayName: "XL", price: 13.50, format: "A3", dimensions: "297 × 420 mm" }
 ]
 
 const deliveryOptions = [
@@ -71,6 +73,7 @@ export default function ShopPage() {
   const [filteredPrints, setFilteredPrints] = useState<PrintItem[]>([])
   const [selectedOrientation, setSelectedOrientation] = useState<'all' | 'portrait' | 'landscape' | 'square'>('all')
   const [selectedLicense, setSelectedLicense] = useState<string>('all')
+  const [selectedSort, setSelectedSort] = useState<'recent' | 'ancien' | 'bestseller'>('recent')
   const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -92,13 +95,13 @@ export default function ShopPage() {
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
     { name: "À propos", url: "/#about", icon: User },
-    { name: "Retours", url: "/#retours", icon: Mail },
-    { name: "Portfolio", url: "/#gallery", icon: ImageIcon },
+    { name: "Avis", url: "/#retours", icon: Mail },
+    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Contact", url: "/#contact", icon: Mail },
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingCart },
     { name: "E-books", url: "/services#ebooks", icon: BookOpen },
-    { name: "Contact", url: "/#contact", icon: Mail },
   ]
 
   useEffect(() => {
@@ -146,56 +149,55 @@ export default function ShopPage() {
   useEffect(() => {
     // Load prints from prints.txt with URL - Name format
     const printData = [
-      { url: "https://cdnb.artstation.com/p/assets/images/images/088/075/811/large/florian-bobe-33.jpg?1747378290", name: "Haikyu!!", license: "Haikyū!!" },
-      { url: "https://cdnb.artstation.com/p/assets/images/images/086/487/343/small/florian-bobe-zoro3-copy.jpg?1743329346", name: "Roronoa Zoro", license: "One Piece" },
-      { url: "https://cdnb.artstation.com/p/assets/images/images/085/631/309/small/florian-bobe-no-wm.jpg?1741258954", name: "Goku SSJ4 Daima", license: "Dragon Ball" },
-      { url: "https://i.postimg.cc/Qd3drZCG/25-01-Shanks.jpg", name: "Akagami no Shanks", license: "One Piece" },
-      { url: "https://cdnb.artstation.com/p/assets/images/images/082/404/301/small/florian-bobe-24-16-dandadan.jpg?1732884477", name: "DanDaDan", license: "DanDaDan" },
-      { url: "https://cdnb.artstation.com/p/assets/images/images/082/231/903/small/florian-bobe-24-14-mirko.jpg?1732442755", name: "Mirko", license: "My Hero Academia" },
-      { url: "https://i.postimg.cc/d3sKJn0x/22-Jotaro-Kujoh.jpg", name: "Jotaro Kujoh", license: "JoJo's Bizarre Adventure" },
-      { url: "https://i.postimg.cc/ZnKXGR7k/24-11-Escanor.jpg", name: "Escanor", license: "Seven Deadly Sins" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/081/290/790/small/florian-bobe-24-10-kaiju-n8.jpg?1729855869", name: "Kaiju n8", license: "Kaiju No. 8" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/080/251/844/small/florian-bobe-24-09-dungeon-meshi.jpg?1727104540", name: "Dungeon Meshi", license: "Dungeon Meshi" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/076/628/730/small/florian-bobe-groupe-1-copie-2.jpg?1717427697", name: "Griffith", license: "Berserk" },
-      { url: "https://cdnb.artstation.com/p/assets/images/images/076/294/325/small/florian-bobe-calque-1.jpg?1716648035", name: "Luffy v Kaido", license: "One Piece" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/076/101/418/small/florian-bobe-arriere-plan.jpg?1716200242", name: "Naruto Seinin", license: "Naruto" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/077/548/948/small/florian-bobe-24-05-sasuke-22-redraw.jpg?1719752691", name: "Sasuke Uchiha", license: "Naruto" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/075/925/280/small/florian-bobe-calque-77-copie-3.jpg?1715761266", name: "Fern", license: "Frieren" },
-      { url: "https://i.postimg.cc/ydbNqJgv/24-03-Frieren.jpg", name: "Frieren", license: "Frieren" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/075/440/642/small/florian-bobe-20.jpg?1714573674", name: "Sung Jin Woo", license: "Solo Leveling" },
-      { url: "https://cdna.artstation.com/p/assets/images/images/073/686/698/small/florian-bobe-16.jpg?1710251124", name: "King", license: "One Punch Man" },
-      { url: "https://i.postimg.cc/W11b46GX/23-Yoruichi.jpg", name: "Yoruichi", license: "Bleach" },
-      { url: "https://i.postimg.cc/Kjbmhnc7/23-Yor.jpg", name: "Yor", license: "Spy x Family" },
-      { url: "https://i.postimg.cc/50qZvD1v/23-Vegeta-Ego.jpg", name: "Vegeta ego", license: "Dragon Ball" },
-      { url: "https://i.postimg.cc/pL3btDq9/23-Nico-Robin.jpg", name: "Nico Robin", license: "One Piece" },
-      { url: "https://i.postimg.cc/8zJ9w7NT/23-Mitsuri-Kanroji.jpg", name: "Mitsuri Kanroji", license: "Demon Slayer" },
-      { url: "https://i.postimg.cc/Px4RNZzQ/23-Kyojuro-Rengoku.jpg", name: "Kyojuro Rengoku", license: "Demon Slayer" },
-      { url: "https://i.postimg.cc/DZjPtcPH/23-Deku.jpg", name: "Deku", license: "My Hero Academia" },
-      { url: "https://i.postimg.cc/G25vMmc1/23-A-Zoro.jpg", name: "Zoro", license: "One Piece" },
-      { url: "https://i.postimg.cc/yx3c2Cd3/23-A-Usopp.jpg", name: "Usopp", license: "One Piece" },
-      { url: "https://i.postimg.cc/pVmSP95z/23-A-Toji.jpg", name: "Toji", license: "Jujutsu Kaisen" },
-      { url: "https://i.postimg.cc/3JHFzWXK/23-A-Sukuna.jpg", name: "Sukuna", license: "Jujutsu Kaisen" },
-      { url: "https://i.postimg.cc/C1qbQVdB/23-A-Sanji.jpg", name: "Sanji", license: "One Piece" },
-      { url: "https://i.postimg.cc/PfbwpyDj/23-A-Nanami.jpg", name: "Nanami", license: "Jujutsu Kaisen" },
-      { url: "https://i.postimg.cc/yYQWcbYw/23-A-Nami.jpg", name: "Nami", license: "One Piece" },
-      { url: "https://i.postimg.cc/1z6txRcQ/23-A-Luffy.jpg", name: "Luffy", license: "One Piece" },
-      { url: "https://i.postimg.cc/fLfRLHrq/23-A-Gojo.jpg", name: "Gojo", license: "Jujutsu Kaisen" },
-      { url: "https://i.postimg.cc/X7JYjkcx/22-Son-Goku-UI.jpg", name: "Goku UI", license: "Dragon Ball" },
-      { url: "https://i.postimg.cc/g0vYSSmc/22-Shanks.jpg", name: "Shanks", license: "One Piece" },
-      { url: "https://i.postimg.cc/76wqp3Z3/22-Sasuke.jpg", name: "Sasuke", license: "Naruto" },
-      { url: "https://i.postimg.cc/50sW-TDGJ/22-Power.jpg", name: "Power", license: "Chainsaw Man" },
-      { url: "https://i.postimg.cc/hPPfJBgL/22-Nami.jpg", name: "Nami", license: "One Piece" },
-      { url: "https://i.postimg.cc/RFs2XK6V/22-Luffy-Wano.jpg", name: "Luffy Wano", license: "One Piece" },
-      { url: "https://i.postimg.cc/mDKWT7bp/22-Luffy-G4.jpg", name: "Luffy G4", license: "One Piece" },
-      { url: "https://i.postimg.cc/DzDMGFt8/22-Le-Blanc.png", name: "LeBlanc", license: "League of Legends" },
-      { url: "https://i.postimg.cc/1X17WBRS/22-Ichigo.jpg", name: "Ichigo", license: "Bleach" },
-      { url: "https://i.postimg.cc/26h2BWQK/22-Guts-redraw.jpg", name: "Guts", license: "Berserk" },
-      { url: "https://i.postimg.cc/Y96zSHkc/22-Gojo.jpg", name: "Gojo", license: "Jujutsu Kaisen" },
-      { url: "https://i.postimg.cc/y6kn4w3N/22-Erza-Scarlett.jpg", name: "Erza", license: "Fairy Tail" },
-      { url: "https://i.postimg.cc/28cFyTp5/22-Eren-Yaeger.jpg", name: "Eren Yaeger", license: "Attack on Titan" },
-      { url: "https://i.postimg.cc/63XCgmZM/22-Cell-Perfect.jpg", name: "Cell Perfect", license: "Dragon Ball" },
-      { url: "https://i.postimg.cc/brYkNS3b/22-Bojji.jpg", name: "Bojji", license: "Ranking of Kings" },
-      { url: "https://i.postimg.cc/zXcK8BWb/22-All-Might.jpg", name: "All Might", license: "My Hero Academia" }
+      { url: "https://cdnb.artstation.com/p/assets/images/images/088/075/811/large/florian-bobe-33.jpg?1747378290", name: "Haikyu!!", license: "Haikyū!!", createdAt: new Date('2025-01-01'), isBestseller: true },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/086/487/343/small/florian-bobe-zoro3-copy.jpg?1743329346", name: "Roronoa Zoro", license: "One Piece", createdAt: new Date('2024-12-20'), isBestseller: false },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/085/631/309/small/florian-bobe-no-wm.jpg?1741258954", name: "Goku SSJ4 Daima", license: "Dragon Ball", createdAt: new Date('2024-12-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/Qd3drZCG/25-01-Shanks.jpg", name: "Akagami no Shanks", license: "One Piece", createdAt: new Date('2025-01-10'), isBestseller: true },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/082/404/301/small/florian-bobe-24-16-dandadan.jpg?1732884477", name: "DanDaDan", license: "DanDaDan", createdAt: new Date('2024-11-16'), isBestseller: false },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/082/231/903/small/florian-bobe-24-14-mirko.jpg?1732442755", name: "Mirko", license: "My Hero Academia", createdAt: new Date('2024-11-14'), isBestseller: false },
+      { url: "https://i.postimg.cc/d3sKJn0x/22-Jotaro-Kujoh.jpg", name: "Jotaro Kujoh", license: "JoJo's Bizarre Adventure", createdAt: new Date('2022-06-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/ZnKXGR7k/24-11-Escanor.jpg", name: "Escanor", license: "Seven Deadly Sins", createdAt: new Date('2024-11-01'), isBestseller: false },
+      { url: "https://cdna.artstation.com/p/assets/images/images/081/290/790/small/florian-bobe-24-10-kaiju-n8.jpg?1729855869", name: "Kaiju n8", license: "Kaiju No. 8", createdAt: new Date('2024-10-10'), isBestseller: false },
+      { url: "https://cdna.artstation.com/p/assets/images/images/080/251/844/small/florian-bobe-24-09-dungeon-meshi.jpg?1727104540", name: "Dungeon Meshi", license: "Dungeon Meshi", createdAt: new Date('2024-09-09'), isBestseller: false },
+      { url: "https://cdna.artstation.com/p/assets/images/images/076/628/730/small/florian-bobe-groupe-1-copie-2.jpg?1717427697", name: "Griffith", license: "Berserk", createdAt: new Date('2024-06-08'), isBestseller: true },
+      { url: "https://cdnb.artstation.com/p/assets/images/images/076/294/325/small/florian-bobe-calque-1.jpg?1716648035", name: "Luffy v Kaido", license: "One Piece", createdAt: new Date('2024-05-07'), isBestseller: true },
+      { url: "https://cdna.artstation.com/p/assets/images/images/076/101/418/small/florian-bobe-arriere-plan.jpg?1716200242", name: "Naruto Seinin", license: "Naruto", createdAt: new Date('2024-05-06'), isBestseller: false },
+      { url: "https://cdna.artstation.com/p/assets/images/images/077/548/948/small/florian-bobe-24-05-sasuke-22-redraw.jpg?1719752691", name: "Sasuke Uchiha", license: "Naruto", createdAt: new Date('2024-05-05'), isBestseller: true },
+      { url: "https://cdna.artstation.com/p/assets/images/images/075/925/280/small/florian-bobe-calque-77-copie-3.jpg?1715761266", name: "Fern", license: "Frieren", createdAt: new Date('2024-04-04'), isBestseller: false },
+      { url: "https://i.postimg.cc/ydbNqJgv/24-03-Frieren.jpg", name: "Frieren", license: "Frieren", createdAt: new Date('2024-03-03'), isBestseller: true },
+      { url: "https://cdna.artstation.com/p/assets/images/images/075/440/642/small/florian-bobe-20.jpg?1714573674", name: "Sung Jin Woo", license: "Solo Leveling", createdAt: new Date('2024-02-02'), isBestseller: true },
+      { url: "https://cdna.artstation.com/p/assets/images/images/073/686/698/small/florian-bobe-16.jpg?1710251124", name: "King", license: "One Punch Man", createdAt: new Date('2024-01-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/Kjbmhnc7/23-Yor.jpg", name: "Yor", license: "Spy x Family", createdAt: new Date('2023-11-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/50qZvD1v/23-Vegeta-Ego.jpg", name: "Vegeta ego", license: "Dragon Ball", createdAt: new Date('2023-11-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/pL3btDq9/23-Nico-Robin.jpg", name: "Nico Robin", license: "One Piece", createdAt: new Date('2023-10-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/8zJ9w7NT/23-Mitsuri-Kanroji.jpg", name: "Mitsuri Kanroji", license: "Demon Slayer", createdAt: new Date('2023-10-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/Px4RNZzQ/23-Kyojuro-Rengoku.jpg", name: "Kyojuro Rengoku", license: "Demon Slayer", createdAt: new Date('2023-09-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/DZjPtcPH/23-Deku.jpg", name: "Deku", license: "My Hero Academia", createdAt: new Date('2023-09-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/G25vMmc1/23-A-Zoro.jpg", name: "Zoro", license: "One Piece", createdAt: new Date('2023-08-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/yx3c2Cd3/23-A-Usopp.jpg", name: "Usopp", license: "One Piece", createdAt: new Date('2023-08-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/pVmSP95z/23-A-Toji.jpg", name: "Toji", license: "Jujutsu Kaisen", createdAt: new Date('2023-07-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/3JHFzWXK/23-A-Sukuna.jpg", name: "Sukuna", license: "Jujutsu Kaisen", createdAt: new Date('2023-07-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/C1qbQVdB/23-A-Sanji.jpg", name: "Sanji", license: "One Piece", createdAt: new Date('2023-06-15'), isBestseller: false },
+      { url: "https://i.postimg.cc/PfbwpyDj/23-A-Nanami.jpg", name: "Nanami", license: "Jujutsu Kaisen", createdAt: new Date('2023-06-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/yYQWcbYw/23-A-Nami.jpg", name: "Nami", license: "One Piece", createdAt: new Date('2023-05-15'), isBestseller: false },
+      { url: "https://i.postimg.cc/1z6txRcQ/23-A-Luffy.jpg", name: "Luffy", license: "One Piece", createdAt: new Date('2023-05-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/fLfRLHrq/23-A-Gojo.jpg", name: "Gojo", license: "Jujutsu Kaisen", createdAt: new Date('2023-04-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/X7JYjkcx/22-Son-Goku-UI.jpg", name: "Goku UI", license: "Dragon Ball", createdAt: new Date('2022-12-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/g0vYSSmc/22-Shanks.jpg", name: "Shanks", license: "One Piece", createdAt: new Date('2022-11-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/76wqp3Z3/22-Sasuke.jpg", name: "Sasuke", license: "Naruto", createdAt: new Date('2022-11-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/50sW-TDGJ/22-Power.jpg", name: "Power", license: "Chainsaw Man", createdAt: new Date('2022-10-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/hPPfJBgL/22-Nami.jpg", name: "Nami", license: "One Piece", createdAt: new Date('2022-10-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/RFs2XK6V/22-Luffy-Wano.jpg", name: "Luffy Wano", license: "One Piece", createdAt: new Date('2022-09-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/mDKWT7bp/22-Luffy-G4.jpg", name: "Luffy G4", license: "One Piece", createdAt: new Date('2022-09-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/DzDMGFt8/22-Le-Blanc.png", name: "LeBlanc", license: "League of Legends", createdAt: new Date('2022-08-15'), isBestseller: false },
+      { url: "https://i.postimg.cc/1X17WBRS/22-Ichigo.jpg", name: "Ichigo", license: "Bleach", createdAt: new Date('2022-08-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/26h2BWQK/22-Guts-redraw.jpg", name: "Guts", license: "Berserk", createdAt: new Date('2022-07-15'), isBestseller: true },
+      { url: "https://i.postimg.cc/Y96zSHkc/22-Gojo.jpg", name: "Gojo", license: "Jujutsu Kaisen", createdAt: new Date('2022-07-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/y6kn4w3N/22-Erza-Scarlett.jpg", name: "Erza", license: "Fairy Tail", createdAt: new Date('2022-06-15'), isBestseller: false },
+      { url: "https://i.postimg.cc/28cFyTp5/22-Eren-Yaeger.jpg", name: "Eren Yaeger", license: "Attack on Titan", createdAt: new Date('2022-06-01'), isBestseller: true },
+      { url: "https://i.postimg.cc/63XCgmZM/22-Cell-Perfect.jpg", name: "Cell Perfect", license: "Dragon Ball", createdAt: new Date('2022-05-15'), isBestseller: false },
+      { url: "https://i.postimg.cc/brYkNS3b/22-Bojji.jpg", name: "Bojji", license: "Ranking of Kings", createdAt: new Date('2022-05-01'), isBestseller: false },
+      { url: "https://i.postimg.cc/zXcK8BWb/22-All-Might.jpg", name: "All Might", license: "My Hero Academia", createdAt: new Date('2022-04-15'), isBestseller: true }
     ]
 
     const loadPrintsWithOrientation = async () => {
@@ -204,7 +206,7 @@ export default function ShopPage() {
       const printItems: PrintItem[] = []
       
       for (let index = 0; index < printData.length; index++) {
-        const { url, name, license } = printData[index]
+        const { url, name, license, createdAt, isBestseller } = printData[index]
         
         try {
           const orientation = await getImageOrientation(url)
@@ -212,18 +214,22 @@ export default function ShopPage() {
             id: `print-${index}`,
             name: name,
             image: url,
-            basePrice: 10.83, // Base A4 price
+            basePrice: 7.83, // Base A4 price
             orientation,
-            license: license
+            license: license,
+            createdAt: createdAt,
+            isBestseller: isBestseller
           })
         } catch (error) {
           printItems.push({
             id: `print-${index}`,
             name: name,
             image: url,
-            basePrice: 10.83,
+            basePrice: 7.83,
             orientation: 'square', // Default fallback
-            license: license
+            license: license,
+            createdAt: createdAt,
+            isBestseller: isBestseller
           })
         }
         
@@ -246,7 +252,7 @@ export default function ShopPage() {
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedOrientation, selectedLicense, searchQuery])
+  }, [selectedOrientation, selectedLicense, selectedSort, searchQuery])
 
   useEffect(() => {
     setCanCheckout(cart.length > 0 && selectedDelivery !== "")
@@ -274,8 +280,21 @@ export default function ShopPage() {
       )
     }
 
+    // Sort by selected criteria
+    if (selectedSort === 'recent') {
+      filtered = filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    } else if (selectedSort === 'ancien') {
+      filtered = filtered.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+    } else if (selectedSort === 'bestseller') {
+      filtered = filtered.sort((a, b) => {
+        if (a.isBestseller && !b.isBestseller) return -1
+        if (!a.isBestseller && b.isBestseller) return 1
+        return b.createdAt.getTime() - a.createdAt.getTime() // Secondary sort by date
+      })
+    }
+
     setFilteredPrints(filtered)
-  }, [prints, selectedOrientation, selectedLicense, searchQuery])
+  }, [prints, selectedOrientation, selectedLicense, selectedSort, searchQuery])
 
   // Get unique licenses for dropdown
   const getUniqueLicenses = () => {
@@ -482,6 +501,40 @@ export default function ShopPage() {
               )}
             </div>
 
+            {/* Sort Filters */}
+            <div className="flex flex-wrap justify-center gap-4 mb-4">
+              <button
+                onClick={() => setSelectedSort('recent')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedSort === 'recent'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Récent
+              </button>
+              <button
+                onClick={() => setSelectedSort('ancien')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedSort === 'ancien'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Ancien
+              </button>
+              <button
+                onClick={() => setSelectedSort('bestseller')}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  selectedSort === 'bestseller'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
+                }`}
+              >
+                Best Seller
+              </button>
+            </div>
+
             {/* Orientation Filters */}
             <div className="flex flex-wrap justify-center gap-4">
               <button
@@ -512,7 +565,7 @@ export default function ShopPage() {
                     : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
                 }`}
               >
-                Paysage ({prints.filter(p => p.orientation === 'landscape').length})
+                Splash Art ({prints.filter(p => p.orientation === 'landscape').length})
               </button>
               <button
                 onClick={() => handleOrientationFilter('square')}
@@ -522,7 +575,7 @@ export default function ShopPage() {
                     : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground border border-border/50'
                 }`}
               >
-                Carrée ({prints.filter(p => p.orientation === 'square').length})
+                Carré ({prints.filter(p => p.orientation === 'square').length})
               </button>
             </div>
 
@@ -642,13 +695,14 @@ export default function ShopPage() {
                   onClick={() => openPrintModal(print)}
                 >
                   <CardContent className="p-0">
-                    <div className="relative aspect-square overflow-hidden rounded-lg">
+                    <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
                       <Image
                         src={print.image}
                         alt={print.name}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-200"
+                        className="object-cover object-center group-hover:scale-110 transition-transform duration-200"
                         loading="lazy"
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100">
@@ -730,14 +784,15 @@ export default function ShopPage() {
                 {/* Image Preview - Takes 2/3 of space */}
                 <div className="lg:col-span-2">
                   <div 
-                    className="relative w-full h-[500px] overflow-hidden rounded-lg cursor-pointer hover:scale-[1.02] transition-transform duration-200"
+                    className="relative w-full h-[500px] overflow-hidden rounded-lg cursor-pointer hover:scale-[1.02] transition-transform duration-200 bg-muted"
                     onClick={() => setIsImageExpanded(true)}
                   >
                     <Image
                       src={selectedPrint.image}
                       alt={selectedPrint.name}
                       fill
-                      className="object-cover"
+                      className="object-contain object-center"
+                      style={{ objectFit: 'contain' }}
                     />
                     <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
                       <div className="bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity duration-200">
@@ -861,12 +916,13 @@ export default function ShopPage() {
                   <div className="space-y-4">
                     {cart.map((item, index) => (
                       <div key={index} className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
-                        <div className="relative w-16 h-16 overflow-hidden rounded">
+                        <div className="relative w-16 h-16 overflow-hidden rounded bg-muted">
                           <Image
                             src={item.image}
                             alt={item.name}
                             fill
-                            className="object-cover"
+                            className="object-cover object-center"
+                            style={{ objectFit: 'cover' }}
                           />
                         </div>
                         <div className="flex-1">

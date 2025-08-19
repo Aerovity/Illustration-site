@@ -6,54 +6,20 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { X, ZoomIn, ZoomOut, RotateCcw } from "lucide-react"
 
-const artworks = [
-  { src: "https://cdnb.artstation.com/p/assets/images/images/088/075/811/large/florian-bobe-33.jpg?1747378290", alt: "Haikyū!!", title: "Haikyū!!" },
-  { src: "https://cdnb.artstation.com/p/assets/images/images/085/631/309/small/florian-bobe-no-wm.jpg?1741258954", alt: "Goku SSJ4 Daima", title: "Goku SSJ4 Daima" },
-  { src: "https://i.postimg.cc/Qd3drZCG/25-01-Shanks.jpg", alt: "Akagami no Shanks", title: "Akagami no Shanks" },
-  { src: "https://cdnb.artstation.com/p/assets/images/images/082/404/301/small/florian-bobe-24-16-dandadan.jpg?1732884477", alt: "DanDaDan", title: "DanDaDan" },
-  { src: "https://cdnb.artstation.com/p/assets/images/images/082/231/903/small/florian-bobe-24-14-mirko.jpg?1732442755", alt: "Mirko", title: "Mirko" },
-  { src: "https://i.postimg.cc/d3sKJn0x/22-Jotaro-Kujoh.jpg", alt: "Jotaro Kujoh", title: "Jotaro Kujoh" },
-  { src: "https://i.postimg.cc/ZnKXGR7k/24-11-Escanor.jpg", alt: "Escanor", title: "Escanor" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/081/290/790/small/florian-bobe-24-10-kaiju-n8.jpg?1729855869", alt: "Kaiju No. 8", title: "Kaiju No. 8" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/080/251/844/small/florian-bobe-24-09-dungeon-meshi.jpg?1727104540", alt: "Dungeon Meshi", title: "Dungeon Meshi" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/076/628/730/small/florian-bobe-groupe-1-copie-2.jpg?1717427697", alt: "Griffith", title: "Griffith" },
-  { src: "https://cdnb.artstation.com/p/assets/images/images/076/294/325/small/florian-bobe-calque-1.jpg?1716648035", alt: "Luffy vs Kaido", title: "Luffy vs Kaido" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/077/548/948/small/florian-bobe-24-05-sasuke-22-redraw.jpg?1719752691", alt: "Sasuke Uchiha", title: "Sasuke Uchiha" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/075/925/280/small/florian-bobe-calque-77-copie-3.jpg?1715761266", alt: "Fern", title: "Fern" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/075/440/642/large/florian-bobe-20.jpg?1714573674", alt: "Sung Jinwoo", title: "Sung Jinwoo" },
-  { src: "https://cdna.artstation.com/p/assets/images/images/073/686/698/large/florian-bobe-16.jpg?1710251124", alt: "King", title: "King" },
-  { src: "https://i.postimg.cc/50qZvD1v/23-Vegeta-Ego.jpg", alt: "Vegeta Ultra Ego", title: "Vegeta Ultra Ego" },
-  { src: "https://i.postimg.cc/pL3btDq9/23-Nico-Robin.jpg", alt: "Nico Robin", title: "Nico Robin" },
-  { src: "https://i.postimg.cc/8zJ9w7NT/23-Mitsuri-Kanroji.jpg", alt: "Mitsuri Kanroji", title: "Mitsuri Kanroji" },
-  { src: "https://i.postimg.cc/Px4RNZzQ/23-Kyojuro-Rengoku.jpg", alt: "Kyojuro Rengoku", title: "Kyojuro Rengoku" },
-  { src: "https://i.postimg.cc/DZjPtcPH/23-Deku.jpg", alt: "Deku", title: "Deku" },
-  { src: "https://i.postimg.cc/G25vMmc1/23-A-Zoro.jpg", alt: "Zoro", title: "Zoro" },
-  { src: "https://i.postimg.cc/yx3c2Cd3/23-A-Usopp.jpg", alt: "Usopp", title: "Usopp" },
-  { src: "https://i.postimg.cc/pVmSP95z/23-A-Toji.jpg", alt: "Toji", title: "Toji" },
-  { src: "https://i.postimg.cc/3JHFzWXK/23-A-Sukuna.jpg", alt: "Sukuna", title: "Sukuna" },
-  { src: "https://i.postimg.cc/C1qbQVdB/23-A-Sanji.jpg", alt: "Sanji", title: "Sanji" },
-  { src: "https://i.postimg.cc/PfbwpyDj/23-A-Nanami.jpg", alt: "Nanami", title: "Nanami" },
-  { src: "https://i.postimg.cc/1z6txRcQ/23-A-Luffy.jpg", alt: "Luffy", title: "Luffy" },
-  { src: "https://i.postimg.cc/fLfRLHrq/23-A-Gojo.jpg", alt: "Gojo", title: "Gojo" },
-  { src: "https://i.postimg.cc/X7JYjkcx/22-Son-Goku-UI.jpg", alt: "Goku Ultra Instinct", title: "Goku Ultra Instinct" },
-  { src: "https://i.postimg.cc/g0vYSSmc/22-Shanks.jpg", alt: "Shanks", title: "Shanks" },
-  { src: "https://i.postimg.cc/76wqp3Z3/22-Sasuke.jpg", alt: "Sasuke", title: "Sasuke" },
-  { src: "https://i.postimg.cc/50sWTDGJ/22-Power.jpg", alt: "Power", title: "Power" },
-  { src: "https://i.postimg.cc/hPPfJBgL/22-Nami.jpg", alt: "Nami", title: "Nami" },
-  { src: "https://i.postimg.cc/RFs2XK6V/22-Luffy-Wano.jpg", alt: "Luffy Wano", title: "Luffy Wano" },
-  { src: "https://i.postimg.cc/mDKWT7bp/22-Luffy-G4.jpg", alt: "Luffy Gear 4", title: "Luffy Gear 4" },
-  { src: "https://i.postimg.cc/DzDMGFt8/22-Le-Blanc.png", alt: "LeBlanc", title: "LeBlanc" },
-  { src: "https://i.postimg.cc/1X17WBRS/22-Ichigo.jpg", alt: "Ichigo", title: "Ichigo" },
-  { src: "https://i.postimg.cc/26h2BWQK/22-Guts-redraw.jpg", alt: "Guts", title: "Guts" },
-  { src: "https://i.postimg.cc/Y96zSHkc/22-Gojo.jpg", alt: "Gojo", title: "Gojo" },
-  { src: "https://i.postimg.cc/y6kn4w3N/22-Erza-Scarlett.jpg", alt: "Erza", title: "Erza" },
-  { src: "https://i.postimg.cc/28cFyTp5/22-Eren-Yaeger.jpg", alt: "Eren Yaeger", title: "Eren Yaeger" },
-  { src: "https://i.postimg.cc/63XCgmZM/22-Cell-Perfect.jpg", alt: "Perfect Cell", title: "Perfect Cell" },
-  { src: "https://i.postimg.cc/brYkNS3b/22-Bojji.jpg", alt: "Bojji", title: "Bojji" },
-  { src: "https://i.postimg.cc/zXcK8BWb/22-All-Might.jpg", alt: "All Might", title: "All Might" },
+// First 9 artworks for main page portfolio (reversed order, excluding Zoro and Naruto Sennin)
+const mainPortfolioArtworks = [
+  { src: "/images/artwork-5.jpg", alt: "Ultra Instinct", title: "Ultra Instinct" },
+  { src: "/images/artwork-4.jpg", alt: "Necromancer", title: "Necromancer" },
+  { src: "/images/artwork-3.jpg", alt: "Luffy V Kaido", title: "Luffy V Kaido " },
+  { src: "/images/artwork-2.jpg", alt: "Recluse - Nightreign", title: "Recluse - Nightreign" },
+  { src: "/images/artwork-1.jpg", alt: "Hell Joe - Tower of God", title: "Hell Joe - Tower of God" },
+  { src: "/images/artwork-6.jpg", alt: "Roronoa Zoro", title: "Roronoa Zoro" },
+  { src: "/images/artwork-7.jpg", alt: "Naruto Sennin", title: "Naruto Sennin" },
+  { src: "/images/shanks.jpg", alt: "Akagami no Shanks", title: "Akagami no Shanks" },
+  { src: "/images/yo.jpg", alt: "Haikyu!!", title: "Haikyu!!" },
 ]
 
-export function ArtworkGallery() {
+export function MainPortfolio() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
@@ -104,11 +70,11 @@ export function ArtworkGallery() {
     <section className="py-20 px-4">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl font-serif font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-          Galerie d'Œuvres
+          Portfolio
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {artworks.map((artwork, index) => (
+          {mainPortfolioArtworks.map((artwork, index) => (
             <Dialog key={index} onOpenChange={(open) => {
               if (open) {
                 setZoomLevel(1)

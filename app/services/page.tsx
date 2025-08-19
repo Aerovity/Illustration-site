@@ -21,13 +21,13 @@ export default function ServicesPage() {
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
     { name: "À propos", url: "/#about", icon: User },
-    { name: "Retours", url: "/#retours", icon: Mail },
-    { name: "Portfolio", url: "/#gallery", icon: ImageIcon },
+    { name: "Avis", url: "/#retours", icon: Mail },
+    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Contact", url: "/#contact", icon: Mail },
     { name: "Coaching", url: "#coaching", icon: Users },
     { name: "Commissions", url: "#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
     { name: "E-books", url: "#ebooks", icon: BookOpen },
-    { name: "Contact", url: "/#contact", icon: Mail },
   ]
 
   useEffect(() => {
@@ -170,7 +170,13 @@ export default function ServicesPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Cours Collectif Card */}
               <div className="flex flex-col space-y-6">
-                <Card className="bg-card/30 backdrop-blur-sm border-border/50 relative flex-1 flex flex-col">
+                <div className="relative flex-1 flex flex-col overflow-hidden rounded-2xl p-[2px]" style={{
+                  animation: 'silverSparkle 3s ease-in-out infinite'
+                }}>
+                  <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#c0c0c0_0%,#e8e8e8_25%,#c0c0c0_50%,#f5f5f5_75%,#c0c0c0_100%)]" />
+                <Card className="bg-card backdrop-blur-sm relative flex-1 flex flex-col rounded-2xl border-0" style={{
+                  boxShadow: '0 0 20px rgba(192, 192, 192, 0.3)'
+                }}>
                   <div className="absolute top-4 right-4 bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-medium">
                     10 places restantes
                   </div>
@@ -178,7 +184,8 @@ export default function ServicesPage() {
                     <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
                       <Users className="h-8 w-8 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl">Cours Collectif</CardTitle>
+                    <CardTitle className="text-2xl bg-gradient-to-r from-slate-400 to-slate-600 bg-clip-text text-transparent">Cours Collectif ✨</CardTitle>
+                    <p className="text-sm text-muted-foreground italic mb-4">sans engagement !</p>
                     <div className="space-y-4">
                       <div className="border border-primary/50 rounded-lg p-4 bg-primary/5 relative">
                         <div className="absolute -top-2 left-4 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
@@ -198,7 +205,7 @@ export default function ServicesPage() {
                             Patreon
                           </a>
                         </p>
-                        <EnhancedSpotlightButton className="w-full mb-4" disabled>
+                        <EnhancedSpotlightButton className="w-full px-0.5 py-0.5 text-lg mb-4" disabled focusRingColor="silver" gradientColor="silver">
                           Sold Out
                         </EnhancedSpotlightButton>
                         <div className="text-xs text-red-400 mb-4">Limited spaces - SOLD OUT</div>
@@ -217,6 +224,7 @@ export default function ServicesPage() {
                     </div>
                   </CardHeader>
                 </Card>
+                </div>
 
                 {/* Image for Feedbacker */}
                 <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
@@ -232,12 +240,18 @@ export default function ServicesPage() {
 
               {/* Cours Solo Card */}
               <div className="flex flex-col space-y-6">
-                <Card className="bg-card/30 backdrop-blur-sm border-border/50 flex-1 flex flex-col">
+                <div className="relative flex-1 flex flex-col overflow-hidden rounded-2xl p-[3px]" style={{
+                  animation: 'goldenSparkle 2.5s ease-in-out infinite'
+                }}>
+                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#ffd700_0%,#ffed4e_25%,#ffd700_50%,#fff59d_75%,#ffd700_100%)]" />
+                <Card className="bg-card backdrop-blur-sm flex-1 flex flex-col relative rounded-2xl border-0" style={{
+                  boxShadow: '0 0 25px rgba(255, 215, 0, 0.4)'
+                }}>
                   <CardHeader>
-                    <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
-                      <User className="h-8 w-8 text-primary" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-yellow-400/30 to-orange-400/30 rounded-xl flex items-center justify-center mb-4">
+                      <User className="h-8 w-8 text-yellow-400" />
                     </div>
-                    <CardTitle className="text-2xl">Cours Privé</CardTitle>
+                    <CardTitle className="text-2xl bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">Cours Privé ✧</CardTitle>
                     <CardDescription className="text-lg">
                       Accompagnement personnalisé pour une progression optimale
                     </CardDescription>
@@ -280,13 +294,33 @@ export default function ServicesPage() {
                     </p>
 
                     <EnhancedSpotlightButton
-                      className="w-full py-0.5 text-lg mt-auto"
+                      className="w-full px-0.5 py-0.5 text-lg mt-auto"
                       onClick={() => setIsCoachingFormOpen(true)}
+                      focusRingColor="golden"
+                      gradientColor="golden"
+                      sparkles
                     >
                       Réserver une Session
                     </EnhancedSpotlightButton>
                   </CardContent>
                 </Card>
+                
+                {/* Moving Sparkles for Premium Effect */}
+                <>
+                  {/* Sparkle 1 - Floating up-right */}
+                  <div className="absolute -top-2 -right-2 w-1 h-1 bg-yellow-400 rounded-full animate-[sparkleFloat1_3s_ease-in-out_infinite]"></div>
+                  {/* Sparkle 2 - Floating down-left */}
+                  <div className="absolute -bottom-1 -left-3 w-0.5 h-0.5 bg-amber-300 rounded-full animate-[sparkleFloat2_4s_ease-in-out_infinite_0.5s]"></div>
+                  {/* Sparkle 3 - Floating up-left */}
+                  <div className="absolute top-1 -left-2 w-1.5 h-1.5 bg-yellow-500 rounded-full animate-[sparkleFloat3_2.5s_ease-in-out_infinite_1s]"></div>
+                  {/* Sparkle 4 - Floating down-right */}
+                  <div className="absolute -bottom-2 -right-1 w-0.5 h-0.5 bg-orange-400 rounded-full animate-[sparkleFloat4_3.5s_ease-in-out_infinite_1.5s]"></div>
+                  {/* Sparkle 5 - Floating up */}
+                  <div className="absolute top-0 right-4 w-1 h-1 bg-amber-400 rounded-full animate-[sparkleFloat5_4.5s_ease-in-out_infinite_2s]"></div>
+                  {/* Sparkle 6 - Orbiting */}
+                  <div className="absolute top-1/2 left-1/2 w-0.5 h-0.5 bg-yellow-300 rounded-full animate-[sparkleOrbit_6s_linear_infinite]"></div>
+                </>
+                </div>
 
                 {/* Image for Cours Privé */}
                 <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
@@ -302,10 +336,11 @@ export default function ServicesPage() {
           </div>
         </section>
 
+
         {/* Commissions Section */}
         <section id="commissions" className="py-20 px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <Card className="bg-card/30 backdrop-blur-sm border-border/50 overflow-hidden">
+            <Card className="bg-card backdrop-blur-sm border-border/50 overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative aspect-square lg:aspect-auto">
                   <Image src="/images/shanks.jpg" alt="Commission Artwork - Shanks" fill className="object-cover" />
@@ -376,7 +411,7 @@ export default function ServicesPage() {
         {/* E-books & Tutos Section */}
         <section id="ebooks" className="py-20 px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <Card className="bg-card/30 backdrop-blur-sm border-border/50 overflow-hidden">
+            <Card className="bg-card backdrop-blur-sm border-border/50 overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
                   <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
@@ -443,12 +478,12 @@ export default function ServicesPage() {
         {/* Print Shop Section */}
         <section id="print-shop" className="py-20 px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <Card className="bg-card/30 backdrop-blur-sm border-border/50 overflow-hidden">
+            <Card className="bg-card backdrop-blur-sm border-border/50 overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative aspect-square lg:aspect-auto">
                   <Image
-                    src="/images/soccer-team.jpg"
-                    alt="Print Shop Artwork - Soccer Team"
+                    src="/images/yo.jpg"
+                    alt="Print Shop Artwork - Haikyu"
                     fill
                     className="object-cover"
                   />
@@ -468,11 +503,11 @@ export default function ServicesPage() {
                   <div className="space-y-4 mb-8">
                     <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
                       <span className="font-medium">Print A4</span>
-                      <span className="font-bold text-primary">10€ - 15€</span>
+                      <span className="font-bold text-primary">7€ - 12€</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
                       <span className="font-medium">Print A3</span>
-                      <span className="font-bold text-primary">25€ - 45€</span>
+                      <span className="font-bold text-primary">22€ - 42€</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
                       <span className="font-medium">Canvas Premium</span>
@@ -517,7 +552,7 @@ export default function ServicesPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-card/30 backdrop-blur-sm border-t border-border/50 py-12 px-4 relative z-10">
+      <footer className="bg-card backdrop-blur-sm border-t border-border/50 py-12 px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
@@ -536,13 +571,13 @@ export default function ServicesPage() {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => window.location.href = '/#gallery'} className="hover:text-primary transition-colors">
+                  <button onClick={() => window.location.href = '/gallerie'} className="hover:text-primary transition-colors">
                     Portfolio
                   </button>
                 </li>
                 <li>
                   <button onClick={() => window.location.href = '/#retours'} className="hover:text-primary transition-colors">
-                    Retours
+                    Avis
                   </button>
                 </li>
                 <li>

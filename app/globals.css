@@ -333,3 +333,60 @@
   color: var(--primary-foreground);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
+
+/* Sparkle animations for premium course effects */
+@keyframes sparkleFloat1 {
+  0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+  20% { transform: translate(-2px, -4px) scale(1) rotate(90deg); opacity: 1; }
+  80% { transform: translate(-4px, -8px) scale(1) rotate(270deg); opacity: 1; }
+  100% { transform: translate(-6px, -12px) scale(0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes sparkleFloat2 {
+  0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+  25% { transform: translate(-3px, 2px) scale(1) rotate(120deg); opacity: 0.8; }
+  75% { transform: translate(-6px, 4px) scale(1) rotate(240deg); opacity: 0.6; }
+  100% { transform: translate(-9px, 6px) scale(0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes sparkleFloat3 {
+  0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+  30% { transform: translate(-2px, -3px) scale(1.2) rotate(150deg); opacity: 1; }
+  70% { transform: translate(-4px, -6px) scale(1) rotate(300deg); opacity: 0.8; }
+  100% { transform: translate(-6px, -9px) scale(0) rotate(450deg); opacity: 0; }
+}
+
+@keyframes sparkleFloat4 {
+  0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+  15% { transform: translate(2px, 3px) scale(0.8) rotate(60deg); opacity: 0.7; }
+  85% { transform: translate(4px, 6px) scale(1) rotate(300deg); opacity: 0.5; }
+  100% { transform: translate(6px, 9px) scale(0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes sparkleFloat5 {
+  0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+  40% { transform: translate(0, -5px) scale(1) rotate(180deg); opacity: 1; }
+  60% { transform: translate(0, -8px) scale(1) rotate(270deg); opacity: 0.8; }
+  100% { transform: translate(0, -12px) scale(0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes sparkleOrbit {
+  0% { transform: translate(-50%, -50%) rotate(0deg) translateX(20px) rotate(0deg); opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(360deg) translateX(20px) rotate(-360deg); opacity: 0.5; }
+}
+
+/* Silver and Golden coaching card sparkle effects */
+@keyframes silverSparkle {
+  0%, 100% { box-shadow: 0 0 20px rgba(192, 192, 192, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(192, 192, 192, 0.5), 0 0 40px rgba(192, 192, 192, 0.2); }
+}
+
+@keyframes goldenSparkle {
+  0%, 100% { 
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4), 0 0 35px rgba(255, 215, 0, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.6), 0 0 45px rgba(255, 215, 0, 0.3), 0 0 55px rgba(255, 215, 0, 0.1);
+  }
+}

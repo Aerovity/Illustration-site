@@ -15,10 +15,14 @@ interface EnhancedSpotlightButtonProps extends React.ButtonHTMLAttributes<HTMLBu
 export function EnhancedSpotlightButton({ children, className, variant, focusRingColor, gradientColor, sparkles, ...props }: EnhancedSpotlightButtonProps) {
   const focusRingClass = focusRingColor === 'golden' 
     ? "focus:ring-[#facc15] focus:ring-offset-[#fef3c7]" 
+    : focusRingColor === 'silver'
+    ? "focus:ring-[#c0c0c0] focus:ring-offset-[#f5f5f5]"
     : "focus:ring-purple-400 focus:ring-offset-slate-50"
 
   const gradientClass = gradientColor === 'golden'
     ? "bg-[conic-gradient(from_90deg_at_50%_50%,#f59e0b_0%,#eab308_25%,#f59e0b_50%,#d97706_75%,#f59e0b_100%)]"
+    : gradientColor === 'silver'
+    ? "bg-[conic-gradient(from_90deg_at_50%_50%,#c0c0c0_0%,#e8e8e8_25%,#c0c0c0_50%,#f5f5f5_75%,#c0c0c0_100%)]"
     : "bg-[conic-gradient(from_90deg_at_50%_50%,#a855f7_0%,#3b82f6_50%,#a855f7_100%)]"
 
   return (

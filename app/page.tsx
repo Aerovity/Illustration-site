@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Home, User, Briefcase, ImageIcon, Mail, Phone, MapPin, Instagram, Twitter, Youtube, Users, Palette, ShoppingBag, BookOpen } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
-import { ArtworkGallery } from "@/components/artwork-gallery"
+import { MainPortfolio } from "@/components/main-portfolio"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { NavBar } from "@/components/ui/tubelight-navbar"
 
@@ -23,8 +23,8 @@ function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideo
   }, [showVideo])
 
   return (
-    <div className="absolute inset-0 z-0">
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${showVideo ? "opacity-0" : "opacity-100"}`}>
+    <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${showVideo ? "transform translate-x-[-100%]" : "transform translate-x-0"}`}>
         <Image
           src="/images/hero-bg.jpg"
           alt="Hero Background"
@@ -34,14 +34,15 @@ function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideo
           priority
         />
       </div>
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${showVideo ? "opacity-100" : "opacity-0"}`}>
+      <div className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${showVideo ? "transform translate-x-0" : "transform translate-x-full"}`}>
         <video
           ref={videoRef}
           autoPlay
           muted
+          loop
           playsInline
           disablePictureInPicture
-          controlsList="nodownload nofullscreen noremoteplayback"
+          controlsList="nodownload nofullscreen noremoteplaybook"
           className="w-full h-full object-cover object-top opacity-60"
           style={{ objectPosition: "center 20%" }}
           onEnded={onVideoEnd}
@@ -69,17 +70,17 @@ function HeroOverlay({ showVideo }: { showVideo: boolean }) {
 
 function SlideIndicators({ showVideo, onSlideChange }: { showVideo: boolean; onSlideChange: (slideIndex: number) => void }) {
   return (
-    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-4">
       <button
         onClick={() => onSlideChange(0)}
-        className={`w-3 h-3 rounded-full transition-all duration-500 cursor-pointer ${
+        className={`w-5 h-5 rounded-full transition-all duration-500 cursor-pointer hover:scale-125 ${
           !showVideo ? "bg-white shadow-lg scale-110" : "bg-white/40 hover:bg-white/60"
         }`}
         aria-label="Go to slide 1"
       />
       <button
         onClick={() => onSlideChange(1)}
-        className={`w-3 h-3 rounded-full transition-all duration-500 cursor-pointer ${
+        className={`w-5 h-5 rounded-full transition-all duration-500 cursor-pointer hover:scale-125 ${
           showVideo
             ? "bg-gradient-to-r from-yellow-400 to-orange-400 shadow-lg shadow-yellow-500/25 scale-110"
             : "bg-white/40 hover:bg-white/60"
@@ -150,7 +151,7 @@ function HeroContent({
               sparkles={true}
               className="px-0.5 py-0.5 text-lg bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 text-black hover:shadow-lg hover:shadow-yellow-500/25 transition-all duration-1000 ease-out transform translate-y-0 opacity-100"
             >
-              Coaching Pro ✧
+              Rejoindre les cours ✧
             </EnhancedSpotlightButton>
           </div>
         </>
@@ -179,12 +180,12 @@ function HeroSection({
     clearAutoSlideTimeout()
     const timeout = setTimeout(() => {
       setShowVideo(!fromVideo)
-    }, 3000)
+    }, fromVideo ? 4000 : 8000) // Show video for 8 seconds, image for 4 seconds
     setAutoSlideTimeout(timeout)
   }
 
   useEffect(() => {
-    // Start with image for 3 seconds, then switch to video
+    // Start with image for 8 seconds, then switch to video
     setShowVideo(false)
     startAutoSlide(false)
     
@@ -192,7 +193,7 @@ function HeroSection({
   }, [])
 
   const handleVideoEnd = () => {
-    // When video ends, show image for 3 seconds, then restart cycle
+    // When video ends, show image for 8 seconds, then restart cycle
     setShowVideo(false)
     startAutoSlide(false)
   }
@@ -223,13 +224,13 @@ export default function HomePage() {
   const navItems = [
     { name: "Accueil", url: "#accueil", icon: Home },
     { name: "À propos", url: "#about", icon: User },
-    { name: "Retours", url: "#retours", icon: Mail },
-    { name: "Portfolio", url: "#gallery", icon: ImageIcon },
+    { name: "Avis", url: "#retours", icon: Mail },
+    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Contact", url: "#contact", icon: Mail },
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
     { name: "E-books", url: "/services#ebooks", icon: BookOpen },
-    { name: "Contact", url: "#contact", icon: Mail },
   ]
 
   useEffect(() => {
@@ -248,8 +249,8 @@ export default function HomePage() {
       const sections = [
         "accueil",
         "about",
-        "gallery",
         "retours",
+        "gallery",
         "contact",
         "coaching",
         "commissions",
@@ -391,8 +392,8 @@ ${fullName}`
 
               <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
                 <Image
-                  src="/images/profile.jpg"
-                  alt="Bobe Florian Portrait - Sasuke Artwork"
+                  src="/images/florian.png"
+                  alt="Bobe Florian"
                   fill
                   className="object-cover"
                 />
@@ -410,9 +411,24 @@ ${fullName}`
           <ReviewsCarousel />
         </section>
 
-        {/* Artwork Gallery */}
+        {/* Portfolio */}
         <div id="gallery">
-          <ArtworkGallery />
+          <MainPortfolio />
+          
+          {/* Gallery Button Section */}
+          <section className="py-12 px-4 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <p className="text-lg text-muted-foreground mb-8">
+                Découvrez l'ensemble de mes créations dans ma galerie complète
+              </p>
+              <EnhancedSpotlightButton
+                onClick={() => (window.location.href = "/gallerie")}
+                className="px-0.5 py-0.5 text-lg"
+              >
+                Voir la Galerie
+              </EnhancedSpotlightButton>
+            </div>
+          </section>
         </div>
 
         {/* Contact Section */}
@@ -544,13 +560,13 @@ ${fullName}`
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("gallery")} className="hover:text-primary transition-colors">
+                  <button onClick={() => window.location.href = "/gallerie"} className="hover:text-primary transition-colors">
                     Portfolio
                   </button>
                 </li>
                 <li>
                   <button onClick={() => scrollToSection("retours")} className="hover:text-primary transition-colors">
-                    Retours
+                    Avis
                   </button>
                 </li>
                 <li>
