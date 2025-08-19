@@ -7,6 +7,7 @@ import { Home, User, Briefcase, ImageIcon, Mail, Phone, MapPin, Instagram, Twitt
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { ArtworkGallery } from "@/components/artwork-gallery"
+import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { NavBar } from "@/components/ui/tubelight-navbar"
 
 // Hero Background Component with auto-switching between image and video
@@ -222,11 +223,11 @@ export default function HomePage() {
   const navItems = [
     { name: "Accueil", url: "#accueil", icon: Home },
     { name: "À propos", url: "#about", icon: User },
-    { name: "Portfolio", url: "#portfolio", icon: Briefcase },
-    { name: "Galerie", url: "#gallery", icon: ImageIcon },
+    { name: "Retours", url: "#retours", icon: Mail },
+    { name: "Portfolio", url: "#gallery", icon: ImageIcon },
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
-    { name: "Print Shop", url: "/services#print-shop", icon: ShoppingBag },
+    { name: "Print Shop", url: "/shop", icon: ShoppingBag },
     { name: "E-books", url: "/services#ebooks", icon: BookOpen },
     { name: "Contact", url: "#contact", icon: Mail },
   ]
@@ -247,8 +248,8 @@ export default function HomePage() {
       const sections = [
         "accueil",
         "about",
-        "portfolio",
         "gallery",
+        "retours",
         "contact",
         "coaching",
         "commissions",
@@ -404,63 +405,9 @@ ${fullName}`
           </div>
         </section>
 
-        {/* Portfolio / Ressources Section */}
-        <section id="portfolio" className="py-20 px-4 relative z-10">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                Portfolio / Ressources
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
-                Découvrez mon processus créatif et mes techniques à travers cette vidéo exclusive. Contenu gratuit,
-                articles, et études de cas pour développer votre crédibilité artistique.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
-                <iframe
-                  src="https://www.youtube.com/embed/xMXUyqvFTQk?start=342"
-                  title="Portfolio Ressources Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-2xl font-semibold">Ressources Gratuites</h3>
-                <div className="space-y-4">
-                  <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                    <CardContent className="p-4">
-                      <h4 className="font-medium mb-2">Articles & Tutoriels</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Techniques avancées, conseils professionnels et études de cas détaillées
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                    <CardContent className="p-4">
-                      <h4 className="font-medium mb-2">Processus Créatifs</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Découvrez les étapes de création de mes illustrations les plus populaires
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                    <CardContent className="p-4">
-                      <h4 className="font-medium mb-2">Études de Cas</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Analyses détaillées de projets clients et retours d'expérience
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Reviews Section */}
+        <section id="retours" className="py-20 px-4 relative z-10">
+          <ReviewsCarousel />
         </section>
 
         {/* Artwork Gallery */}
@@ -597,13 +544,13 @@ ${fullName}`
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("portfolio")} className="hover:text-primary transition-colors">
+                  <button onClick={() => scrollToSection("gallery")} className="hover:text-primary transition-colors">
                     Portfolio
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("gallery")} className="hover:text-primary transition-colors">
-                    Galerie
+                  <button onClick={() => scrollToSection("retours")} className="hover:text-primary transition-colors">
+                    Retours
                   </button>
                 </li>
                 <li>

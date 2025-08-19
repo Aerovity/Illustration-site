@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 import type { LucideIcon } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface NavItem {
@@ -17,9 +18,12 @@ interface NavBarProps {
   items: NavItem[]
   className?: string
   activeSection?: string
+  showCart?: boolean
+  cartCount?: number
+  onCartClick?: () => void
 }
 
-export function NavBar({ items, className, activeSection }: NavBarProps) {
+export function NavBar({ items, className, activeSection, showCart = false, cartCount = 0, onCartClick }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name)
   const [isMobile, setIsMobile] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -49,13 +53,13 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
       const sectionToNavMap: { [key: string]: string } = {
         accueil: "Accueil",
         about: "À propos",
-        portfolio: "Portfolio",
-        gallery: "Galerie",
+        gallery: "Portfolio",
         contact: "Contact",
         coaching: "Coaching",
         commissions: "Commissions",
         "print-shop": "Print Shop",
         ebooks: "E-books",
+        retours: "Retours",
       }
 
       const navName = sectionToNavMap[activeSection]
@@ -168,6 +172,24 @@ export function NavBar({ items, className, activeSection }: NavBarProps) {
               </Link>
             )
           })}
+          
+          {/* Cart Icon - Only show when showCart is true */}
+          {showCart && (
+            <button
+              onClick={onCartClick}
+              className={cn(
+                "relative cursor-pointer text-sm font-semibold rounded-full transition-all duration-300",
+                "text-foreground/80 hover:text-primary bg-primary/20 hover:bg-primary/30",
+                isScrolled ? "px-3 py-1.5" : isMobile ? "px-2 py-1.5" : "px-6 py-3",
+                "flex items-center gap-2"
+              )}
+            >
+              <ShoppingCart size={isMobile && !isScrolled ? 16 : 18} strokeWidth={2.5} />
+              <span className={cn("font-medium", isScrolled ? "text-xs" : "text-sm")}>
+                {cartCount}
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>

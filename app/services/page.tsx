@@ -21,11 +21,11 @@ export default function ServicesPage() {
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
     { name: "À propos", url: "/#about", icon: User },
-    { name: "Portfolio", url: "/#portfolio", icon: Briefcase },
-    { name: "Galerie", url: "/#gallery", icon: ImageIcon },
+    { name: "Retours", url: "/#retours", icon: Mail },
+    { name: "Portfolio", url: "/#gallery", icon: ImageIcon },
     { name: "Coaching", url: "#coaching", icon: Users },
     { name: "Commissions", url: "#commissions", icon: Palette },
-    { name: "Print Shop", url: "#print-shop", icon: ShoppingBag },
+    { name: "Print Shop", url: "/shop", icon: ShoppingBag },
     { name: "E-books", url: "#ebooks", icon: BookOpen },
     { name: "Contact", url: "/#contact", icon: Mail },
   ]
@@ -536,8 +536,13 @@ export default function ServicesPage() {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("portfolio")} className="hover:text-primary transition-colors">
+                  <button onClick={() => window.location.href = '/#gallery'} className="hover:text-primary transition-colors">
                     Portfolio
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => window.location.href = '/#retours'} className="hover:text-primary transition-colors">
+                    Retours
                   </button>
                 </li>
                 <li>

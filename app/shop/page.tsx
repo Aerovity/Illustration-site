@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import { ArrowLeft, ShoppingCart, Plus, Minus, X, Instagram, Twitter, Youtube, Filter, ChevronDown, Search } from "lucide-react"
+import { ArrowLeft, ShoppingCart, Plus, Minus, X, Instagram, Twitter, Youtube, Filter, ChevronDown, Search, Home, User, ImageIcon, Mail, Users, Palette, BookOpen } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination"
+import { NavBar } from "@/components/ui/tubelight-navbar"
 
 interface PrintItem {
   id: string
@@ -86,6 +87,19 @@ export default function ShopPage() {
   const [isImageExpanded, setIsImageExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [loadingProgress, setLoadingProgress] = useState(0)
+  const [activeSection, setActiveSection] = useState("print-shop")
+
+  const navItems = [
+    { name: "Accueil", url: "/#accueil", icon: Home },
+    { name: "À propos", url: "/#about", icon: User },
+    { name: "Retours", url: "/#retours", icon: Mail },
+    { name: "Portfolio", url: "/#gallery", icon: ImageIcon },
+    { name: "Coaching", url: "/services#coaching", icon: Users },
+    { name: "Commissions", url: "/services#commissions", icon: Palette },
+    { name: "Print Shop", url: "/shop", icon: ShoppingCart },
+    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
+    { name: "Contact", url: "/#contact", icon: Mail },
+  ]
 
   useEffect(() => {
     setIsClient(true)
@@ -398,34 +412,16 @@ export default function ShopPage() {
           } as React.CSSProperties
         }
       />
-      {/* Header with Cart */}
-      <header className="sticky top-0 w-full bg-background/95 backdrop-blur-md border-b border-border/50 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                Retour
-              </button>
-              <Image src="/images/logo.png" alt="Bobe Florian Logo" width={120} height={40} className="h-8 w-auto" />
-            </div>
-
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 px-4 py-2 rounded-full transition-colors"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="font-medium">{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <NavBar 
+        items={navItems} 
+        activeSection={activeSection}
+        showCart={true}
+        cartCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
+        onCartClick={() => setIsCartOpen(true)}
+      />
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center overflow-hidden">
+      <section className="relative py-20 px-4 text-center overflow-hidden mt-20">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/artwork-4.jpg"
