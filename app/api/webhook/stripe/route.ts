@@ -29,8 +29,30 @@ export async function POST(request: NextRequest) {
 
       if (orderType === 'print_shop') {
         // Handle print shop orders
-        const cartData = session.metadata?.cartData ? JSON.parse(session.metadata.cartData) : []
-        const shippingAddress = session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress) : {}
+        // Parse cart items from metadata
+        const cartItemsString = session.metadata?.cartItems || ''
+        const items = cartItemsString.split(';')
+          .filter(item => item.trim())
+          .map(item => {
+            const [name, size, quantity, price, license] = item.split('|')
+            return {
+              name: name || 'Unknown Item',
+              size: size || 'Unknown',
+              quantity: parseInt(quantity) || 1,
+              price: parseFloat(price) || 0,
+              license: license === 'N/A' ? '' : license || ''
+            }
+          })
+
+        // Build shipping address from metadata
+        const shippingAddress = {
+          firstName: session.metadata?.shippingFirstName,
+          lastName: session.metadata?.shippingLastName,
+          address: session.metadata?.shippingAddress,
+          city: session.metadata?.shippingCity,
+          postalCode: session.metadata?.shippingPostalCode,
+          country: session.metadata?.shippingCountry
+        }
         
         // Prepare order data for FormCarry
         const orderData = {
@@ -51,13 +73,7 @@ export async function POST(request: NextRequest) {
           deliveryOption: session.metadata?.deliveryOption,
           
           // Order items
-          items: cartData.map((item: any) => ({
-            name: item.name,
-            size: item.size,
-            quantity: item.quantity,
-            price: item.price,
-            license: item.license
-          })),
+          items: items,
           
           timestamp: new Date().toISOString(),
         }
@@ -76,6 +92,60 @@ export async function POST(request: NextRequest) {
           console.error('Failed to send shop order data to FormCarry:', await formCarryResponse.text())
         } else {
           console.log('Successfully sent shop order data to FormCarry for session:', session.id)
+        }
+
+        // Send email notifications via FormCarry
+        try {
+          const customerName = `${session.metadata?.customerFirstName} ${session.metadata?.customerLastName}`
+          const itemsList = items.map((item: any) => 
+            `• ${item.name} (Taille ${item.size}) x${item.quantity} - ${item.price}€`
+          ).join('\n')
+
+          const orderMessage = `
+🎉 NOUVELLE COMMANDE REÇUE !
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 DÉTAILS DE LA COMMANDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🆔 ID de commande : ${session.id}
+👤 Client : ${customerName}
+📧 Email : ${session.metadata?.customerEmail}
+📱 Téléphone : ${session.metadata?.customerPhone || 'Non renseigné'}
+💰 Montant total : ${((session.amount_total || 0) / 100).toFixed(2)}€
+
+📋 Articles commandés :
+${itemsList}
+
+🚚 Livraison : ${session.metadata?.deliveryOption}
+📍 Adresse de livraison :
+${shippingAddress.firstName} ${shippingAddress.lastName}
+${shippingAddress.address}
+${shippingAddress.postalCode} ${shippingAddress.city}
+${shippingAddress.country}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Action requise : Préparer et expédier la commande.
+          `.trim()
+
+          // Send via FormCarry using form data
+          const formData = new FormData()
+          formData.append('name', customerName)
+          formData.append('email', session.metadata?.customerEmail || '')
+          formData.append('message', orderMessage)
+
+          const emailResponse = await fetch('https://formcarry.com/s/JuLfbQPieYN', {
+            method: 'POST',
+            body: formData
+          })
+
+          if (!emailResponse.ok) {
+            console.error('Failed to send order notification via FormCarry:', await emailResponse.text())
+          } else {
+            console.log('Successfully sent order notification via FormCarry for session:', session.id)
+          }
+        } catch (emailError) {
+          console.error('Error sending order notification:', emailError)
         }
 
       } else {

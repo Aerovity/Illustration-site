@@ -51,6 +51,9 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Store cart and address data temporarily (we'll retrieve this in webhook)
+    // In a real app, you'd use a database. For now, we'll include it in line_item descriptions
+    
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -67,16 +70,23 @@ export async function POST(request: NextRequest) {
         customerLastName: address.lastName,
         customerEmail: address.email,
         customerPhone: address.phone || '',
-        shippingAddress: JSON.stringify(address),
         deliveryOption: deliveryOption,
-        cartData: JSON.stringify(cart),
+        totalAmount: totalAmount.toString(),
+        // Store address as separate fields
+        shippingFirstName: address.firstName,
+        shippingLastName: address.lastName,
+        shippingAddress: address.address.substring(0, 100),
+        shippingCity: address.city,
+        shippingPostalCode: address.postalCode,
+        shippingCountry: address.country,
+        // Store simplified cart data
+        cartItems: cart.map((item: any) => 
+          `${item.name}|${item.size}|${item.quantity}|${item.price}|${item.license || 'N/A'}`
+        ).join(';').substring(0, 400),
       },
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
-      automatic_tax: {
-        enabled: true,
-      },
     })
 
     return NextResponse.json({ sessionId: session.id })

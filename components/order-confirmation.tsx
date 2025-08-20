@@ -26,23 +26,19 @@ export function OrderConfirmation({ sessionId, onClose }: OrderConfirmationProps
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const response = await fetch(`/api/get-order-details?session_id=${sessionId}`)
-        if (response.ok) {
-          const data = await response.json()
-          setOrderDetails(data)
-        }
-      } catch (error) {
-        console.error('Error fetching order details:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
+    // Just set a simple order confirmation without API call
     if (sessionId) {
-      fetchOrderDetails()
+      setOrderDetails({
+        id: sessionId,
+        customer_email: 'Envoyé à votre email',
+        payment_status: 'paid',
+        amount_total: 0,
+        currency: 'eur',
+        metadata: {},
+        shipping: {}
+      })
     }
+    setLoading(false)
   }, [sessionId])
 
   return (
