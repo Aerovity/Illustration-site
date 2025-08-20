@@ -8,6 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { CommissionForm } from "@/components/commission-form"
 import { CoachingForm } from "@/components/coaching-form"
+import { SubscriptionForm } from "@/components/subscription-form"
+import { PaymentSuccess } from "@/components/payment-success"
+import { PaymentCancelled } from "@/components/payment-cancelled"
 import { NavBar } from "@/components/ui/tubelight-navbar"
 
 export default function ServicesPage() {
@@ -17,6 +20,10 @@ export default function ServicesPage() {
   const [isClient, setIsClient] = useState(false)
   const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false)
   const [isCoachingFormOpen, setIsCoachingFormOpen] = useState(false)
+  const [isSubscriptionFormOpen, setIsSubscriptionFormOpen] = useState(false)
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
+  const [showPaymentCancelled, setShowPaymentCancelled] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
@@ -35,6 +42,23 @@ export default function ServicesPage() {
 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
+    }
+
+    // Check for payment success in URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const sessionIdParam = urlParams.get('session_id')
+    const cancelled = urlParams.get('cancelled')
+    
+    if (sessionIdParam) {
+      setSessionId(sessionIdParam)
+      setShowPaymentSuccess(true)
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname)
+    } else if (cancelled) {
+      // Handle cancelled payment
+      setShowPaymentCancelled(true)
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname)
     }
 
     window.addEventListener("mousemove", handleMouseMove)
@@ -169,7 +193,7 @@ export default function ServicesPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Cours Collectif Card */}
-              <div className="flex flex-col space-y-6">
+              <div className="flex flex-col">
                 <div className="relative flex-1 flex flex-col overflow-hidden rounded-2xl p-[2px]" style={{
                   animation: 'silverSparkle 3s ease-in-out infinite'
                 }}>
@@ -178,7 +202,7 @@ export default function ServicesPage() {
                   boxShadow: '0 0 20px rgba(192, 192, 192, 0.3)'
                 }}>
                   <div className="absolute top-4 right-4 bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-medium">
-                    10 places restantes
+                    5 places restantes
                   </div>
                   <CardHeader className="flex-1">
                     <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
@@ -205,10 +229,15 @@ export default function ServicesPage() {
                             Patreon
                           </a>
                         </p>
-                        <EnhancedSpotlightButton className="w-full px-0.5 py-0.5 text-lg mb-4" disabled focusRingColor="silver" gradientColor="silver">
-                          Sold Out
+                        <EnhancedSpotlightButton 
+                          className="w-full px-0.5 py-0.5 text-lg mb-4" 
+                          focusRingColor="silver" 
+                          gradientColor="silver"
+                          onClick={() => setIsSubscriptionFormOpen(true)}
+                        >
+                          Participer aux Cours
                         </EnhancedSpotlightButton>
-                        <div className="text-xs text-red-400 mb-4">Limited spaces - SOLD OUT</div>
+                        <div className="text-xs text-green-400 mb-4">Places disponibles - Rejoignez-nous!</div>
                         <p className="text-sm text-muted-foreground mb-4">Merci du fond du cœur ❤️</p>
                         <div className="space-y-2 text-sm mb-4">
                           <p>✅ Tous les avantages des tiers précédents</p>
@@ -222,24 +251,24 @@ export default function ServicesPage() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Image for Feedbacker - Inside Card */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-xl mt-4">
+                      <Image
+                        src="/prints/24_09_Dungeon_Meshi.jpg"
+                        alt="Feedbacker - Dungeon Meshi"
+                        fill
+                        className="object-cover"
+                        style={{ objectPosition: "center top" }}
+                      />
+                    </div>
                   </CardHeader>
                 </Card>
-                </div>
-
-                {/* Image for Feedbacker */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-                  <Image
-                    src="/images/22_Gojo.jpg"
-                    alt="Feedbacker - Gojo"
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: "center top" }}
-                  />
                 </div>
               </div>
 
               {/* Cours Solo Card */}
-              <div className="flex flex-col space-y-6">
+              <div className="flex flex-col">
                 <div className="relative flex-1 flex flex-col overflow-hidden rounded-2xl p-[3px]" style={{
                   animation: 'goldenSparkle 2.5s ease-in-out infinite'
                 }}>
@@ -294,7 +323,7 @@ export default function ServicesPage() {
                     </p>
 
                     <EnhancedSpotlightButton
-                      className="w-full px-0.5 py-0.5 text-lg mt-auto"
+                      className="w-full px-0.5 py-0.5 text-lg mb-4"
                       onClick={() => setIsCoachingFormOpen(true)}
                       focusRingColor="golden"
                       gradientColor="golden"
@@ -302,6 +331,16 @@ export default function ServicesPage() {
                     >
                       Réserver une Session
                     </EnhancedSpotlightButton>
+
+                    {/* Image for Cours Privé - Inside Card */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                      <Image
+                        src="/images/demon-warrior.jpg"
+                        alt="Cours Privé - Demon Warrior"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
                 
@@ -320,16 +359,6 @@ export default function ServicesPage() {
                   {/* Sparkle 6 - Orbiting */}
                   <div className="absolute top-1/2 left-1/2 w-0.5 h-0.5 bg-yellow-300 rounded-full animate-[sparkleOrbit_6s_linear_infinite]"></div>
                 </>
-                </div>
-
-                {/* Image for Cours Privé */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-                  <Image
-                    src="/images/demon-warrior.jpg"
-                    alt="Cours Privé - Demon Warrior"
-                    fill
-                    className="object-cover"
-                  />
                 </div>
               </div>
             </div>
@@ -713,6 +742,31 @@ export default function ServicesPage() {
 
       {/* Coaching Form Modal */}
       <CoachingForm isOpen={isCoachingFormOpen} onClose={() => setIsCoachingFormOpen(false)} />
+      
+      {/* Subscription Form Modal for Cours Collectifs */}
+      <SubscriptionForm isOpen={isSubscriptionFormOpen} onClose={() => setIsSubscriptionFormOpen(false)} />
+      
+      {/* Payment Success Modal */}
+      {showPaymentSuccess && sessionId && (
+        <PaymentSuccess 
+          sessionId={sessionId} 
+          onClose={() => {
+            setShowPaymentSuccess(false)
+            setSessionId(null)
+          }} 
+        />
+      )}
+      
+      {/* Payment Cancelled Modal */}
+      {showPaymentCancelled && (
+        <PaymentCancelled 
+          onClose={() => setShowPaymentCancelled(false)}
+          onRetry={() => {
+            setShowPaymentCancelled(false)
+            setIsSubscriptionFormOpen(true)
+          }}
+        />
+      )}
     </div>
   )
 }
