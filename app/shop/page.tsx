@@ -7,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination"
 import { NavBar } from "@/components/ui/tubelight-navbar"
+import { CheckoutForm } from "@/components/checkout-form"
+import { OrderConfirmation } from "@/components/order-confirmation"
+import { PaymentCancelledShop } from "@/components/payment-cancelled-shop"
 
 interface PrintItem {
   id: string
@@ -91,6 +94,10 @@ export default function ShopPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [activeSection, setActiveSection] = useState("print-shop")
+  const [showCheckout, setShowCheckout] = useState(false)
+  const [showOrderConfirmation, setShowOrderConfirmation] = useState(false)
+  const [showPaymentCancelled, setShowPaymentCancelled] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
@@ -106,6 +113,25 @@ export default function ShopPage() {
 
   useEffect(() => {
     setIsClient(true)
+    
+    // Check for payment results in URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const paymentSuccess = urlParams.get('payment_success')
+    const paymentCancelled = urlParams.get('payment_cancelled')
+    const sessionIdParam = urlParams.get('session_id')
+    
+    if (paymentSuccess === 'true' && sessionIdParam) {
+      setSessionId(sessionIdParam)
+      setShowOrderConfirmation(true)
+      // Clear cart on successful payment
+      setCart([])
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname)
+    } else if (paymentCancelled === 'true') {
+      setShowPaymentCancelled(true)
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname)
+    }
     
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
@@ -1024,7 +1050,8 @@ export default function ShopPage() {
                       disabled={!canCheckout}
                       onClick={() => {
                         if (canCheckout) {
-                          alert('Fonctionnalité de paiement à venir!')
+                          setShowCheckout(true)
+                          setIsCartOpen(false)
                         }
                       }}
                     >
@@ -1184,6 +1211,41 @@ export default function ShopPage() {
           </div>
         </div>
       </footer>
+
+      {/* Checkout Form Modal */}
+      {showCheckout && (
+        <CheckoutForm
+          isOpen={showCheckout}
+          onClose={() => setShowCheckout(false)}
+          cart={cart}
+          deliveryOption={selectedDelivery}
+          deliveryPrice={getDeliveryPrice()}
+          totalAmount={getFinalTotal()}
+        />
+      )}
+
+      {/* Order Confirmation Modal */}
+      {showOrderConfirmation && sessionId && (
+        <OrderConfirmation
+          sessionId={sessionId}
+          onClose={() => {
+            setShowOrderConfirmation(false)
+            setSessionId(null)
+          }}
+        />
+      )}
+
+      {/* Payment Cancelled Modal */}
+      {showPaymentCancelled && (
+        <PaymentCancelledShop
+          onClose={() => setShowPaymentCancelled(false)}
+          onRetry={() => {
+            setShowPaymentCancelled(false)
+            setShowCheckout(true)
+          }}
+        />
+      )}
+
     </div>
   )
 }

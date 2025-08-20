@@ -37,6 +37,7 @@ export default function ServicesPage() {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
+
     window.addEventListener("mousemove", handleMouseMove)
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
@@ -169,7 +170,7 @@ export default function ServicesPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Cours Collectif Card */}
-              <div className="flex flex-col space-y-6">
+              <div className="flex flex-col">
                 <div className="relative flex-1 flex flex-col overflow-hidden rounded-2xl p-[2px]" style={{
                   animation: 'silverSparkle 3s ease-in-out infinite'
                 }}>
@@ -178,7 +179,7 @@ export default function ServicesPage() {
                   boxShadow: '0 0 20px rgba(192, 192, 192, 0.3)'
                 }}>
                   <div className="absolute top-4 right-4 bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-medium">
-                    10 places restantes
+                    5 places restantes
                   </div>
                   <CardHeader className="flex-1">
                     <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-4">
@@ -205,10 +206,15 @@ export default function ServicesPage() {
                             Patreon
                           </a>
                         </p>
-                        <EnhancedSpotlightButton className="w-full px-0.5 py-0.5 text-lg mb-4" disabled focusRingColor="silver" gradientColor="silver">
-                          Sold Out
+                        <EnhancedSpotlightButton 
+                          className="w-full px-0.5 py-0.5 text-lg mb-4" 
+                          focusRingColor="silver" 
+                          gradientColor="silver"
+                          onClick={() => window.open('https://www.patreon.com/bobe_florian', '_blank')}
+                        >
+                          Participer aux Cours
                         </EnhancedSpotlightButton>
-                        <div className="text-xs text-red-400 mb-4">Limited spaces - SOLD OUT</div>
+                        <div className="text-xs text-green-400 mb-4">Places disponibles - Rejoignez-nous!</div>
                         <p className="text-sm text-muted-foreground mb-4">Merci du fond du cœur ❤️</p>
                         <div className="space-y-2 text-sm mb-4">
                           <p>✅ Tous les avantages des tiers précédents</p>
@@ -222,24 +228,24 @@ export default function ServicesPage() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Image for Feedbacker - Inside Card */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-xl mt-4">
+                      <Image
+                        src="/prints/24_09_Dungeon_Meshi.jpg"
+                        alt="Feedbacker - Dungeon Meshi"
+                        fill
+                        className="object-cover"
+                        style={{ objectPosition: "center top" }}
+                      />
+                    </div>
                   </CardHeader>
                 </Card>
-                </div>
-
-                {/* Image for Feedbacker */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-                  <Image
-                    src="/images/22_Gojo.jpg"
-                    alt="Feedbacker - Gojo"
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: "center top" }}
-                  />
                 </div>
               </div>
 
               {/* Cours Solo Card */}
-              <div className="flex flex-col space-y-6">
+              <div className="flex flex-col">
                 <div className="relative flex-1 flex flex-col overflow-hidden rounded-2xl p-[3px]" style={{
                   animation: 'goldenSparkle 2.5s ease-in-out infinite'
                 }}>
@@ -294,7 +300,7 @@ export default function ServicesPage() {
                     </p>
 
                     <EnhancedSpotlightButton
-                      className="w-full px-0.5 py-0.5 text-lg mt-auto"
+                      className="w-full px-0.5 py-0.5 text-lg mb-4"
                       onClick={() => setIsCoachingFormOpen(true)}
                       focusRingColor="golden"
                       gradientColor="golden"
@@ -302,6 +308,16 @@ export default function ServicesPage() {
                     >
                       Réserver une Session
                     </EnhancedSpotlightButton>
+
+                    {/* Image for Cours Privé - Inside Card */}
+                    <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                      <Image
+                        src="/images/demon-warrior.jpg"
+                        alt="Cours Privé - Demon Warrior"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
                 
@@ -320,16 +336,6 @@ export default function ServicesPage() {
                   {/* Sparkle 6 - Orbiting */}
                   <div className="absolute top-1/2 left-1/2 w-0.5 h-0.5 bg-yellow-300 rounded-full animate-[sparkleOrbit_6s_linear_infinite]"></div>
                 </>
-                </div>
-
-                {/* Image for Cours Privé */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-                  <Image
-                    src="/images/demon-warrior.jpg"
-                    alt="Cours Privé - Demon Warrior"
-                    fill
-                    className="object-cover"
-                  />
                 </div>
               </div>
             </div>

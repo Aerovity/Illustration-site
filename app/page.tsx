@@ -70,7 +70,7 @@ function HeroOverlay({ showVideo }: { showVideo: boolean }) {
 
 function SlideIndicators({ showVideo, onSlideChange }: { showVideo: boolean; onSlideChange: (slideIndex: number) => void }) {
   return (
-    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-4">
+    <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-30 flex space-x-4">
       <button
         onClick={() => onSlideChange(0)}
         className={`w-5 h-5 rounded-full transition-all duration-500 cursor-pointer hover:scale-125 ${
