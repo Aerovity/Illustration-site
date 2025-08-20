@@ -8,9 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { CommissionForm } from "@/components/commission-form"
 import { CoachingForm } from "@/components/coaching-form"
-import { SubscriptionForm } from "@/components/subscription-form"
-import { PaymentSuccess } from "@/components/payment-success"
-import { PaymentCancelled } from "@/components/payment-cancelled"
 import { NavBar } from "@/components/ui/tubelight-navbar"
 
 export default function ServicesPage() {
@@ -20,10 +17,6 @@ export default function ServicesPage() {
   const [isClient, setIsClient] = useState(false)
   const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false)
   const [isCoachingFormOpen, setIsCoachingFormOpen] = useState(false)
-  const [isSubscriptionFormOpen, setIsSubscriptionFormOpen] = useState(false)
-  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
-  const [showPaymentCancelled, setShowPaymentCancelled] = useState(false)
-  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
@@ -44,22 +37,6 @@ export default function ServicesPage() {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
-    // Check for payment success in URL
-    const urlParams = new URLSearchParams(window.location.search)
-    const sessionIdParam = urlParams.get('session_id')
-    const cancelled = urlParams.get('cancelled')
-    
-    if (sessionIdParam) {
-      setSessionId(sessionIdParam)
-      setShowPaymentSuccess(true)
-      // Clean up URL
-      window.history.replaceState({}, '', window.location.pathname)
-    } else if (cancelled) {
-      // Handle cancelled payment
-      setShowPaymentCancelled(true)
-      // Clean up URL
-      window.history.replaceState({}, '', window.location.pathname)
-    }
 
     window.addEventListener("mousemove", handleMouseMove)
     return () => window.removeEventListener("mousemove", handleMouseMove)
@@ -233,7 +210,7 @@ export default function ServicesPage() {
                           className="w-full px-0.5 py-0.5 text-lg mb-4" 
                           focusRingColor="silver" 
                           gradientColor="silver"
-                          onClick={() => setIsSubscriptionFormOpen(true)}
+                          onClick={() => window.open('https://www.patreon.com/bobe_florian', '_blank')}
                         >
                           Participer aux Cours
                         </EnhancedSpotlightButton>
@@ -742,31 +719,6 @@ export default function ServicesPage() {
 
       {/* Coaching Form Modal */}
       <CoachingForm isOpen={isCoachingFormOpen} onClose={() => setIsCoachingFormOpen(false)} />
-      
-      {/* Subscription Form Modal for Cours Collectifs */}
-      <SubscriptionForm isOpen={isSubscriptionFormOpen} onClose={() => setIsSubscriptionFormOpen(false)} />
-      
-      {/* Payment Success Modal */}
-      {showPaymentSuccess && sessionId && (
-        <PaymentSuccess 
-          sessionId={sessionId} 
-          onClose={() => {
-            setShowPaymentSuccess(false)
-            setSessionId(null)
-          }} 
-        />
-      )}
-      
-      {/* Payment Cancelled Modal */}
-      {showPaymentCancelled && (
-        <PaymentCancelled 
-          onClose={() => setShowPaymentCancelled(false)}
-          onRetry={() => {
-            setShowPaymentCancelled(false)
-            setIsSubscriptionFormOpen(true)
-          }}
-        />
-      )}
     </div>
   )
 }

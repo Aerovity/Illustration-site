@@ -5,12 +5,12 @@ import { XCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 
-interface PaymentCancelledProps {
+interface PaymentCancelledShopProps {
   onClose: () => void
   onRetry: () => void
 }
 
-export function PaymentCancelled({ onClose, onRetry }: PaymentCancelledProps) {
+export function PaymentCancelledShop({ onClose, onRetry }: PaymentCancelledShopProps) {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Card className="bg-card/95 backdrop-blur-sm border-border/50 max-w-md w-full">
@@ -23,13 +23,13 @@ export function PaymentCancelled({ onClose, onRetry }: PaymentCancelledProps) {
         <CardContent className="space-y-4">
           <div className="text-center">
             <p className="text-muted-foreground">
-              Votre paiement a été annulé ou refusé. Aucun montant n'a été débité.
+              Votre paiement a été annulé. Votre panier a été conservé.
             </p>
           </div>
 
-          <div className="bg-red-50 border border-red-200 p-3 rounded-lg">
-            <p className="text-red-600 text-sm">
-              Si vous rencontrez des difficultés avec le paiement, n'hésitez pas à me contacter directement.
+          <div className="bg-orange-50 border border-orange-200 p-3 rounded-lg">
+            <p className="text-orange-600 text-sm">
+              Aucun montant n'a été débité de votre compte. Vous pouvez réessayer quand vous le souhaitez.
             </p>
           </div>
 
@@ -38,13 +38,13 @@ export function PaymentCancelled({ onClose, onRetry }: PaymentCancelledProps) {
               onClick={onRetry}
               className="flex-1"
             >
-              Réessayer
+              Réessayer le paiement
             </EnhancedSpotlightButton>
             <EnhancedSpotlightButton
               onClick={onClose}
               className="flex-1"
             >
-              Fermer
+              Continuer mes achats
             </EnhancedSpotlightButton>
           </div>
         </CardContent>
