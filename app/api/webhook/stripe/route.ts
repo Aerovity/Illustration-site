@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { sendOrderNotificationEmails, OrderData } from '@/lib/email-notifications'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-07-30.basil',
 })
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -46,12 +47,12 @@ export async function POST(request: NextRequest) {
 
         // Build shipping address from metadata
         const shippingAddress = {
-          firstName: session.metadata?.shippingFirstName,
-          lastName: session.metadata?.shippingLastName,
-          address: session.metadata?.shippingAddress,
-          city: session.metadata?.shippingCity,
-          postalCode: session.metadata?.shippingPostalCode,
-          country: session.metadata?.shippingCountry
+          firstName: session.metadata?.shippingFirstName || '',
+          lastName: session.metadata?.shippingLastName || '',
+          address: session.metadata?.shippingAddress || '',
+          city: session.metadata?.shippingCity || '',
+          postalCode: session.metadata?.shippingPostalCode || '',
+          country: session.metadata?.shippingCountry || ''
         }
         
         // Prepare order data for FormCarry
@@ -78,7 +79,36 @@ export async function POST(request: NextRequest) {
           timestamp: new Date().toISOString(),
         }
 
-        // Send data to FormCarry
+        // Send email notifications using the new notification system
+        try {
+          const orderNotificationData: OrderData = {
+            orderId: session.id,
+            customerName: `${session.metadata?.customerFirstName} ${session.metadata?.customerLastName}`,
+            customerEmail: session.metadata?.customerEmail || '',
+            customerPhone: session.metadata?.customerPhone,
+            items: items,
+            shippingAddress: shippingAddress,
+            deliveryOption: session.metadata?.deliveryOption || '',
+            totalAmount: (session.amount_total || 0) / 100,
+            paymentId: session.payment_intent as string || session.id
+          }
+
+          const emailResults = await sendOrderNotificationEmails(orderNotificationData)
+          
+          if (emailResults.adminEmailSent && emailResults.customerEmailSent) {
+            console.log('✅ All order notification emails sent successfully for session:', session.id)
+          } else {
+            console.log('⚠️ Some notification emails failed for session:', session.id)
+            if (!emailResults.adminEmailSent) console.log('❌ Admin email failed')
+            if (!emailResults.customerEmailSent) console.log('❌ Customer email failed')
+            emailResults.errors.forEach(error => console.error('Email error:', error))
+          }
+
+        } catch (emailError) {
+          console.error('Error sending order notifications:', emailError)
+        }
+
+        // Also send data to FormCarry for record keeping
         const formCarryResponse = await fetch('https://formcarry.com/s/JuLfbQPieYN', {
           method: 'POST',
           headers: {
@@ -92,60 +122,6 @@ export async function POST(request: NextRequest) {
           console.error('Failed to send shop order data to FormCarry:', await formCarryResponse.text())
         } else {
           console.log('Successfully sent shop order data to FormCarry for session:', session.id)
-        }
-
-        // Send email notifications via FormCarry
-        try {
-          const customerName = `${session.metadata?.customerFirstName} ${session.metadata?.customerLastName}`
-          const itemsList = items.map((item: any) => 
-            `• ${item.name} (Taille ${item.size}) x${item.quantity} - ${item.price}€`
-          ).join('\n')
-
-          const orderMessage = `
-🎉 NOUVELLE COMMANDE REÇUE !
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📦 DÉTAILS DE LA COMMANDE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🆔 ID de commande : ${session.id}
-👤 Client : ${customerName}
-📧 Email : ${session.metadata?.customerEmail}
-📱 Téléphone : ${session.metadata?.customerPhone || 'Non renseigné'}
-💰 Montant total : ${((session.amount_total || 0) / 100).toFixed(2)}€
-
-📋 Articles commandés :
-${itemsList}
-
-🚚 Livraison : ${session.metadata?.deliveryOption}
-📍 Adresse de livraison :
-${shippingAddress.firstName} ${shippingAddress.lastName}
-${shippingAddress.address}
-${shippingAddress.postalCode} ${shippingAddress.city}
-${shippingAddress.country}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Action requise : Préparer et expédier la commande.
-          `.trim()
-
-          // Send via FormCarry using form data
-          const formData = new FormData()
-          formData.append('name', customerName)
-          formData.append('email', session.metadata?.customerEmail || '')
-          formData.append('message', orderMessage)
-
-          const emailResponse = await fetch('https://formcarry.com/s/JuLfbQPieYN', {
-            method: 'POST',
-            body: formData
-          })
-
-          if (!emailResponse.ok) {
-            console.error('Failed to send order notification via FormCarry:', await emailResponse.text())
-          } else {
-            console.log('Successfully sent order notification via FormCarry for session:', session.id)
-          }
-        } catch (emailError) {
-          console.error('Error sending order notification:', emailError)
         }
 
       } else {

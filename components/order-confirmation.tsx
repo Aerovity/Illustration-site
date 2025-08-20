@@ -75,10 +75,13 @@ export function OrderConfirmation({ sessionId, onClose }: OrderConfirmationProps
                   <Mail className="h-5 w-5 text-green-600 dark:text-green-400" />
                   <div>
                     <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                      Email de confirmation envoyé
+                      Commande reçue et en cours de traitement
                     </p>
                     <p className="text-xs text-green-600 dark:text-green-400">
-                      Vérifiez votre boîte de réception ({orderDetails?.customer_email})
+                      • Notification envoyée à l'administrateur
+                    </p>
+                    <p className="text-xs text-green-600 dark:text-green-400">
+                      • Vous serez contacté pour confirmation sous 24h
                     </p>
                   </div>
                 </div>
