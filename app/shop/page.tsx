@@ -108,7 +108,7 @@ export default function ShopPage() {
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingCart },
-    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
+    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {

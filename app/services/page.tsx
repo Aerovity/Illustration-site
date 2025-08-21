@@ -27,7 +27,7 @@ export default function ServicesPage() {
     { name: "Coaching", url: "#coaching", icon: Users },
     { name: "Commissions", url: "#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "E-books", url: "#ebooks", icon: BookOpen },
+    { name: "Ressources", url: "#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {

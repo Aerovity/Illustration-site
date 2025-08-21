@@ -21,7 +21,7 @@ export default function GalleriePage() {
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
+    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {

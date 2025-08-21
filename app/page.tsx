@@ -9,6 +9,7 @@ import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { MainPortfolio } from "@/components/main-portfolio"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { NavBar } from "@/components/ui/tubelight-navbar"
+import { CommissionForm } from "@/components/commission-form"
 
 // Hero Background Component with auto-switching between image and video
 function HeroBackground({ showVideo, onVideoEnd }: { showVideo: boolean; onVideoEnd: () => void }) {
@@ -220,6 +221,7 @@ export default function HomePage() {
   const [activeSection, setActiveSection] = useState("accueil")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isClient, setIsClient] = useState(false)
+  const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false)
 
   const navItems = [
     { name: "Accueil", url: "#accueil", icon: Home },
@@ -230,7 +232,7 @@ export default function HomePage() {
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
+    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {
@@ -481,7 +483,7 @@ ${fullName}`
                     </div>
                     <div>
                       <p className="font-medium">Localisation</p>
-                      <p className="text-muted-foreground">Paris, France</p>
+                      <p className="text-muted-foreground">Lyon</p>
                     </div>
                   </div>
                 </div>
@@ -520,10 +522,24 @@ ${fullName}`
                       className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                     >
                       <option>Commission personnalisée</option>
-                      <option>Coaching artistique</option>
-                      <option>Achat d'œuvres</option>
+                      <option>Contrat Freelance</option>
+                      <option>Coaching & Services</option>
+                      <option>Partenariat</option>
                       <option>Autre</option>
                     </select>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Pour une commission d'art personnalisée :
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsCommissionFormOpen(true)}
+                      className="text-primary hover:text-primary/80 underline text-sm font-medium transition-colors"
+                    >
+                      Cliquez ici pour accéder au formulaire de commission
+                    </button>
                   </div>
 
                   <div className="space-y-2">
@@ -553,7 +569,7 @@ ${fullName}`
             <div className="space-y-4">
               <Image src="/images/logo.png" alt="Bobe Florian Logo" width={120} height={40} className="h-10 w-auto" />
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Artiste illustrateur passionné, créateur d'univers fantastiques et de personnages mémorables.
+                Vidéaste spécialisé en digital painting et coaching, je suis illustrateur freelance en fanarts manga/anime et créations originales.
               </p>
             </div>
 
@@ -598,7 +614,7 @@ ${fullName}`
                 </li>
                 <li>
                   <button onClick={() => scrollToSection("ebooks")} className="hover:text-primary transition-colors">
-                    E-books
+                    Ressources
                   </button>
                 </li>
                 <li>
@@ -702,6 +718,12 @@ ${fullName}`
           </div>
         </div>
       </footer>
+
+      {/* Commission Form Modal */}
+      <CommissionForm 
+        isOpen={isCommissionFormOpen} 
+        onClose={() => setIsCommissionFormOpen(false)} 
+      />
     </div>
   )
 }
