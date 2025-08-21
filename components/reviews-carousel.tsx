@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Star } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 
 const reviews = [
   {
@@ -64,21 +65,55 @@ const reviews = [
 
 export function ReviewsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [autoScroll, setAutoScroll] = useState(true)
 
   useEffect(() => {
+    if (!autoScroll) return
+    
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length)
     }, 4000)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [autoScroll])
 
   return (
     <section className="py-20 px-4 overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-serif font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-          Avis Clients
-        </h2>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Avis Clients
+          </h2>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+            <EnhancedSpotlightButton
+              className="px-0.5 py-0.5"
+              onClick={() => window.location.href = '/avis'}
+            >
+              Voir tout les Avis
+            </EnhancedSpotlightButton>
+            
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoScroll}
+                onChange={(e) => setAutoScroll(e.target.checked)}
+                className="sr-only"
+              />
+              <div className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
+                autoScroll 
+                  ? 'bg-primary/40' 
+                  : 'bg-muted'
+              }`}>
+                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                  autoScroll ? 'translate-x-6' : 'translate-x-0'
+                }`} />
+              </div>
+              <span className="text-sm text-muted-foreground">
+                Défilement automatique
+              </span>
+            </label>
+          </div>
+        </div>
 
         <div className="relative min-h-[400px] overflow-hidden">
           <div

@@ -52,14 +52,14 @@ export function NavBar({ items, className, activeSection, showCart = false, cart
       // Map section IDs to nav item names
       const sectionToNavMap: { [key: string]: string } = {
         accueil: "Accueil",
-        about: "À propos",
-        gallery: "Portfolio",
+        retours: "Avis",
+        about: "Portfolio",
+        gallery: "Galerie",
         contact: "Contact",
         coaching: "Coaching",
         commissions: "Commissions",
         "print-shop": "Print Shop",
-        ebooks: "E-books",
-        retours: "Avis",
+        ebooks: "Ressources",
       }
 
       const navName = sectionToNavMap[activeSection]

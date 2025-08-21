@@ -335,13 +335,7 @@ export function CoachingForm({ isOpen, onClose }: CoachingFormProps) {
                   required
                 />
                 <label htmlFor="acceptTerms" className="text-sm text-muted-foreground leading-relaxed">
-                  J'accepte les conditions de coaching et je comprends que :
-                  <ul className="mt-2 ml-4 list-disc space-y-1">
-                    <li>Le paiement est requis avant la session</li>
-                    <li>Les sessions sont enregistrées pour référence</li>
-                    <li>Les annulations doivent être faites 24h à l'avance</li>
-                    <li>Les prix indiqués sont fixes et ne peuvent être modifiés</li>
-                  </ul>
+                  J'ai pris connaissance des règles et informations.
                 </label>
               </div>
             </div>

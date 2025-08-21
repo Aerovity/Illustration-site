@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef } from "react"
-import { X, Upload, Trash2 } from "lucide-react"
+import { X, Upload, Trash2, Info } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 
@@ -20,6 +20,8 @@ export function CommissionForm({ isOpen, onClose }: CommissionFormProps) {
   const [fileErrors, setFileErrors] = useState<string[]>([])
   const [filePreviews, setFilePreviews] = useState<string[]>([])
   const [processingFiles, setProcessingFiles] = useState(false)
+  const [selectedCommissionType, setSelectedCommissionType] = useState("")
+  const [showRules, setShowRules] = useState(false)
 
   const handleFileSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
@@ -154,13 +156,81 @@ export function CommissionForm({ isOpen, onClose }: CommissionFormProps) {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Votre demande de commission a été envoyée avec succès. Je vous répondrai dans les plus brefs délais !
+              Votre demande de commission a été envoyée avec succès. Après envoi de la demande, un devis avec la facture exacte vous sera transmis.
             </p>
             <EnhancedSpotlightButton
               onClick={onClose}
               className="w-full mt-4"
             >
               Fermer
+            </EnhancedSpotlightButton>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Rules popup
+  if (showRules) {
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <Card className="bg-card/95 backdrop-blur-sm border-border/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Règles et Conditions
+              <button
+                onClick={() => setShowRules(false)}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-primary">ÉTAPE 1 : SOYEZ CLAIR</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground ml-4 list-disc">
+                <li>Peu importe si votre personnage est une création originale, issu d'une licence spécifique ou autre : Précisez le</li>
+                <li>Commencez par donner son nom, sa tenue, sa taille, sa corpulence ou tout autre particularité utile à savoir pour le painting.</li>
+                <li>Ajoutez des références : Par exemple une référence de pose, 3 du personnages et des idées et une de l'environnement.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-primary">ÉTAPE 2 : COOPÉRATION</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground ml-4 list-disc">
+                <li>Il se peut qu'au cours du processus, certains éléments que vous souhaitez ne soient pas compris. Gardez simplement en tête que je ne peux pas lire dans vos pensées. Malgré tout, je ferai de mon mieux pour obtenir le résultat que vous voulez</li>
+                <li>Le travail peut prendre du temps, merci de faire preuve de patience.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-primary">ÉTAPE 3 : CONNAÎTRE LES RÈGLES</h3>
+              <div className="space-y-4">
+                <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                  <p className="text-sm font-medium mb-2">Paiement :</p>
+                  <p className="text-sm text-muted-foreground">Le paiement se fait à l'avance et uniquement par virement bancaire ou Paypal.</p>
+                </div>
+                
+                <div className="p-4 bg-red-500/10 rounded-lg border border-red-500/20">
+                  <p className="text-sm font-medium mb-2 text-red-400">Remboursement :</p>
+                  <p className="text-sm text-muted-foreground">Aucun remboursement n'est possible lorsque le painting est entamé, assurez-vous donc bien de votre décision avant d'acheter.</p>
+                </div>
+                
+                <ul className="space-y-2 text-sm text-muted-foreground ml-4 list-disc">
+                  <li>Les retakes sont acceptés dans la limite du raisonnable.</li>
+                  <li>Vous pouvez publier mes images n'importe où, mais vous devez me créditer.</li>
+                  <li>Je commence à dessiner uniquement après réception du paiement.</li>
+                  <li>Je m'accorde le droit de décliner toute demande si elle ne me convient pas.</li>
+                </ul>
+              </div>
+            </div>
+
+            <EnhancedSpotlightButton
+              onClick={() => setShowRules(false)}
+              className="w-full py-0.5 text-lg"
+            >
+              J'ai compris
             </EnhancedSpotlightButton>
           </CardContent>
         </Card>
@@ -239,28 +309,67 @@ export function CommissionForm({ isOpen, onClose }: CommissionFormProps) {
                 id="commissionType"
                 name="commissionType"
                 required
+                value={selectedCommissionType}
+                onChange={(e) => setSelectedCommissionType(e.target.value)}
                 className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 <option value="">Sélectionner le type</option>
-                <option value="Portrait Simple">Portrait Simple (150€ - 250€)</option>
-                <option value="Illustration Complète">Illustration Complète (300€ - 600€)</option>
-                <option value="Concept Art">Concept Art (400€ - 800€)</option>
-                <option value="Autre">Autre (devis personnalisé)</option>
+                <option value="Concept Art">Concept Art (100~300 €)</option>
+                <option value="Valorant Style">Valorant Style (100~300 €)</option>
+                <option value="Portrait">Portrait (200~400 €)</option>
+                <option value="Splash Art">Splash Art (400~800 €)</option>
               </select>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="budget" className="text-sm font-medium text-primary">
-                Budget Estimé
-              </label>
-              <input
-                id="budget"
-                name="budget"
-                type="text"
-                className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                placeholder="Ex: 300€ - 500€"
-              />
-            </div>
+            {/* Commission Type Examples */}
+            {selectedCommissionType && (
+              <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <h4 className="text-sm font-medium mb-3 text-primary">Exemples pour {selectedCommissionType} :</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {selectedCommissionType === "Concept Art" && (
+                    <>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-1.jpg" alt="Concept Art Example 1" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-2.jpg" alt="Concept Art Example 2" className="w-full h-full object-cover" />
+                      </div>
+                    </>
+                  )}
+                  {selectedCommissionType === "Valorant Style" && (
+                    <>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-3.jpg" alt="Valorant Style Example 1" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-4.jpg" alt="Valorant Style Example 2" className="w-full h-full object-cover" />
+                      </div>
+                    </>
+                  )}
+                  {selectedCommissionType === "Portrait" && (
+                    <>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-5.jpg" alt="Portrait Example 1" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-6.jpg" alt="Portrait Example 2" className="w-full h-full object-cover" />
+                      </div>
+                    </>
+                  )}
+                  {selectedCommissionType === "Splash Art" && (
+                    <>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/artwork-7.jpg" alt="Splash Art Example 1" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-background/50">
+                        <img src="/images/shanks.jpg" alt="Splash Art Example 2" className="w-full h-full object-cover" />
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
 
             <div className="space-y-2">
               <label htmlFor="deadline" className="text-sm font-medium text-primary">
@@ -344,11 +453,24 @@ export function CommissionForm({ isOpen, onClose }: CommissionFormProps) {
                     type="checkbox"
                     id="commercialUse"
                     name="commercialUse"
-                    value="Utilisation commerciale (+20% TTC)"
+                    value="Utilisation commerciale (+50% TTC)"
                     className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
                   <label htmlFor="commercialUse" className="text-sm text-muted-foreground">
-                    Utilisation commerciale (+20% TTC)
+                    Utilisation commerciale (+50% TTC)
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="privateCommission"
+                    name="privateCommission"
+                    value="Commission privé* (l'œuvre ne sera jamais publié sur mes réseaux) (+50% TTC)"
+                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  />
+                  <label htmlFor="privateCommission" className="text-sm text-muted-foreground">
+                    Commission privé* (l'œuvre ne sera jamais publié sur mes réseaux) (+50% TTC)
                   </label>
                 </div>
               </div>
@@ -444,14 +566,19 @@ export function CommissionForm({ isOpen, onClose }: CommissionFormProps) {
                   required
                 />
                 <label htmlFor="acceptTerms" className="text-sm text-muted-foreground leading-relaxed">
-                  J'accepte les conditions générales de vente et je comprends que :
-                  <ul className="mt-2 ml-4 list-disc space-y-1">
-                    <li>Un acompte de 50% sera demandé avant le début des travaux</li>
-                    <li>2-3 révisions sont incluses dans le prix</li>
-                    <li>Les délais peuvent varier selon la complexité du projet</li>
-                    <li>Les droits d'auteur restent à l'artiste sauf accord contraire</li>
-                  </ul>
+                  J'ai pris connaissance des règles et informations.
                 </label>
+              </div>
+              
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setShowRules(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors"
+                >
+                  <Info className="h-4 w-4" />
+                  Règles et conditions
+                </button>
               </div>
             </div>
 

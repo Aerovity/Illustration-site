@@ -14,14 +14,14 @@ export default function GalleriePage() {
 
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
-    { name: "À propos", url: "/#about", icon: User },
     { name: "Avis", url: "/#retours", icon: Mail },
+    { name: "Portfolio", url: "/#about", icon: User },
     { name: "Contact", url: "/#contact", icon: Mail },
-    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Galerie", url: "/gallerie", icon: ImageIcon },
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "E-books", url: "/services#ebooks", icon: BookOpen },
+    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {
