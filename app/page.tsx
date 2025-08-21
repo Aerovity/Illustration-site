@@ -223,9 +223,9 @@ export default function HomePage() {
 
   const navItems = [
     { name: "Accueil", url: "#accueil", icon: Home },
-    { name: "À propos", url: "#about", icon: User },
     { name: "Avis", url: "#retours", icon: Mail },
-    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Portfolio", url: "#about", icon: User },
+    { name: "Galerie", url: "/gallerie", icon: ImageIcon },
     { name: "Contact", url: "#contact", icon: Mail },
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
@@ -248,8 +248,8 @@ export default function HomePage() {
     const handleScroll = () => {
       const sections = [
         "accueil",
-        "about",
         "retours",
+        "about",
         "gallery",
         "contact",
         "coaching",
@@ -344,7 +344,7 @@ ${fullName}`
     <div className="min-h-screen bg-background text-foreground">
       {/* Spotlight Background */}
       <div
-        className="fixed inset-0 spotlight pointer-events-none z-0"
+        className="fixed inset-0 spotlight pointer-events-none z-20"
         style={
           {
             "--x": isClient ? `${(mousePosition.x / window.innerWidth) * 100}%` : "50%",
@@ -362,23 +362,35 @@ ${fullName}`
           <HeroSection scrollToSection={scrollToSection} />
         </section>
 
+        {/* Reviews Section */}
+        <section id="retours" className="py-10 px-4 relative z-10">
+          <ReviewsCarousel />
+        </section>
+
         {/* About Section */}
-        <section id="about" className="py-20 px-4 relative z-10">
-          <div className="max-w-6xl mx-auto">
+        <section id="about" className="py-20 px-4 relative z-10 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/à propos background .png"
+              alt="À propos background"
+              fill
+              className="object-cover opacity-100"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80" />
+          </div>
+          
+          <div className="max-w-6xl mx-auto relative z-30">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <h2 className="text-4xl font-serif font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                   À Propos de Moi
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Passionné par l'art depuis mon plus jeune âge, je me spécialise dans la création d'illustrations
-                  Splash art inspirées des univers Manga/Anime/Gaming . Mon style unique mélange techniques
-                  traditionnelles et art numérique.
+                  Grand passionné de l'art depuis mon plus jeune âge, je dessine avec assiduité depuis maintenant plus de 8 ans et propose aujourd'hui mes compétences en tant qu'illustrateur freelance. J'apprécie particulièrement la réalisation de fanarts issus de mangas et d'animes, mais je crée également des OC et personnages issus de tous univers.
                 </p>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Avec plus de 15 ans d'expérience, j'ai eu le privilège de travailler avec des clients du monde entier,
-                  créant des personnages mémorables, des illustrations captivantes et des concepts artistiques pour
-                  diverses industries.
+                  A travers mon expérience, j'ai appris de très nombreuses techniques liées à des styles qui m'ont inspiré, comme League of Legends, Valorant ou Magic. Aujourd'hui ma mission est de transmettre ce savoir à des artistes qui partagent l'amour de l'art.
                 </p>
                 <div className="flex flex-wrap gap-4 pt-4">
                   <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">
@@ -390,7 +402,7 @@ ${fullName}`
                 </div>
               </div>
 
-              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
+              <div className="relative aspect-[3/4] w-full max-w-sm mx-auto overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
                 <Image
                   src="/images/florian.png"
                   alt="Bobe Florian"
@@ -404,11 +416,6 @@ ${fullName}`
               </div>
             </div>
           </div>
-        </section>
-
-        {/* Reviews Section */}
-        <section id="retours" className="py-20 px-4 relative z-10">
-          <ReviewsCarousel />
         </section>
 
         {/* Portfolio */}
@@ -441,10 +448,9 @@ ${fullName}`
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="space-y-8">
                 <div>
-                  <h3 className="text-2xl font-semibold mb-6">Parlons de Votre Projet</h3>
+                  <h3 className="text-2xl font-semibold mb-6">Contactez-Moi :</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    Que vous ayez besoin d'une illustration personnalisée, de coaching artistique ou d'œuvres d'art pour
-                    votre collection, je suis là pour donner vie à vos idées.
+                    Votre demande concerne une requête personnalisée, un projet, un devis ou n'importe quelle autre demande non présente sur le site, contactez nous.
                   </p>
                 </div>
 
@@ -555,18 +561,18 @@ ${fullName}`
               <h4 className="font-semibold mb-4">Navigation</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <button onClick={() => scrollToSection("about")} className="hover:text-primary transition-colors">
-                    À propos
+                  <button onClick={() => scrollToSection("retours")} className="hover:text-primary transition-colors">
+                    Avis
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => window.location.href = "/gallerie"} className="hover:text-primary transition-colors">
+                  <button onClick={() => scrollToSection("about")} className="hover:text-primary transition-colors">
                     Portfolio
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("retours")} className="hover:text-primary transition-colors">
-                    Avis
+                  <button onClick={() => window.location.href = "/gallerie"} className="hover:text-primary transition-colors">
+                    Galerie
                   </button>
                 </li>
                 <li>

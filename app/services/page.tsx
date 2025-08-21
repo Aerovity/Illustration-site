@@ -3,7 +3,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Home, User, Briefcase, ImageIcon, Mail, Palette, Users, ShoppingBag, BookOpen, Instagram, Twitter, Youtube } from "lucide-react"
+import { Home, User, Briefcase, ImageIcon, Mail, Palette, Users, ShoppingBag, BookOpen, Instagram, Twitter, Youtube, Star, Target, Gem } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { CommissionForm } from "@/components/commission-form"
@@ -20,9 +20,9 @@ export default function ServicesPage() {
 
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
-    { name: "À propos", url: "/#about", icon: User },
     { name: "Avis", url: "/#retours", icon: Mail },
-    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Portfolio", url: "/#about", icon: User },
+    { name: "Galerie", url: "/gallerie", icon: ImageIcon },
     { name: "Contact", url: "/#contact", icon: Mail },
     { name: "Coaching", url: "#coaching", icon: Users },
     { name: "Commissions", url: "#commissions", icon: Palette },
@@ -263,18 +263,50 @@ export default function ServicesPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col">
-                    <div className="space-y-4 mb-8">
-                      <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                        <span className="font-medium">Session 1h</span>
-                        <span className="font-bold text-primary">60€</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                        <span className="font-medium">Pack 6 sessions</span>
-                        <span className="font-bold text-primary">450€</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                        <span className="font-medium">Mentorat mensuel</span>
-                        <span className="font-bold text-primary">600€/mois</span>
+                    <div className="mb-8">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-border/50">
+                              <th className="text-left py-3 font-medium">Offre</th>
+                              <th className="text-right py-3 font-medium">Tarif total</th>
+                              <th className="text-right py-3 font-medium">Tarif horaire</th>
+                              <th className="text-right py-3 font-medium">Avantage</th>
+                            </tr>
+                          </thead>
+                          <tbody className="space-y-2">
+                            <tr className="border-b border-border/30">
+                              <td className="py-3 font-medium">À la séance</td>
+                              <td className="text-right py-3 font-bold text-primary">50 €</td>
+                              <td className="text-right py-3">50 €/h</td>
+                              <td className="text-right py-3 text-muted-foreground">Liberté totale, pas d'engagement</td>
+                            </tr>
+                            <tr className="border-b border-border/30">
+                              <td className="py-3 font-medium">Pack 6h</td>
+                              <td className="text-right py-3 font-bold text-primary">285 €</td>
+                              <td className="text-right py-3">47,5 €/h</td>
+                              <td className="text-right py-3 text-muted-foreground">Économie : 15 €</td>
+                            </tr>
+                            <tr className="border-b border-border/30">
+                              <td className="py-3 font-medium">Pack 12h (1 mois)</td>
+                              <td className="text-right py-3 font-bold text-primary">540 €</td>
+                              <td className="text-right py-3">45 €/h</td>
+                              <td className="text-right py-3 flex items-center justify-end gap-2">
+                                <Target className="h-4 w-4 text-purple-500" />
+                                <span className="text-purple-500 font-medium">Économie : 60 € - Le plus populaire</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="py-3 font-medium">Pack 24h (2 mois)</td>
+                              <td className="text-right py-3 font-bold text-primary">1 020 €</td>
+                              <td className="text-right py-3">42,5 €/h</td>
+                              <td className="text-right py-3 flex items-center justify-end gap-2">
+                                <Gem className="h-4 w-4 text-purple-500" />
+                                <span className="text-purple-500 font-medium">Économie : 180 € - Meilleure valeur</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
 
@@ -348,8 +380,8 @@ export default function ServicesPage() {
           <div className="max-w-7xl mx-auto">
             <Card className="bg-card backdrop-blur-sm border-border/50 overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="relative aspect-square lg:aspect-auto">
-                  <Image src="/images/shanks.jpg" alt="Commission Artwork - Shanks" fill className="object-cover" />
+                <div className="relative aspect-square lg:aspect-auto overflow-hidden">
+                  <Image src="/images/shanks.jpg" alt="Commission Artwork - Shanks" fill className="object-cover scale-105" />
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
                   <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
@@ -468,12 +500,12 @@ export default function ServicesPage() {
                     Bientôt Disponible
                   </EnhancedSpotlightButton>
                 </div>
-                <div className="relative aspect-square lg:aspect-auto">
+                <div className="relative aspect-square lg:aspect-auto overflow-hidden">
                   <Image
                     src="/prints/22_All_Might.jpg"
                     alt="E-books & Tutos - All Might"
                     fill
-                    className="object-cover"
+                    className="object-cover scale-105"
                   />
                 </div>
               </div>
@@ -486,12 +518,12 @@ export default function ServicesPage() {
           <div className="max-w-7xl mx-auto">
             <Card className="bg-card backdrop-blur-sm border-border/50 overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="relative aspect-square lg:aspect-auto">
+                <div className="relative aspect-square lg:aspect-auto overflow-hidden">
                   <Image
                     src="/images/yo.jpg"
                     alt="Print Shop Artwork - Haikyu"
                     fill
-                    className="object-cover"
+                    className="object-cover scale-105"
                   />
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">

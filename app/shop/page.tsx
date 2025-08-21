@@ -101,9 +101,9 @@ export default function ShopPage() {
 
   const navItems = [
     { name: "Accueil", url: "/#accueil", icon: Home },
-    { name: "À propos", url: "/#about", icon: User },
     { name: "Avis", url: "/#retours", icon: Mail },
-    { name: "Portfolio", url: "/gallerie", icon: ImageIcon },
+    { name: "Portfolio", url: "/#about", icon: User },
+    { name: "Galerie", url: "/gallerie", icon: ImageIcon },
     { name: "Contact", url: "/#contact", icon: Mail },
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
