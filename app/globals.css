@@ -390,3 +390,46 @@
     box-shadow: 0 0 35px rgba(255, 215, 0, 0.6), 0 0 45px rgba(255, 215, 0, 0.3), 0 0 55px rgba(255, 215, 0, 0.1);
   }
 }
+
+/* Chatbot positioning fixes */
+/* Target Chatbase chatbot iframe and container */
+iframe[src*="chatbase.co"] {
+  position: fixed !important;
+  bottom: 100px !important; /* Move higher from bottom */
+  right: 20px !important;
+  z-index: 1000 !important; /* Ensure it's below navigation */
+}
+
+/* Target the chatbot button/bubble */
+div[id*="chatbase"] {
+  position: fixed !important;
+  bottom: 100px !important; /* Move higher from bottom */
+  right: 20px !important;
+  z-index: 1000 !important; /* Ensure it's below navigation */
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+  iframe[src*="chatbase.co"] {
+    bottom: 120px !important; /* Even higher on mobile to avoid nav bar */
+    right: 15px !important;
+  }
+  
+  div[id*="chatbase"] {
+    bottom: 120px !important; /* Even higher on mobile to avoid nav bar */
+    right: 15px !important;
+  }
+  
+  /* More specific selectors for chatbot elements */
+  [class*="chatbase"],
+  [id*="chatbase"],
+  [data-chatbot],
+  .chatbot-container,
+  .chat-widget,
+  .chatbase-widget {
+    position: fixed !important;
+    bottom: 120px !important;
+    right: 15px !important;
+    z-index: 1000 !important;
+  }
+}

@@ -193,7 +193,7 @@ export default function ServicesPage() {
                           Most popular
                         </div>
                         <div className="text-sm text-muted-foreground mb-2">Feedbacker</div>
-                        <div className="text-2xl font-bold text-primary mb-2">48€ / mois</div>
+                        <div className="text-2xl font-bold text-primary mb-2">42€ / mois</div>
                         <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
                         <p className="text-center text-xs text-muted-foreground mb-2">
                           ou vous pouvez commander ici :{" "}
