@@ -325,6 +325,17 @@ export function CoachingForm({ isOpen, onClose }: CoachingFormProps) {
             </div>
 
             <div className="space-y-4">
+              <div className="p-4 bg-muted/50 rounded-lg border border-border/50 max-h-40 overflow-y-auto">
+                <h4 className="font-semibold text-primary mb-3">C'EST QUOI ET POUR QUI ?</h4>
+                <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
+                  <p>
+                    Les cours Feedbacker sont un abonnement mensuel où vous serez coaché et suivi dans une classe restreinte chaque semaine. Vous y découvrirez mes techniques, tout mon workflow, ainsi que mes astuces, réflexions et méthodes d'entraînement.
+                  </p>
+                  <p>
+                    Ces cours sont principalement destinés aux amateurs et aux débutants, mais en réalité, ils s'adressent à tous ceux qui aspirent à progresser sérieusement et à développer leurs propres capacités d'autonomie, que ce soit pour faire carrière dans l'art ou simplement approfondir leurs connaissances.
+                  </p>
+                </div>
+              </div>
               <div className="flex items-start gap-3">
                 <input
                   type="checkbox"

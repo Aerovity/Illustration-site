@@ -3,7 +3,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Home, User, Briefcase, ImageIcon, Mail, Phone, MapPin, Instagram, Twitter, Youtube, Users, Palette, ShoppingBag, BookOpen } from "lucide-react"
+import { Home, User, Briefcase, ImageIcon, Mail, MapPin, Instagram, Twitter, Youtube, Users, Palette, ShoppingBag, BookOpen } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EnhancedSpotlightButton } from "@/components/enhanced-spotlight-button"
 import { MainPortfolio } from "@/components/main-portfolio"
@@ -459,26 +459,6 @@ ${fullName}`
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <Mail className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Email</p>
-                      <p className="text-muted-foreground">contact@bobeflorian.com</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <Phone className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Téléphone</p>
-                      <p className="text-muted-foreground">+33 6 12 34 56 78</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
@@ -520,12 +500,18 @@ ${fullName}`
                     <select
                       id="projectType"
                       className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      onChange={(e) => {
+                        if (e.target.value === "Commission personnalisée") {
+                          setIsCommissionFormOpen(true)
+                        }
+                      }}
                     >
-                      <option>Commission personnalisée</option>
-                      <option>Contrat Freelance</option>
-                      <option>Coaching & Services</option>
-                      <option>Partenariat</option>
-                      <option>Autre</option>
+                      <option value="">Sélectionner le type de projet</option>
+                      <option value="Commission personnalisée">Commission personnalisée</option>
+                      <option value="Contrat Freelance">Contrat Freelance</option>
+                      <option value="Coaching & Services">Coaching & Services</option>
+                      <option value="Partenariat">Partenariat</option>
+                      <option value="Autre">Autre</option>
                     </select>
                   </div>
 
