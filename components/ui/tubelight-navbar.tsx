@@ -59,7 +59,6 @@ export function NavBar({ items, className, activeSection, showCart = false, cart
         coaching: "Coaching",
         commissions: "Commissions",
         "print-shop": "Print Shop",
-        ebooks: "Ressources",
       }
 
       const navName = sectionToNavMap[activeSection]

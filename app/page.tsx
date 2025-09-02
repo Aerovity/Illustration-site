@@ -169,6 +169,8 @@ function HeroSection({
 }) {
   const [showVideo, setShowVideo] = useState(false)
   const [autoSlideTimeout, setAutoSlideTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
   const clearAutoSlideTimeout = () => {
     if (autoSlideTimeout) {
@@ -206,13 +208,46 @@ function HeroSection({
     startAutoSlide(targetShowVideo)
   }
 
+  // Minimum distance to trigger swipe
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null) // Remove end position to avoid triggering swipe on tap
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      // Swipe left: go to next slide (video)
+      handleSlideChange(1)
+    } else if (isRightSwipe) {
+      // Swipe right: go to previous slide (image)
+      handleSlideChange(0)
+    }
+  }
+
   return (
-    <>
+    <div 
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      className="w-full h-full"
+    >
       <HeroBackground showVideo={showVideo} onVideoEnd={handleVideoEnd} />
       <HeroOverlay showVideo={showVideo} />
       <HeroContent showVideo={showVideo} scrollToSection={scrollToSection} />
       <SlideIndicators showVideo={showVideo} onSlideChange={handleSlideChange} />
-    </>
+    </div>
   )
 }
 
@@ -232,7 +267,6 @@ export default function HomePage() {
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {
@@ -257,7 +291,6 @@ export default function HomePage() {
         "coaching",
         "commissions",
         "print-shop",
-        "ebooks",
       ]
 
       let current = sections[0]
@@ -297,8 +330,7 @@ export default function HomePage() {
     if (
       sectionId === "coaching" ||
       sectionId === "commissions" ||
-      sectionId === "print-shop" ||
-      sectionId === "ebooks"
+      sectionId === "print-shop"
     ) {
       // Navigate to services page for these sections
       window.location.href = `/services#${sectionId}`
@@ -596,11 +628,6 @@ ${fullName}`
                     className="hover:text-primary transition-colors"
                   >
                     Print Shop
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => scrollToSection("ebooks")} className="hover:text-primary transition-colors">
-                    Ressources
                   </button>
                 </li>
                 <li>

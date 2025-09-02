@@ -66,6 +66,8 @@ const reviews = [
 export function ReviewsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [autoScroll, setAutoScroll] = useState(true)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
   useEffect(() => {
     if (!autoScroll) return
@@ -76,6 +78,34 @@ export function ReviewsCarousel() {
 
     return () => clearInterval(timer)
   }, [autoScroll])
+
+  // Touch gesture handlers
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      // Swipe left: next review
+      setCurrentIndex(prev => (prev + 1) % reviews.length)
+    } else if (isRightSwipe) {
+      // Swipe right: previous review
+      setCurrentIndex(prev => prev === 0 ? reviews.length - 1 : prev - 1)
+    }
+  }
 
   return (
     <section className="py-20 px-4 overflow-hidden">
@@ -115,7 +145,12 @@ export function ReviewsCarousel() {
           </div>
         </div>
 
-        <div className="relative min-h-[400px] overflow-hidden">
+        <div 
+          className="relative min-h-[400px] overflow-hidden"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
