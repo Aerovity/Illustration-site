@@ -108,7 +108,6 @@ export default function ShopPage() {
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingCart },
-    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {
@@ -748,7 +747,11 @@ export default function ShopPage() {
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious 
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      onClick={() => {
+                        setCurrentPage(prev => Math.max(1, prev - 1))
+                        // Scroll to top of print shop when changing pages
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }}
                       className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                     />
                   </PaginationItem>
@@ -760,7 +763,11 @@ export default function ShopPage() {
                       return (
                         <PaginationItem key={page}>
                           <PaginationLink
-                            onClick={() => setCurrentPage(page)}
+                            onClick={() => {
+                              setCurrentPage(page)
+                              // Scroll to top of print shop when changing pages
+                              window.scrollTo({ top: 0, behavior: 'smooth' })
+                            }}
                             isActive={currentPage === page}
                             className="cursor-pointer"
                           >
@@ -780,7 +787,11 @@ export default function ShopPage() {
                   
                   <PaginationItem>
                     <PaginationNext 
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      onClick={() => {
+                        setCurrentPage(prev => Math.min(totalPages, prev + 1))
+                        // Scroll to top of print shop when changing pages
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }}
                       className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                     />
                   </PaginationItem>

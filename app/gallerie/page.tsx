@@ -21,7 +21,6 @@ export default function GalleriePage() {
     { name: "Coaching", url: "/services#coaching", icon: Users },
     { name: "Commissions", url: "/services#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "Ressources", url: "/services#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {
@@ -143,11 +142,6 @@ export default function GalleriePage() {
                     className="hover:text-primary transition-colors"
                   >
                     Print Shop
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => window.location.href = "/services#ebooks"} className="hover:text-primary transition-colors">
-                    E-books
                   </button>
                 </li>
                 <li>

@@ -27,7 +27,6 @@ export default function ServicesPage() {
     { name: "Coaching", url: "#coaching", icon: Users },
     { name: "Commissions", url: "#commissions", icon: Palette },
     { name: "Print Shop", url: "/shop", icon: ShoppingBag },
-    { name: "Ressources", url: "#ebooks", icon: BookOpen },
   ]
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export default function ServicesPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["coaching", "commissions", "print-shop", "ebooks"]
+      const sections = ["coaching", "commissions", "print-shop"]
 
       let current = sections[0]
       let closestSection = ""
@@ -194,7 +193,7 @@ export default function ServicesPage() {
                         </div>
                         <div className="text-sm text-muted-foreground mb-2">Feedbacker</div>
                         <div className="text-2xl font-bold text-primary mb-2">42€ / mois</div>
-                        <div className="text-xs text-muted-foreground mb-4">(plus VAT)</div>
+                        <div className="text-xs text-muted-foreground mb-4">(plus TVA)</div>
                         <p className="text-center text-xs text-muted-foreground mb-2">
                           ou vous pouvez commander ici :{" "}
                           <a
@@ -398,15 +397,15 @@ export default function ServicesPage() {
 
                   <div className="space-y-4 mb-8">
                     <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                      <span className="font-medium">Portrait Simple</span>
-                      <span className="font-bold text-primary">150€ - 250€</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                      <span className="font-medium">Illustration Complète</span>
-                      <span className="font-bold text-primary">300€ - 600€</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
                       <span className="font-medium">Concept Art</span>
+                      <span className="font-bold text-primary">100€ - 300€</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                      <span className="font-medium">Portrait</span>
+                      <span className="font-bold text-primary">200€ - 400€</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
+                      <span className="font-medium">Splash Art</span>
                       <span className="font-bold text-primary">400€ - 800€</span>
                     </div>
                   </div>
@@ -446,72 +445,6 @@ export default function ServicesPage() {
           </div>
         </section>
 
-        {/* E-books & Tutos Section */}
-        <section id="ebooks" className="py-20 px-4 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <Card className="bg-card backdrop-blur-sm border-border/50 overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="p-8 lg:p-12 flex flex-col justify-center">
-                  <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
-                    <svg className="h-8 w-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                      />
-                    </svg>
-                  </div>
-                  <h2 className="text-4xl font-serif font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                    E-books & Tutos
-                  </h2>
-                  <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                    Ressources numériques complètes : PDF détaillés, vidéos de formation et cours premium pour
-                    approfondir vos connaissances artistiques. Bientôt disponible !
-                  </p>
-
-                  <div className="space-y-4 mb-8">
-                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                      <span className="font-medium">Guides PDF</span>
-                      <span className="font-bold text-primary">15€ - 25€</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                      <span className="font-medium">Vidéos Formation</span>
-                      <span className="font-bold text-primary">30€ - 50€</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-background/50 rounded-lg">
-                      <span className="font-medium">Cours Premium</span>
-                      <span className="font-bold text-primary">80€ - 120€</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-8 text-sm text-muted-foreground">
-                    <div className="space-y-2">
-                      <p>✓ Techniques avancées</p>
-                      <p>✓ Processus détaillés</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p>✓ Ressources exclusives</p>
-                      <p>✓ Support inclus</p>
-                    </div>
-                  </div>
-
-                  <EnhancedSpotlightButton className="w-full py-0.5 text-lg" disabled>
-                    Bientôt Disponible
-                  </EnhancedSpotlightButton>
-                </div>
-                <div className="relative aspect-square lg:aspect-auto overflow-hidden">
-                  <Image
-                    src="/prints/22_All_Might.jpg"
-                    alt="E-books & Tutos - All Might"
-                    fill
-                    className="object-cover scale-105"
-                  />
-                </div>
-              </div>
-            </Card>
-          </div>
-        </section>
 
         {/* Print Shop Section */}
         <section id="print-shop" className="py-20 px-4 relative z-10">
@@ -637,11 +570,6 @@ export default function ServicesPage() {
                     className="hover:text-primary transition-colors"
                   >
                     Print Shop
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => scrollToSection("ebooks")} className="hover:text-primary transition-colors">
-                    E-books
                   </button>
                 </li>
                 <li>
